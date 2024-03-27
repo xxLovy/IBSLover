@@ -52,7 +52,8 @@ app.get('/search', async (req, res) => {
 
             if (response.data.results && response.data.results.length > 0) {
                 const filteredResults = response.data.results.filter(place => {
-                    return place.opening_hours && place.opening_hours.open_now; // 只返回营业的地点
+                    // return place.opening_hours && place.opening_hours.open_now; // 只返回营业的地点
+                    return true; // 全返回
                 });
                 allResults.push(...filteredResults);
             }
