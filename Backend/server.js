@@ -7,10 +7,10 @@ const radius = 1000
 const KEY = process.env.GOOGLE_MAPS_API_KEY
 const keywords = [
     'Starbucks',
-    // 'McDonald\'s',
-    // 'Walmart',
-    // 'City Supper',
-    // 'IKEA',
+    'McDonald\'s',
+    'Walmart',
+    'City Supper',
+    'IKEA',
 ];
 
 const app = express()
