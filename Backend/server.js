@@ -46,6 +46,7 @@ app.get('/search', async (req, res) => {
             };
 
             const response = await axios.get(baseURL, { params });
+            console.log(response.results)
 
             if (response.data.results && response.data.results.length > 0) {
                 const filteredResults = response.data.results.filter(place => {
