@@ -22,6 +22,8 @@ function sortByDistance(results) {
 }
 
 app.get('/search', async (req, res) => {
+    let allResults = [];
+
     try {
         const { latitude, longitude } = req.query;
         const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`;
@@ -42,7 +44,7 @@ app.get('/search', async (req, res) => {
                 radius: radius,
                 key: KEY,
                 keyword: keyword,
-                rankedby: 'distance'
+                // rankedby: 'distance'
             };
 
             const response = await axios.get(url, { params });
