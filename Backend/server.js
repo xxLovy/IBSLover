@@ -42,7 +42,7 @@ app.get('/search', async (req, res) => {
         //         location: `${latitude},${longitude}`,
         //         radius: radius,
         //         key: KEY,
-        //         keyword: keyword, // 注意：这里使用type参数来指定查询的店铺类型  
+        //         keyword: keyword,
         //         rankedby: 'distance'
         //     };
 
