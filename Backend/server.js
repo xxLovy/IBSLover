@@ -25,16 +25,16 @@ app.get('/search', async (req, res) => {
     try {
         const { latitude, longitude } = req.query;
         const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`;
-        for (const keyword of keywords) {
-            const params = {
-                location: `${latitude},${longitude}`,
-                radius: radius,
-                key: KEY,
-                keyword: keyword,
-                rankedby: 'distance'
-            };
-            console.log(`拼接URL：${url}?location=${params.location}&radius=${params.radius}&keyword=${params.keyword}&key=${params.key}`)
-        }
+        // for (const keyword of keywords) {
+        //     const params = {
+        //         location: `${latitude},${longitude}`,
+        //         radius: radius,
+        //         key: KEY,
+        //         keyword: keyword,
+        //         rankedby: 'distance'
+        //     };
+        //     console.log(`拼接URL：${url}?location=${params.location}&radius=${params.radius}&keyword=${params.keyword}&key=${params.key}`)
+        // }
 
         for (const keyword of keywords) {
             const params = {
@@ -45,7 +45,7 @@ app.get('/search', async (req, res) => {
                 rankedby: 'distance'
             };
 
-            const response = await axios.get(baseURL, { params });
+            const response = await axios.get(url, { params });
             console.log(response.results)
 
             if (response.data.results && response.data.results.length > 0) {
