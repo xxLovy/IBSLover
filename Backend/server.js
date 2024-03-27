@@ -35,31 +35,30 @@ app.get('/search', async (req, res) => {
             };
             console.log(`拼接URL：${url}?location=${params.location}&radius=${params.radius}&keyword=${params.keyword}&key=${params.key}`)
         }
-        console.log('\n')
 
-        // for (const keyword of keywords) {
-        //     const params = {
-        //         location: `${latitude},${longitude}`,
-        //         radius: radius,
-        //         key: KEY,
-        //         keyword: keyword,
-        //         rankedby: 'distance'
-        //     };
+        for (const keyword of keywords) {
+            const params = {
+                location: `${latitude},${longitude}`,
+                radius: radius,
+                key: KEY,
+                keyword: keyword,
+                rankedby: 'distance'
+            };
 
-        //     const response = await axios.get(baseURL, { params });
+            const response = await axios.get(baseURL, { params });
 
-        //     if (response.data.results && response.data.results.length > 0) {
-        //         const filteredResults = response.data.results.filter(place => {
-        //             return place.opening_hours && place.opening_hours.open_now; // 只返回营业的地点
-        //         });
-        //         allResults.push(...filteredResults);
-        //     }
-        // }
+            if (response.data.results && response.data.results.length > 0) {
+                const filteredResults = response.data.results.filter(place => {
+                    return place.opening_hours && place.opening_hours.open_now; // 只返回营业的地点
+                });
+                allResults.push(...filteredResults);
+            }
+        }
 
-        // const sortedResults = sortByDistance(allResults);
+        const sortedResults = sortByDistance(allResults);
 
-        // res.json(sortedResults);
-        // console.log(sortedResults);
+        res.json(sortedResults);
+        console.log(sortedResults);
 
         res.json([])
     } catch (error) {
