@@ -60,6 +60,7 @@ export default function App() {
       }).then((res) => {
         // console.log(res)
         setPlaces(res.data)
+        console.log('fetched')
         // console.log(places)
       }).catch(error => {
         console.log(error)
@@ -90,7 +91,7 @@ export default function App() {
       <MapView
         style={styles.map}
         initialRegion={region}
-        provider='google'
+      // provider='google'
       >
         <Marker
           coordinate={pin}
