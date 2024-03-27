@@ -59,8 +59,6 @@ app.get('/search', async (req, res) => {
 
         res.json(sortedResults);
         console.log(sortedResults);
-
-        res.json([])
     } catch (error) {
         console.error(error);
         res.status(500).send('An error occurred');
