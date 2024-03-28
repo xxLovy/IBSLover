@@ -1,15 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Dimensions, StyleSheet, View, Text, Button, Linking, TouchableHighlight } from 'react-native';
+import React, { useState, useEffect, createRef } from 'react';
+import {
+  Dimensions,
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  Linking,
+  TouchableHighlight,
+  FlatList // Import FlatList
+} from 'react-native';
 import MapView, { Callout, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import customMarkerImage from './assets/ToiletMarker0.png';
 import axios from 'axios'
 
 const api = 'http://13.238.182.211:80'
+const markersRef = {};
 export default function App() {
   const [pin, setPin] = useState(null);
   const [region, setRegion] = useState(null);
   const [places, setPlaces] = useState([]);
+  const mapRef = createRef();
+  const [selectedMarker, setSelectedMarker] = useState(null);
 
 
   // Get user current location
@@ -84,13 +96,45 @@ export default function App() {
     return <View style={styles.container}><Text>Loading...</Text></View>;
   }
 
+  const renderPlace = ({ item, index }) => (
+    <TouchableHighlight
+      underlayColor="#DDDDDD"
+      onPress={() => {
+        let newRegion = {
+          latitude: item.geometry.location.lat,
+          longitude: item.geometry.location.lng,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        };
+        mapRef.current.animateToRegion(newRegion, 1000); // Smooth transition
+
+        // Save the selected marker's reference
+        setSelectedMarker(markersRef[index]);
+      }}
+    >
+
+
+      <View style={styles.listItem}>
+        <Text style={styles.placeName}>{item.name}</Text>
+        <Text>{item.vicinity}</Text>
+      </View>
+    </TouchableHighlight>
+  );
+
 
 
   return (
     <View style={{ marginTop: 50, flex: 1 }}>
       <MapView
+        ref={mapRef}
         style={styles.map}
-        initialRegion={region}
+        region={region}
+        onRegionChangeComplete={() => {
+          if (selectedMarker) {
+            selectedMarker.showCallout();
+            setSelectedMarker(null); // Reset selected marker
+          }
+        }}
       // provider='google'
       >
         <Marker
@@ -113,8 +157,11 @@ export default function App() {
             title={place.name}
             description={place.vicinity}
             image={customMarkerImage}
+            ref={(ref) => {
+              markersRef[index] = ref; // Use index as the key
+            }}
           >
-            <Callout onPress={() => navigateToPlace(place.geometry.location.lat, place.geometry.location.lng, place.name)}>
+            <Callout>
               <View>
                 <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{place.name}</Text>
                 <Text>{place.vicinity}</Text>
@@ -125,6 +172,15 @@ export default function App() {
         ))}
 
       </MapView>
+      {/* FlatList to display the list of places */}
+      <View style={styles.listContainer}>
+        <FlatList
+          data={places}
+          renderItem={renderPlace}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </View>
+
 
       <View style={styles.buttonContainer}>
         <Button
@@ -149,13 +205,22 @@ const styles = StyleSheet.create({
   },
   map: {
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height * 0.8
+    height: Dimensions.get("window").height / 2, // Half of the screen height
+  },
+  listContainer: {
+    flex: 1, // The remaining space will be for the list
+    backgroundColor: '#fff',
+  },
+  listItem: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  placeName: {
+    fontWeight: 'bold',
   },
   buttonContainer: {
-    position: "absolute",
-    bottom: Dimensions.get("window").height * 0.05,
-    alignSelf: "center",
-    zIndex: 1
+    padding: 10,
+    backgroundColor: 'transparent',
   },
-
 });
