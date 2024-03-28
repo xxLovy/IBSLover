@@ -14,5 +14,7 @@ Remember turn on your `location feature`  and give this app permission to access
 
 ## TODO
 
-+ Probably add some filters so you can choose your preferred locations (like if you don't want to use a toilet in a Walmart, you can filter that out)
-+ Still brainstorming...
+- [ ] Add some filters so users can choose their preferred locations (like if you don't want to use a toilet in a Walmart, you can filter that out)
+- [x]  Add a list view for a more intuitive display of places
+- [ ]  Users can add toilets to the list
+- [ ] Still brainstorming...
