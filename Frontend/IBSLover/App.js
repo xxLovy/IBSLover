@@ -7,7 +7,8 @@ import {
   Button,
   Linking,
   TouchableHighlight,
-  FlatList // Import FlatList
+  FlatList,
+  TouchableOpacity
 } from 'react-native';
 import MapView, { Callout, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -22,6 +23,7 @@ export default function App() {
   const [places, setPlaces] = useState([]);
   const mapRef = createRef();
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const [isListViewVisible, setIsListViewVisible] = useState(true);
 
 
   // Get user current location
@@ -70,10 +72,22 @@ export default function App() {
           longitude: pin.longitude
         }
       }).then((res) => {
-        // console.log(res)
-        setPlaces(res.data)
-        console.log('fetched')
-        // console.log(places)
+        // 计算每个地点到用户当前位置的距离，并添加到地点对象中
+        const placesWithDistance = res.data.map(place => {
+          const distance = getDistanceFromLatLonInKm(
+            pin.latitude,
+            pin.longitude,
+            place.geometry.location.lat,
+            place.geometry.location.lng
+          );
+          return { ...place, distance };
+        });
+
+        // sort according to distance
+        const sortedPlaces = placesWithDistance.sort((a, b) => a.distance - b.distance);
+
+        setPlaces(sortedPlaces);
+        console.log('fetched and sorted by distance');
       }).catch(error => {
         console.log(error)
         setPlaces([])
@@ -96,30 +110,61 @@ export default function App() {
     return <View style={styles.container}><Text>Loading...</Text></View>;
   }
 
-  const renderPlace = ({ item, index }) => (
-    <TouchableHighlight
-      underlayColor="#DDDDDD"
-      onPress={() => {
-        let newRegion = {
-          latitude: item.geometry.location.lat,
-          longitude: item.geometry.location.lng,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
-        };
-        mapRef.current.animateToRegion(newRegion, 1000); // Smooth transition
-
-        // Save the selected marker's reference
-        setSelectedMarker(markersRef[index]);
-      }}
-    >
+  const renderPlace = ({ item, index }) => {
+    const distance = pin
+      ? getDistanceFromLatLonInKm(
+        pin.latitude,
+        pin.longitude,
+        item.geometry.location.lat,
+        item.geometry.location.lng
+      )
+      : 'Calculating...';
 
 
-      <View style={styles.listItem}>
-        <Text style={styles.placeName}>{item.name}</Text>
-        <Text>{item.vicinity}</Text>
-      </View>
-    </TouchableHighlight>
-  );
+    return (
+      <TouchableHighlight
+        underlayColor="#DDDDDD"
+        onPress={() => {
+          let newRegion = {
+            latitude: item.geometry.location.lat,
+            longitude: item.geometry.location.lng,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+          };
+          mapRef.current.animateToRegion(newRegion, 1000); // Smooth transition
+
+          // Save the selected marker's reference
+          setSelectedMarker(markersRef[index]);
+        }}
+      >
+
+
+        <View style={styles.listItem}>
+          <Text style={styles.placeName}>{item.name}</Text>
+          <Text>{item.vicinity}</Text>
+          <Text>Distance: {distance} km</Text>
+        </View>
+      </TouchableHighlight>
+    )
+  };
+
+  // Helper function to calculate the distance
+  function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance.toFixed(2);
+  }
+
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
 
 
 
@@ -127,12 +172,12 @@ export default function App() {
     <View style={{ marginTop: 50, flex: 1 }}>
       <MapView
         ref={mapRef}
-        style={styles.map}
+        style={isListViewVisible ? styles.mapHalf : styles.mapFull}
         region={region}
         onRegionChangeComplete={() => {
           if (selectedMarker) {
             selectedMarker.showCallout();
-            setSelectedMarker(null); // Reset selected marker
+            setSelectedMarker(null);
           }
         }}
       // provider='google'
@@ -158,7 +203,7 @@ export default function App() {
             description={place.vicinity}
             image={customMarkerImage}
             ref={(ref) => {
-              markersRef[index] = ref; // Use index as the key
+              markersRef[index] = ref;
             }}
           >
             <Callout>
@@ -172,14 +217,42 @@ export default function App() {
         ))}
 
       </MapView>
-      {/* FlatList to display the list of places */}
-      <View style={styles.listContainer}>
+
+      {/* 定位按钮 */}
+      <TouchableOpacity
+        style={styles.locateButton}
+        onPress={() => {
+          if (pin) {
+            mapRef.current.animateToRegion({
+              ...region,
+              latitude: pin.latitude,
+              longitude: pin.longitude,
+            }, 1000); // 1000毫秒的动画时长
+          }
+        }}
+      >
+        <Text>Current Location</Text>
+      </TouchableOpacity>
+
+
+      <TouchableOpacity
+        style={styles.toggleButton}
+        onPress={() => setIsListViewVisible(!isListViewVisible)}
+      >
+        <Text>{isListViewVisible ? "Hide List" : "Show List"}</Text>
+      </TouchableOpacity>
+
+
+
+      {/* 条件渲染ListView */}
+      {isListViewVisible && (
         <FlatList
           data={places}
           renderItem={renderPlace}
           keyExtractor={(item, index) => index.toString()}
+          style={styles.list}
         />
-      </View>
+      )}
 
 
       <View style={styles.buttonContainer}>
@@ -205,10 +278,10 @@ const styles = StyleSheet.create({
   },
   map: {
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height / 2, // Half of the screen height
+    height: Dimensions.get("window").height / 2,
   },
   listContainer: {
-    flex: 1, // The remaining space will be for the list
+    flex: 1,
     backgroundColor: '#fff',
   },
   listItem: {
@@ -222,5 +295,32 @@ const styles = StyleSheet.create({
   buttonContainer: {
     padding: 10,
     backgroundColor: 'transparent',
+  },
+  locateButton: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    zIndex: 10,
+  },
+
+  toggleButton: {
+    position: "absolute",
+    top: 20, // Adjust as needed
+    left: 20, // Adjust as needed
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 5,
+    zIndex: 10,
+  },
+  mapHalf: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height / 2,
+  },
+  mapFull: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
   },
 });
