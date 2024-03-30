@@ -49,7 +49,7 @@ async function checkAPIKeyLimit() {
     let existingRecord = await Usage.findOne({ date: today });
 
     if (existingRecord) {
-        existingRecord.count = parseInt(existingRecord.count) + 1;
+        existingRecord.count = (parseInt(existingRecord.count) || 0) + 1;
         if (existingRecord.count > DAILY_LIMIT) {
             return false;
         }
@@ -60,6 +60,7 @@ async function checkAPIKeyLimit() {
 
     return true;
 }
+
 
 
 
