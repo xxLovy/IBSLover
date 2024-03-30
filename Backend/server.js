@@ -19,12 +19,13 @@ const keywords = [
 ];
 const IP_REQUEST_LIMIT = 1
 const IP_REQUEST_EXPIRE = 3
+const DAILY_LIMIT = 100
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 
 const UsageSchema = new mongoose.Schema({
-    apiKey: String,
+    count: Number,
     date: Date
 });
 
@@ -43,22 +44,28 @@ async function checkIPRequestLimit(ip) {
     return true;
 }
 
-async function checkAPIKeyLimit(apiKey) {
+async function checkAPIKeyLimit() {
     const today = new Date().toISOString().split('T')[0];
-    const existingRecord = await Usage.findOne({ apiKey, date: today });
+    let existingRecord = await Usage.findOne({ date: today });
+
     if (existingRecord) {
-        return false;
+        existingRecord.count++;
+        if (existingRecord.count > DAILY_LIMIT) {
+            return false;
+        }
+        await existingRecord.save();
+    } else {
+        await Usage.create({ count: 1, date: today });
     }
-    await Usage.create({ apiKey, date: today });
     return true;
 }
+
 
 app.get('/search', async (req, res) => {
     try {
         const { latitude, longitude } = req.query;
         const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`;
 
-        const apiKey = req.headers['x-api-key'];
         const ip = req.ip;
 
         const ipAllowed = await checkIPRequestLimit(ip);
@@ -67,7 +74,7 @@ app.get('/search', async (req, res) => {
             return;
         }
 
-        const apiKeyAllowed = await checkAPIKeyLimit(apiKey);
+        const apiKeyAllowed = await checkAPIKeyLimit();
         if (!apiKeyAllowed) {
             res.status(429).send('API usage exceeded for today');
             return;
