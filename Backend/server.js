@@ -18,7 +18,7 @@ const keywords = [
     'IKEA',
 ];
 const IP_REQUEST_LIMIT = 1
-const IP_REQUEST_EXPIRE = 3
+const IP_REQUEST_EXPIRE = 10
 const DAILY_LIMIT = 100
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -49,7 +49,7 @@ async function checkAPIKeyLimit() {
     let existingRecord = await Usage.findOne({ date: today });
 
     if (existingRecord) {
-        existingRecord.count = (parseInt(existingRecord.count) || 0) + 1;
+        existingRecord.count = (parseInt(existingRecord.count) || 0) + keywords.length;
         if (existingRecord.count > DAILY_LIMIT) {
             return false;
         }
