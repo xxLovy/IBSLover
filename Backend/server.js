@@ -1,10 +1,15 @@
 const express = require('express');
-const axios = require('axios')
+const axios = require('axios');
 const cors = require('cors');
+const mongoose = require('mongoose');
+const Redis = require('ioredis');
 require('dotenv').config();
 
-const radius = 1000
-const KEY = process.env.GOOGLE_MAPS_API_KEY
+const app = express();
+app.use(cors());
+
+const radius = 1000;
+const KEY = process.env.GOOGLE_MAPS_API_KEY;
 const keywords = [
     'Starbucks',
     'McDonald\'s',
@@ -12,47 +17,74 @@ const keywords = [
     'City Supper',
     'IKEA',
 ];
+const IP_REQUEST_LIMIT = 1
+const IP_REQUEST_EXPIRE = 3
 
-const app = express()
-app.use(cors());
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
 
+const UsageSchema = new mongoose.Schema({
+    apiKey: String,
+    date: Date
+});
 
-function sortByDistance(results) {
-    return results.sort((a, b) => a.geometry.location.distance - b.geometry.location.distance);
+const Usage = mongoose.model('Usage', UsageSchema);
+
+const redis = new Redis(process.env.REDIS_URI);
+
+async function checkIPRequestLimit(ip) {
+    const ipKey = `requests:${ip}`;
+    const ipCount = await redis.get(ipKey);
+    if (ipCount && parseInt(ipCount) >= IP_REQUEST_LIMIT) {
+        return false;
+    }
+    await redis.incr(ipKey);
+    await redis.expire(ipKey, IP_REQUEST_EXPIRE);
+    return true;
+}
+
+async function checkAPIKeyLimit(apiKey) {
+    const today = new Date().toISOString().split('T')[0];
+    const existingRecord = await Usage.findOne({ apiKey, date: today });
+    if (existingRecord) {
+        return false;
+    }
+    await Usage.create({ apiKey, date: today });
+    return true;
 }
 
 app.get('/search', async (req, res) => {
-    let allResults = [];
-
     try {
         const { latitude, longitude } = req.query;
         const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`;
-        // for (const keyword of keywords) {
-        //     const params = {
-        //         location: `${latitude},${longitude}`,
-        //         radius: radius,
-        //         key: KEY,
-        //         keyword: keyword,
-        //         rankedby: 'distance'
-        //     };
-        //     console.log(`拼接URL：${url}?location=${params.location}&radius=${params.radius}&keyword=${params.keyword}&key=${params.key}`)
-        // }
 
+        const apiKey = req.headers['x-api-key'];
+        const ip = req.ip;
+
+        const ipAllowed = await checkIPRequestLimit(ip);
+        if (!ipAllowed) {
+            res.status(429).send('IP usage exceeded');
+            return;
+        }
+
+        const apiKeyAllowed = await checkAPIKeyLimit(apiKey);
+        if (!apiKeyAllowed) {
+            res.status(429).send('API usage exceeded for today');
+            return;
+        }
+
+        let allResults = [];
         for (const keyword of keywords) {
             const params = {
                 location: `${latitude},${longitude}`,
                 radius: radius,
                 key: KEY,
                 keyword: keyword,
-                // rankedby: 'distance'
             };
 
             const response = await axios.get(url, { params });
-            console.log(response.results)
-
             if (response.data.results && response.data.results.length > 0) {
                 const filteredResults = response.data.results.filter(place => {
-                    // return place.opening_hours && place.opening_hours.open_now; // 只返回营业的地点
                     return true; // 全返回
                 });
                 allResults.push(...filteredResults);
@@ -60,19 +92,18 @@ app.get('/search', async (req, res) => {
         }
 
         const sortedResults = sortByDistance(allResults);
-
         res.json(sortedResults);
-        console.log(sortedResults);
     } catch (error) {
         console.error(error);
         res.status(500).send('An error occurred');
     }
-
-
 });
-
 
 const PORT = process.env.PORT || 80;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+function sortByDistance(results) {
+    return results.sort((a, b) => a.geometry.location.distance - b.geometry.location.distance);
+}
