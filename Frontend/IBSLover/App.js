@@ -14,6 +14,7 @@ import MapView, { Callout, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import customMarkerImage from './assets/ToiletMarker0.png';
 import axios from 'axios'
+import NavBar from './components/NaviBar';
 
 const api = 'http://13.238.182.211:80'
 const markersRef = {};
@@ -169,9 +170,37 @@ export default function App() {
   }
 
 
+  const handleCurrentLocationPress = () => {
+    if (pin) {
+      mapRef.current.animateToRegion({
+        ...region,
+        latitude: pin.latitude,
+        longitude: pin.longitude,
+      }, 1000);
+    }
+  };
+
+  const handleHideListPress = () => {
+    setIsListViewVisible(!isListViewVisible);
+  };
+
+  const handleAddToiletPress = () => {
+    // Add logic to handle "Add Toilet" press
+    return
+  };
+
 
   return (
+
     <View style={{ marginTop: 50, flex: 1 }}>
+
+      <NavBar
+        onCurrentLocationPress={handleCurrentLocationPress}
+        onHideListPress={handleHideListPress}
+        onAddToiletPress={handleAddToiletPress}
+        isListViewVisible={isListViewVisible}
+      />
+
       <MapView
         ref={mapRef}
         style={isListViewVisible ? styles.mapHalf : styles.mapFull}
@@ -220,7 +249,7 @@ export default function App() {
 
       </MapView>
 
-      {/* For current location */}
+      {/* For current location
       <TouchableOpacity
         style={styles.locateButton}
         onPress={() => {
@@ -235,6 +264,7 @@ export default function App() {
       >
         <Text>Current Location</Text>
       </TouchableOpacity>
+      <NavBar />
 
 
       <TouchableOpacity
@@ -242,7 +272,7 @@ export default function App() {
         onPress={() => setIsListViewVisible(!isListViewVisible)}
       >
         <Text>{isListViewVisible ? "Hide List" : "Show List"}</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
 
 
