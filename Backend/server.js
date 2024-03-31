@@ -151,7 +151,7 @@ app.post('/add-toilet', async (req, res) => {
         // Find a nearby toilet within the range
         const nearbyToilet = await ToiletLocation.findOne({
             coordinates: {
-                $nearSphere: {
+                $near: {
                     $geometry: {
                         type: "Point",
                         coordinates: [longitude, latitude]
