@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 
-const NaviBar = ({ onCurrentLocationPress, onHideListPress, onAddToiletPress, isListViewVisible }) => {
+const NaviBar = ({ onCurrentLocationPress, onHideListPress, onAddToiletPress, isListViewVisible, onChooseFilters }) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const menuAnimation = new Animated.Value(0);
 
@@ -39,6 +39,10 @@ const NaviBar = ({ onCurrentLocationPress, onHideListPress, onAddToiletPress, is
                         </TouchableOpacity>
                         <TouchableOpacity onPress={onAddToiletPress} style={styles.menuItem}>
                             <Text>Add Toilet</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={onChooseFilters} style={styles.menuItem}>
+                            <Text>Filters</Text>
                         </TouchableOpacity>
                     </>
                 ) : null}

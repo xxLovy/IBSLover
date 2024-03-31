@@ -15,6 +15,7 @@ import NaviBar from '../components/NaviBar';
 import ToiletByUser from '../assets/ToiletByUser.png'
 import { searchNearbyPlaces, searchNearbyPlacesByUser, getInitialLocation } from '../utils/api';
 import { getDistanceFromLatLonInKm, deg2rad } from '../utils/utils';
+import ChooseFilter from './ChooseFilter'
 
 const markersRef = {};
 export default function HomePage({ navigation }) {
@@ -25,6 +26,7 @@ export default function HomePage({ navigation }) {
     const mapRef = createRef();
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [isListViewVisible, setIsListViewVisible] = useState(true);
+
 
 
     // Get user current location
@@ -39,6 +41,15 @@ export default function HomePage({ navigation }) {
     useEffect(() => {
         searchNearbyPlacesByUser(pin, setPlacesByUser);
     }, [pin]);
+
+
+    const applyFilters = (selectedKeywords, votingCount) => {
+        const filteredPlaces = places.filter(place => !selectedKeywords.some(keyword => place.name.includes(keyword)));
+        const filteredPlacesByUser = placesByUser.filter(place => place.voteCount >= votingCount);
+
+        setPlaces(filteredPlaces);
+        setPlacesByUser(filteredPlacesByUser);
+    };
 
 
     const navigateToPlace = (lat, lng, name) => {
@@ -118,6 +129,11 @@ export default function HomePage({ navigation }) {
         await searchNearbyPlacesByUser(pin, setPlacesByUser);
     };
 
+    const handleChooseFilters = () => {
+        navigation.navigate('ChooseFilter', { applyFilters });
+    };
+
+
 
     return (
 
@@ -131,6 +147,7 @@ export default function HomePage({ navigation }) {
                 onHideListPress={handleHideListPress}
                 onAddToiletPress={handleAddToiletPress}
                 isListViewVisible={isListViewVisible}
+                onChooseFilters={handleChooseFilters}
             />
 
             <MapView
