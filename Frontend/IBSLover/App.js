@@ -28,6 +28,7 @@ export default function App() {
 
   // Get user current location
   useEffect(() => {
+    // TODO: get location error
     const getInitialLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -61,9 +62,6 @@ export default function App() {
   useEffect(() => {
     const searchNearbyPlaces = async () => {
       if (!pin || !pin.latitude || !pin.longitude) return;
-      // console.log(pin.latitude)
-      // console.log(pin.longitude)
-      // console.log()
 
       console.log('fetching')
       axios.get(`${api}/search`, {
@@ -72,7 +70,7 @@ export default function App() {
           longitude: pin.longitude
         }
       }).then((res) => {
-        // 计算每个地点到用户当前位置的距离，并添加到地点对象中
+        console.log(`${api}/search?latitude=${pin.latitude}&longitude=${pin.longitude}`)
         const placesWithDistance = res.data.map(place => {
           const distance = getDistanceFromLatLonInKm(
             pin.latitude,
@@ -89,6 +87,9 @@ export default function App() {
         setPlaces(sortedPlaces);
         console.log('fetched and sorted by distance');
       }).catch(error => {
+        // TODO: error: map key useage exceed customized return
+        // TODO: error: IP useage exceed customized return
+        // TODO: error: network error
         console.log(error)
         setPlaces([])
       })
@@ -218,7 +219,7 @@ export default function App() {
 
       </MapView>
 
-      {/* 定位按钮 */}
+      {/* For current location */}
       <TouchableOpacity
         style={styles.locateButton}
         onPress={() => {
