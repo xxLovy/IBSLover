@@ -98,5 +98,7 @@ npx expo start
 
 - [ ] Add some filters so users can choose their preferred locations (like if you don't want to use a toilet in a Walmart, you can filter that out)
 - [x]  Add a list view for a more intuitive display of places
-- [ ]  Users can add toilets to the list
+- [ ] Users can add toilets to the list
+- [ ] As the number of votes increases, the icon's color intensifies
+- [ ] Filter by the number of votes before hitting the PANIC! button
 - [ ] Still brainstorming...
