@@ -54,6 +54,8 @@ touch .env
 
 ```plaintext
 GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY
+MONGODB_URI=YOUR_MONGODB_URI
+REDIS_URI=YOUR_REDIS_URI
 ```
 
 - Now, install backend dependencies:
