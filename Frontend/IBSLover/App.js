@@ -95,13 +95,12 @@ export default function App() {
         console.log(error)
         setPlaces([])
       })
-
-      // setPlaces(dummyResponse.results);
-
     };
 
     searchNearbyPlaces();
   }, [pin]);
+
+
 
   const navigateToPlace = (lat, lng, name) => {
     const url = `http://maps.apple.com/?ll=${lat},${lng}&q=${encodeURIComponent(name)}`;
@@ -249,33 +248,6 @@ export default function App() {
 
       </MapView>
 
-      {/* For current location
-      <TouchableOpacity
-        style={styles.locateButton}
-        onPress={() => {
-          if (pin) {
-            mapRef.current.animateToRegion({
-              ...region,
-              latitude: pin.latitude,
-              longitude: pin.longitude,
-            }, 1000); // 1000毫秒的动画时长
-          }
-        }}
-      >
-        <Text>Current Location</Text>
-      </TouchableOpacity>
-      <NavBar />
-
-
-      <TouchableOpacity
-        style={styles.toggleButton}
-        onPress={() => setIsListViewVisible(!isListViewVisible)}
-      >
-        <Text>{isListViewVisible ? "Hide List" : "Show List"}</Text>
-      </TouchableOpacity> */}
-
-
-
       {/* 条件渲染ListView */}
       {isListViewVisible && (
         <FlatList
@@ -328,25 +300,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: 'transparent',
   },
-  locateButton: {
-    position: "absolute",
-    top: 20,
-    right: 20,
-    padding: 10,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    zIndex: 10,
-  },
 
-  toggleButton: {
-    position: "absolute",
-    top: 20, // Adjust as needed
-    left: 20, // Adjust as needed
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 5,
-    zIndex: 10,
-  },
   mapHalf: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height / 2,
