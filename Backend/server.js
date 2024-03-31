@@ -106,7 +106,7 @@ app.get('/search', async (req, res) => {
 
         const apiKeyAllowed = await checkAPIKeyLimit();
         if (!apiKeyAllowed) {
-            res.status(429).send('API usage exceeded for today');
+            res.status(430).send('API usage exceeded for today');
             return;
         }
 
@@ -148,6 +148,7 @@ app.post('/add-toilet', async (req, res) => {
         // Define the maximum distance (20 meters) for considering two toilets as the same
         const maxDistance = 20;
 
+        // TODO: bug fixes, cannot merge near positions
         // Find a nearby toilet within the range
         const nearbyToilet = await ToiletLocation.findOne({
             coordinates: {
