@@ -61,7 +61,7 @@ REDIS_URI=YOUR_REDIS_URI
 - Now, install backend dependencies:
 
 ```plaintext
-npm i
+npm install
 ```
 
 - Start the backend service:
@@ -81,7 +81,7 @@ cd Frontend/IBSLover
 - Install frontend dependencies:
 
 ```plaintext
-npm i
+npm install
 ```
 
 - Start the frontend service, which will run in your local simulator:
