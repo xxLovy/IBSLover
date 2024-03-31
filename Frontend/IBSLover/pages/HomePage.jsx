@@ -15,6 +15,7 @@ import NaviBar from '../components/NaviBar';
 import ToiletByUser from '../assets/ToiletByUser.png'
 import { searchNearbyPlaces, searchNearbyPlacesByUser, getInitialLocation } from '../utils/api';
 import { getDistanceFromLatLonInKm, deg2rad } from '../utils/utils';
+
 const markersRef = {};
 export default function HomePage({ navigation }) {
     const [pin, setPin] = useState(null);
@@ -49,6 +50,8 @@ export default function HomePage({ navigation }) {
     if (!region || !pin) {
         return <View style={styles.container}><Text>Loading...</Text></View>;
     }
+
+
 
     const renderPlace = ({ item, index }) => {
         const distance = pin

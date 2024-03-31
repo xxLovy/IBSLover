@@ -18,7 +18,8 @@
     "react": "18.2.0",
     "react-native": "0.73.6",
     "react-native-maps": "1.10.0",
-    "react-native-screens": "~3.29.0"
+    "react-native-screens": "~3.29.0",
+    "react-native-svg": "14.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
