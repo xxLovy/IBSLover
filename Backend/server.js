@@ -21,7 +21,7 @@ const keywords = [
 ];
 const IP_REQUEST_LIMIT = 1
 const IP_REQUEST_EXPIRE = 10
-const DAILY_LIMIT = 100
+const DAILY_LIMIT = 1000
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
@@ -157,8 +157,8 @@ app.post('/add-toilet', async (req, res) => {
                     coordinates: [longitude, latitude],
                 },
                 name: name,
-                description: description || '', // Optional field
-                votes: 1, // Initial vote count
+                description: description || '',
+                votes: 1,
             });
 
             await newToiletLocation.save();
