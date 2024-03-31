@@ -33,6 +33,7 @@ export default function App() {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         console.warn('Location permission denied');
+        // TODO: EXIT
         return;
       }
 
