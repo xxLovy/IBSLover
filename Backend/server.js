@@ -201,15 +201,14 @@ app.get('/toilets', async (req, res) => {
         toilets = toilets.map(toilet => {
             if (toilet.positions.length > 0) {
                 const avgCoordinates = toilet.positions.reduce((acc, position) => {
-                    acc[0] += position.coordinates[0]; // longitude
-                    acc[1] += position.coordinates[1]; // latitude
+                    acc[0] += position.coordinates[0];
+                    acc[1] += position.coordinates[1];
                     return acc;
                 }, [0, 0]);
 
-                avgCoordinates[0] /= toilet.positions.length; // average longitude
-                avgCoordinates[1] /= toilet.positions.length; // average latitude
+                avgCoordinates[0] /= toilet.positions.length;
+                avgCoordinates[1] /= toilet.positions.length;
 
-                // Update the coordinates with the average values
                 toilet.coordinates.coordinates = avgCoordinates;
             }
             return toilet;
