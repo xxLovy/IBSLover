@@ -22,6 +22,7 @@ const keywords = [
 const IP_REQUEST_LIMIT = 1
 const IP_REQUEST_EXPIRE = 10
 const DAILY_LIMIT = 1000
+const MAX_DISTANCE = 20
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
@@ -36,10 +37,16 @@ const ToiletLocationSchema = new mongoose.Schema({
         type: { type: String, default: 'Point' },
         coordinates: [Number], // [longitude, latitude]
     },
-    votes: { type: Number, default: 1 }, // Start with 1 vote when added
+    votes: { type: Number, default: 1 },
     description: String,
     name: String,
+    positions: [{
+        type: { type: String, default: 'Point' },
+        coordinates: [Number],
+    }]
 });
+ToiletLocationSchema.index({ coordinates: '2dsphere' });
+
 ToiletLocationSchema.index({ coordinates: '2dsphere' });
 const ToiletLocation = mongoose.model('ToiletLocation', ToiletLocationSchema);
 
@@ -130,51 +137,80 @@ app.get('/search', async (req, res) => {
 });
 
 
-// Add a new toilet location
+// Add a new toilet location or update existing one
 app.post('/add-toilet', async (req, res) => {
     try {
-        // Ensure the request contains the required fields
         const { latitude, longitude, name, description } = req.body;
         if (!latitude || !longitude || !name) {
             return res.status(400).send('Missing required fields: latitude, longitude, and name.');
         }
 
-        // Check if the toilet location already exists
-        const existingToilet = await ToiletLocation.findOne({
-            'coordinates.coordinates': [longitude, latitude],
-            name: name
+        // Define the maximum distance (20 meters) for considering two toilets as the same
+        const maxDistance = MAX_DISTANCE;
+
+        // Find a nearby toilet within the range
+        const nearbyToilet = await ToiletLocation.findOne({
+            coordinates: {
+                $nearSphere: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [longitude, latitude]
+                    },
+                    $maxDistance: maxDistance
+                }
+            }
         });
 
-        if (existingToilet) {
-            // If the toilet location already exists, increment the vote count
-            existingToilet.votes += 1;
-            await existingToilet.save();
-            return res.status(200).json(existingToilet);
+        if (nearbyToilet) {
+            // If a nearby toilet is found, increment votes and add new position to the positions list
+            nearbyToilet.votes += 1;
+            nearbyToilet.positions.push({ coordinates: [longitude, latitude] });
+            await nearbyToilet.save();
+            res.status(200).json(nearbyToilet);
         } else {
-            // If the toilet location does not exist, create a new document and save it to the database
+            // If no nearby toilet is found, create a new one
             const newToiletLocation = new ToiletLocation({
                 coordinates: {
                     coordinates: [longitude, latitude],
                 },
-                name: name,
+                name,
                 description: description || '',
                 votes: 1,
+                positions: [{ coordinates: [longitude, latitude] }]
             });
-
             await newToiletLocation.save();
-            return res.status(201).json(newToiletLocation);
+            res.status(201).json(newToiletLocation);
         }
     } catch (error) {
-        console.error('Error adding new toilet location:', error);
-        return res.status(500).send('An error occurred while adding the toilet location.');
+        console.error('Error adding/updating toilet location:', error);
+        res.status(500).send('An error occurred while adding/updating the toilet location.');
     }
 });
 
-// Get all toilets sorted by votes
+// Get all toilets sorted by votes with average coordinates
 app.get('/toilets', async (req, res) => {
     try {
         // Find all toilets and sort them by votes in descending order
-        const toilets = await ToiletLocation.find({}).sort({ votes: -1 });
+        let toilets = await ToiletLocation.find({}).sort({ votes: -1 });
+
+        // Calculate average coordinates for each toilet
+        toilets = toilets.map(toilet => {
+            if (toilet.positions.length > 0) {
+                const avgCoordinates = toilet.positions.reduce((acc, position) => {
+                    acc[0] += position.coordinates[0]; // longitude
+                    acc[1] += position.coordinates[1]; // latitude
+                    return acc;
+                }, [0, 0]);
+
+                avgCoordinates[0] /= toilet.positions.length; // average longitude
+                avgCoordinates[1] /= toilet.positions.length; // average latitude
+
+                // Update the coordinates with the average values
+                toilet.coordinates.coordinates = avgCoordinates;
+            }
+            return toilet;
+        });
+
         res.json(toilets);
     } catch (error) {
         console.error('Error retrieving toilets:', error);
