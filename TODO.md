@@ -3,5 +3,6 @@
 General filter:
 - [ ] not choose Walmart for instance
 - [ ] not choose ... keyword
+
 Voting Count filter:
 - [ ] not choose vote count less than 50
