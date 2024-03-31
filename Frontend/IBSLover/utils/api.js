@@ -62,18 +62,35 @@ export const searchNearbyPlaces = async (pin, setPlaces) => {
 };
 
 export const searchNearbyPlacesByUser = async (pin, setPlacesByUser) => {
-    const searchNearbyPlaces = async () => {
-        if (!pin || !pin.latitude || !pin.longitude) return;
+    if (!pin || !pin.latitude || !pin.longitude) return;
 
-        console.log('fetching')
-        axios.get(`${api}/search`, {
-            params: {
-                latitude: pin.latitude,
-                longitude: pin.longitude
-            }
-        }).then((res) => {
-            // console.log(`${api}/search?latitude=${pin.latitude}&longitude=${pin.longitude}`)
-            const placesWithDistance = res.data.map(place => {
+    // put all of the results on map
+    // console.log('fetching (user)')
+    axios.get(`${api}/toilets`)
+        .then((res) => {
+            console.log(res.data[0])
+            const places = []
+            res.data.map(place => {
+                let newPlace = {
+                    voteCount: place.votes,
+                    name: place.name,
+                    vicinity: place.description,
+                    geometry: {
+                        location: {
+                            lng: place.coordinates.coordinates[0],
+                            lat: place.coordinates.coordinates[1],
+                        }
+                    }
+                }
+                // latitude=经度 (-90, 90)
+                // console.log(newPlace.geometry.location.lat)
+                // console.log(newPlace.geometry.location.lng)
+                places.push(newPlace)
+            });
+            // console.log(places)
+
+
+            const placesWithDistance = places.map(place => {
                 const distance = getDistanceFromLatLonInKm(
                     pin.latitude,
                     pin.longitude,
@@ -86,15 +103,14 @@ export const searchNearbyPlacesByUser = async (pin, setPlacesByUser) => {
             // sort according to distance
             const sortedPlaces = placesWithDistance.sort((a, b) => a.distance - b.distance);
 
-            setPlaces(sortedPlaces);
-            // console.log(places.slice(3))
-            console.log('fetched and sorted by distance');
+            setPlacesByUser(sortedPlaces);
+            // console.log(places)
+            console.log('fetched and sorted by distance (user)');
         }).catch(error => {
             // TODO: error: map key useage exceed customized return
             // TODO: error: IP useage exceed customized return
             // TODO: error: network error
             console.log(error)
-            setPlaces([])
+            setPlacesByUser([])
         })
-    };
 };

@@ -12,6 +12,6 @@ export function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
     return distance.toFixed(2);
 }
 
-function deg2rad(deg) {
+export function deg2rad(deg) {
     return deg * (Math.PI / 180);
 }
