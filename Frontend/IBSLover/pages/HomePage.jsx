@@ -10,13 +10,11 @@ import {
     FlatList,
 } from 'react-native';
 import MapView, { Callout, Marker } from 'react-native-maps';
-import * as Location from 'expo-location';
 import customMarkerImage from '../assets/ToiletMarker0.png';
 import NaviBar from '../components/NaviBar';
 import ToiletByUser from '../assets/ToiletByUser.png'
-import { searchNearbyPlaces, searchNearbyPlacesByUser } from '../utils/api';
+import { searchNearbyPlaces, searchNearbyPlacesByUser, getInitialLocation } from '../utils/api';
 import { getDistanceFromLatLonInKm, deg2rad } from '../utils/utils';
-
 const markersRef = {};
 export default function HomePage({ navigation }) {
     const [pin, setPin] = useState(null);
@@ -30,36 +28,8 @@ export default function HomePage({ navigation }) {
 
     // Get user current location
     useEffect(() => {
-        // TODO: get location error
-        const getInitialLocation = async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                console.warn('Location permission denied');
-                // TODO: EXIT
-                return;
-            }
-
-            let location = await Location.getCurrentPositionAsync({
-                accuracy: Location.Accuracy.High,
-                maximumAge: 10000,
-                timeout: 5000,
-            });
-            if (location) {
-                setPin({
-                    latitude: location.coords.latitude,
-                    longitude: location.coords.longitude,
-                });
-                setRegion({
-                    latitude: location.coords.latitude,
-                    longitude: location.coords.longitude,
-                    latitudeDelta: 0.005,
-                    longitudeDelta: 0.005,
-                });
-            }
-        };
-        getInitialLocation();
+        getInitialLocation(setPin, setRegion);
     }, []);
-
 
     useEffect(() => {
         searchNearbyPlaces(pin, setPlaces);
@@ -136,10 +106,22 @@ export default function HomePage({ navigation }) {
         navigation.navigate('AddToilet', { pin: pin });
     };
 
+    const handleRefresh = async () => {
+        // Re-fetch the user's current location
+        await getInitialLocation(setPin, setRegion);
+
+        // Re-fetch nearby places
+        await searchNearbyPlaces(pin, setPlaces);
+        await searchNearbyPlacesByUser(pin, setPlacesByUser);
+    };
+
 
     return (
 
         <View style={{ marginTop: 50, flex: 1 }}>
+            <View style={styles.refreshContainer}>
+                <Button title="Refresh" onPress={handleRefresh} />
+            </View>
 
             <NaviBar
                 onCurrentLocationPress={handleCurrentLocationPress}
@@ -239,6 +221,8 @@ export default function HomePage({ navigation }) {
                 />
             </View>
 
+
+
         </View>
     );
 }
@@ -278,5 +262,12 @@ const styles = StyleSheet.create({
     mapFull: {
         width: Dimensions.get("window").width,
         height: Dimensions.get("window").height,
+    },
+
+    refreshContainer: {
+        position: 'absolute',
+        top: 40, // Adjust top and left as needed for your layout
+        left: 10,
+        zIndex: 10, // Make sure the button is clickable over the map
     },
 });
