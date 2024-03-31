@@ -139,21 +139,34 @@ app.post('/add-toilet', async (req, res) => {
             return res.status(400).send('Missing required fields: latitude, longitude, and name.');
         }
 
-        // Create a new document and save it to the database
-        const newToiletLocation = new ToiletLocation({
-            coordinates: {
-                coordinates: [longitude, latitude],
-            },
-            name: name,
-            description: description || '', // Optional field
+        // Check if the toilet location already exists
+        const existingToilet = await ToiletLocation.findOne({
+            'coordinates.coordinates': [longitude, latitude],
+            name: name
         });
 
-        await newToiletLocation.save();
+        if (existingToilet) {
+            // If the toilet location already exists, increment the vote count
+            existingToilet.votes += 1;
+            await existingToilet.save();
+            return res.status(200).json(existingToilet);
+        } else {
+            // If the toilet location does not exist, create a new document and save it to the database
+            const newToiletLocation = new ToiletLocation({
+                coordinates: {
+                    coordinates: [longitude, latitude],
+                },
+                name: name,
+                description: description || '', // Optional field
+                votes: 1, // Initial vote count
+            });
 
-        res.status(201).json(newToiletLocation);
+            await newToiletLocation.save();
+            return res.status(201).json(newToiletLocation);
+        }
     } catch (error) {
         console.error('Error adding new toilet location:', error);
-        res.status(500).send('An error occurred while adding the toilet location.');
+        return res.status(500).send('An error occurred while adding the toilet location.');
     }
 });
 
