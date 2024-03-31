@@ -203,7 +203,7 @@ export default function HomePage({ navigation }) {
                             longitude: place.geometry.location.lng,
                         }}
                         title={place.name}
-                        description={`${place.vicinity}`}
+                        description={place.vicinity}
                         image={ToiletByUser}
                     >
                         <Callout>
