@@ -146,7 +146,7 @@ app.post('/add-toilet', async (req, res) => {
         }
 
         // Define the maximum distance (20 meters) for considering two toilets as the same
-        const maxDistance = MAX_DISTANCE;
+        const maxDistance = 20;
 
         // Find a nearby toilet within the range
         const nearbyToilet = await ToiletLocation.findOne({
@@ -164,19 +164,20 @@ app.post('/add-toilet', async (req, res) => {
         if (nearbyToilet) {
             // If a nearby toilet is found, increment votes and add new position to the positions list
             nearbyToilet.votes += 1;
-            nearbyToilet.positions.push({ coordinates: [longitude, latitude] });
+            nearbyToilet.positions.push({ type: "Point", coordinates: [longitude, latitude] });
             await nearbyToilet.save();
             res.status(200).json(nearbyToilet);
         } else {
             // If no nearby toilet is found, create a new one
             const newToiletLocation = new ToiletLocation({
                 coordinates: {
+                    type: "Point",
                     coordinates: [longitude, latitude],
                 },
                 name,
                 description: description || '',
                 votes: 1,
-                positions: [{ coordinates: [longitude, latitude] }]
+                positions: [{ type: "Point", coordinates: [longitude, latitude] }]
             });
             await newToiletLocation.save();
             res.status(201).json(newToiletLocation);
