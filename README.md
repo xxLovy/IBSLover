@@ -50,7 +50,7 @@ cd Backend
 touch .env
 ```
 
-- Add this environment variable to the `.env` file, replacing 'YOUR_GOOGLE_MAPS_API_KEY' with your actual Google Maps API key:
+- Add those environment variables to the `.env` file, replacing 'YOUR_KEY' with your actual key:
 
 ```plaintext
 GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY
@@ -102,4 +102,5 @@ npx expo start
 - [ ] As the number of votes increases, the icon's color intensifies
 - [ ] Filter by the number of votes before hitting the PANIC! button
 - [ ] Allow users to log in (if they like) and save their favorite toilet spots or create custom locations which are presumably tested and proven to be reliable for the user himself/herself.
+- [ ] Propose existing names to users attempting to add a toilet if there is an existing one nearby within 20 meters, encouraging name consistency.
 - [ ] Still brainstorming...
