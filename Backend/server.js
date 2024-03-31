@@ -161,6 +161,8 @@ app.post('/add-toilet', async (req, res) => {
             }
         });
 
+        console.log('Nearby Toilet:', nearbyToilet);
+
         if (nearbyToilet) {
             // If a nearby toilet is found, increment votes and add new position to the positions list
             nearbyToilet.votes += 1;
