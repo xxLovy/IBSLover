@@ -39,6 +39,7 @@ export const searchNearbyPlaces = async (pin, setPlaces) => {
     if (!pin || !pin.latitude || !pin.longitude) return;
 
     try {
+        console.log('fetching Google maps api')
         const response = await axios.get(`${api}/search`, {
             params: {
                 latitude: pin.latitude,

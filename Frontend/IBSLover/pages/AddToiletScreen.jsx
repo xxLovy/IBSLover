@@ -14,14 +14,12 @@ const AddToiletScreen = ({ route, navigation }) => {
             Alert.alert('Error', 'Please enter a name for the location.');
             return;
         }
-
-        // TODO: different status code (202 existing toilet)
         // Confirm with the user
         Alert.alert(
             'Confirm Location',
-            'Is this location a toilet?',
+            'Are you standing at the toilet now?',
             [
-                { text: 'Cancel', style: 'cancel' },
+                { text: 'No', style: 'cancel' },
                 {
                     text: 'Yes',
                     onPress: async () => {
@@ -33,8 +31,13 @@ const AddToiletScreen = ({ route, navigation }) => {
                                 description: description,
                             });
                             // Handle the response.
-                            console.log(response.data);
-                            Alert.alert('Success', 'Toilet location added successfully!');
+                            // console.log(response);
+                            if (response.status === 201) {
+                                Alert.alert('Success', 'Toilet location added successfully!');
+                            } else if (response.status === 200) {
+                                Alert.alert('Success', 'Your vote for the toilet location has been successfully cast!');
+                            }
+
                             navigation.goBack(); // Navigate back to the homepage
                         } catch (error) {
                             console.error(error);

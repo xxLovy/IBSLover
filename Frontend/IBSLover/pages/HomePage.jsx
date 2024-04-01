@@ -16,7 +16,8 @@ import NaviBar from '../components/NaviBar';
 import ToiletByUser from '../assets/ToiletByUser.png'
 import { searchNearbyPlaces, searchNearbyPlacesByUser, getInitialLocation } from '../utils/api';
 import { getDistanceFromLatLonInKm, deg2rad } from '../utils/utils';
-import ChooseFilter from './ChooseFilter'
+import { handleRefresh } from '../utils/eventHandler';
+import { debounce } from 'lodash';
 
 const markersRef = {};
 export default function HomePage({ navigation }) {
@@ -29,6 +30,9 @@ export default function HomePage({ navigation }) {
     const [isListViewVisible, setIsListViewVisible] = useState(true);
 
 
+
+
+    const debouncedHandleRefresh = debounce(() => handleRefresh(setPin, setRegion, setPlaces, setPlacesByUser), 10000);
 
     // Get user current location
     useEffect(() => {
@@ -153,7 +157,7 @@ export default function HomePage({ navigation }) {
 
         <View style={{ marginTop: 50, flex: 1 }}>
             <View style={styles.refreshContainer}>
-                <Button title="Refresh" onPress={handleRefresh} />
+                <Button title="Refresh" onPress={debouncedHandleRefresh} />
             </View>
 
             <NaviBar

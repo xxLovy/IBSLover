@@ -15,6 +15,7 @@
     "expo": "~50.0.14",
     "expo-location": "~16.5.5",
     "expo-status-bar": "~1.11.1",
+    "lodash": "^4.17.21",
     "react": "18.2.0",
     "react-native": "0.73.6",
     "react-native-maps": "1.10.0",
