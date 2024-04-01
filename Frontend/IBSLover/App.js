@@ -8,6 +8,7 @@ import ChooseFilter from './pages/ChooseFilter';
 const Stack = createStackNavigator();
 
 function App() {
+  // TODO: add a page when user first use shows
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">

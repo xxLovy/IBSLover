@@ -6,7 +6,7 @@ import { Alert } from 'react-native';
 
 const api = 'http://13.238.182.211:80';
 
-
+// TODO: Add防抖
 export const getInitialLocation = async (setPin, setRegion) => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {

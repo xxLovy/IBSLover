@@ -23,6 +23,8 @@ const NaviBar = ({ onCurrentLocationPress, onHideListPress, onAddToiletPress, is
 
     const menuText = menuOpen ? "x" : "...";
 
+    // TODO: use picture instead of text like "Current Location"
+    // TODO: make ... & x looks better
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={toggleMenu} style={styles.menuButton}>
