@@ -8,6 +8,7 @@ import {
     Linking,
     TouchableHighlight,
     FlatList,
+    TouchableOpacity
 } from 'react-native';
 import MapView, { Callout, Marker } from 'react-native-maps';
 import customMarkerImage from '../assets/ToiletMarker0.png';
@@ -34,15 +35,18 @@ export default function HomePage({ navigation }) {
         getInitialLocation(setPin, setRegion);
     }, []);
 
+    // Search for places
     useEffect(() => {
         searchNearbyPlaces(pin, setPlaces);
     }, [pin]);
 
+    // search for places added by user
     useEffect(() => {
         searchNearbyPlacesByUser(pin, setPlacesByUser);
     }, [pin]);
 
 
+    // filters
     const applyFilters = (selectedKeywords, votingCount) => {
         const filteredPlaces = places.filter(place => !selectedKeywords.some(keyword => place.name.includes(keyword)));
         const filteredPlacesByUser = placesByUser.filter(place => place.voteCount >= votingCount);
@@ -51,19 +55,21 @@ export default function HomePage({ navigation }) {
         setPlacesByUser(filteredPlacesByUser);
     };
 
-
+    // jump to apple map(Google maps for Android)
     const navigateToPlace = (lat, lng, name) => {
         const url = `http://maps.apple.com/?ll=${lat},${lng}&q=${encodeURIComponent(name)}`;
         Linking.openURL(url);
     };
 
 
+
+    // loading page (setLoading to ...)
     if (!region || !pin) {
         return <View style={styles.container}><Text>Loading...</Text></View>;
     }
 
 
-
+    // render places in the list view
     const renderPlace = ({ item, index }) => {
         const distance = pin
             ? getDistanceFromLatLonInKm(
@@ -102,6 +108,8 @@ export default function HomePage({ navigation }) {
         )
     };
 
+    // handler functions
+    // animate to the place which the user clicked
     const handleCurrentLocationPress = () => {
         if (pin) {
             mapRef.current.animateToRegion({
@@ -112,14 +120,19 @@ export default function HomePage({ navigation }) {
         }
     };
 
+    // hide/show list
     const handleHideListPress = () => {
         setIsListViewVisible(!isListViewVisible);
     };
 
+    // Jump to Add toilet page
     const handleAddToiletPress = () => {
         navigation.navigate('AddToilet', { pin: pin });
     };
 
+    // TODO: Refreshing
+    // TODO: Only refresh 1 time
+    // refresh the page
     const handleRefresh = async () => {
         // Re-fetch the user's current location
         await getInitialLocation(setPin, setRegion);
@@ -129,6 +142,7 @@ export default function HomePage({ navigation }) {
         await searchNearbyPlacesByUser(pin, setPlacesByUser);
     };
 
+    // jump to choose filter page
     const handleChooseFilters = () => {
         navigation.navigate('ChooseFilter', { applyFilters });
     };
@@ -190,7 +204,12 @@ export default function HomePage({ navigation }) {
                             <View>
                                 <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{place.name}</Text>
                                 <Text>{place.vicinity}</Text>
-                                <Text style={{ color: 'blue', marginTop: 5, textAlign: 'center' }}>Click to navigate</Text>
+                                <TouchableOpacity onPress={() => {
+                                    navigateToPlace(place.geometry.location.lat, place.geometry.location.lng, place.name);
+                                }}>
+                                    <Text style={{ color: 'blue', marginTop: 5, textAlign: 'center' }}>Click to navigate</Text>
+                                </TouchableOpacity>
+
                             </View>
                         </Callout>
                     </Marker>
@@ -213,7 +232,12 @@ export default function HomePage({ navigation }) {
                                 <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{place.name}</Text>
                                 <Text>{place.vicinity}</Text>
                                 <Text>Vote Count: {place.voteCount}</Text>
-                                <Text style={{ color: 'blue', marginTop: 5, textAlign: 'center' }}>Click to navigate</Text>
+                                <TouchableOpacity onPress={() => {
+                                    navigateToPlace(place.geometry.location.lat, place.geometry.location.lng, place.name);
+                                }}>
+                                    <Text style={{ color: 'blue', marginTop: 5, textAlign: 'center' }}>Click to navigate</Text>
+                                </TouchableOpacity>
+
                             </View>
                         </Callout>
                     </Marker>

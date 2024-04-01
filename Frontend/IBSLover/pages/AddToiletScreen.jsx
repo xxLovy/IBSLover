@@ -14,6 +14,7 @@ const AddToiletScreen = ({ route, navigation }) => {
             Alert.alert('Error', 'Please enter a name for the location.');
             return;
         }
+
         // TODO: different status code (202 existing toilet)
         // Confirm with the user
         Alert.alert(
