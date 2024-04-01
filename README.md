@@ -101,6 +101,7 @@ npx expo start
 - [x] Users can add toilets to the list
 - [ ] As the number of votes increases, the icon's color intensifies
 - [x] Filter by the number of votes before hitting the PANIC! button
+- [ ] Add a customized filter that allows user to filter out any keyword
 - [ ] Allow users to log in (if they like) and save their favorite toilet spots or create custom locations which are presumably tested and proven to be reliable for the user himself/herself.
 - [ ] Propose existing names to users attempting to add a toilet if there is an existing one nearby within 20 meters, encouraging name consistency.
 - [ ] Still brainstorming...
