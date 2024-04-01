@@ -23,7 +23,6 @@ const ChooseFilter = ({ navigation, route }) => {
 
     const handleApplyFilters = () => {
         console.log('applied')
-        // 调用applyFilters函数并传递所选的关键字和投票计数/
         applyFilters(selectedKeywords, parseInt(votingCount));
         navigation.goBack();
     };
