@@ -45,7 +45,6 @@ const ToiletLocationSchema = new mongoose.Schema({
         coordinates: [Number],
     }]
 });
-ToiletLocationSchema.index({ coordinates: '2dsphere' });
 
 ToiletLocationSchema.index({ coordinates: '2dsphere' });
 const ToiletLocation = mongoose.model('ToiletLocation', ToiletLocationSchema);
@@ -145,22 +144,19 @@ app.post('/add-toilet', async (req, res) => {
             return res.status(400).send('Missing required fields: latitude, longitude, and name.');
         }
 
-        // Define the maximum distance (20 meters) for considering two toilets as the same
-        const maxDistance = 20;
-
         // TODO: bug fixes, cannot merge near positions
         // Find a nearby toilet within the range
         const nearbyToilet = await ToiletLocation.findOne({
             coordinates: {
-                $near: {
+                $nearSphere: {
                     $geometry: {
                         type: "Point",
                         coordinates: [longitude, latitude]
                     },
-                    $maxDistance: maxDistance
+                    $maxDistance: MAX_DISTANCE
                 }
             }
-        });
+        })
 
         console.log('Nearby Toilet:', nearbyToilet);
 
