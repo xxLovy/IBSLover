@@ -30,8 +30,6 @@ export default function HomePage({ navigation }) {
     const [isListViewVisible, setIsListViewVisible] = useState(true);
 
 
-
-
     const debouncedHandleRefresh = debounce(() => handleRefresh(setPin, setRegion, setPlaces, setPlacesByUser), 10000);
 
     // Get user current location
@@ -157,7 +155,7 @@ export default function HomePage({ navigation }) {
 
         <View style={{ marginTop: 50, flex: 1 }}>
             <View style={styles.refreshContainer}>
-                <Button title="Refresh" onPress={debouncedHandleRefresh} />
+                <Button title="Refresh" onPress={handleRefresh} />
             </View>
 
             <NaviBar
