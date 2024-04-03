@@ -144,7 +144,6 @@ app.post('/add-toilet', async (req, res) => {
             return res.status(400).send('Missing required fields: latitude, longitude, and name.');
         }
 
-        // TODO: bug fixes, cannot merge near positions
         // Find a nearby toilet within the range
         const nearbyToilet = await ToiletLocation.findOne({
             coordinates: {
