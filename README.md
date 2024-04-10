@@ -103,4 +103,5 @@ npx expo start
 - [x] Filter by the number of votes before hitting the PANIC! button
 - [ ] Allow users to log in (if they like) and save their favorite toilet spots or create custom locations which are presumably tested and proven to be reliable for the user himself/herself.
 - [ ] Propose existing names to users attempting to add a toilet if there is an existing one nearby within 20 meters, encouraging name consistency.
+- [ ] Use Google Matrix Distance to calculate the actual distance.
 - [ ] Still brainstorming...
