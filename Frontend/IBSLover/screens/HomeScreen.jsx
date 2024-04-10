@@ -15,9 +15,7 @@ import customMarkerImage from '../assets/ToiletMarker0.png';
 import NaviBar from '../components/NaviBar';
 import ToiletByUser from '../assets/ToiletByUser.png'
 import { searchNearbyPlaces, searchNearbyPlacesByUser, getInitialLocation } from '../utils/api';
-import { getDistanceFromLatLonInKm, deg2rad } from '../utils/utils';
-import { handleRefresh } from '../utils/eventHandler';
-import { debounce } from 'lodash';
+import { getDistanceFromLatLonInKm } from '../utils/utils';
 
 const markersRef = {};
 export default function HomePage({ navigation }) {
@@ -28,9 +26,6 @@ export default function HomePage({ navigation }) {
     const mapRef = createRef();
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [isListViewVisible, setIsListViewVisible] = useState(true);
-
-
-    const debouncedHandleRefresh = debounce(() => handleRefresh(setPin, setRegion, setPlaces, setPlacesByUser), 10000);
 
     // Get user current location
     useEffect(() => {

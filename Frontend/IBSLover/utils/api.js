@@ -61,7 +61,8 @@ export const searchNearbyPlaces = async (pin, setPlaces) => {
         setPlaces(sortedPlaces);
     } catch (error) {
         setPlaces([]);
-
+        const urlString = `${api}/search?latitude=${pin.latitude}&longitude=${pin.longitude}`;
+        console.log(urlString);
         if (error.response) {
             if (error.response.status === 429) {
                 Alert.alert("Operation too frequent", "Please try again later.");
@@ -124,7 +125,8 @@ export const searchNearbyPlacesByUser = async (pin, setPlacesByUser) => {
     } catch (error) {
         console.log(error);
         setPlacesByUser([]);
-
+        const urlString = `${api}/toilets`;
+        console.log(urlString);
         if (error.response) {
             if (error.response.status === 429) {
                 Alert.alert("Operation too frequent", "Please try again later.");
