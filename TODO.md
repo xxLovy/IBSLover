@@ -1,12 +1,22 @@
 ## This file reminds me what to do with this version, it is a temporary file, every version will be different.
 
-General filter:
-- [x] not choose Walmart for instance
-- [x] not choose ... keyword
+ Refactor Code && Enhancement
+ + use Redux to manage global state
+ + use something like `safearea` `RN Stack` to enchance the overall UX
+ + try to use `tw` to make css better
+ + use RN elements to make UI better
+ + use distancematrix to calculate the true distance
+ + Loading page
 
-Voting Count filter:
-- [x] not choose vote count less than 50
 
 
-Extra
-- [ ] Add Revoke now only REFRESH can revoke the operation
+Global State:
+1. current location
+2. filter?
+3. GoogleAuth
+4. loading
+5. Maybe Language
+
+
+
+
