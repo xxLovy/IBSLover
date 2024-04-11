@@ -1,9 +1,9 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomePage from './screens/HomePage';
+import HomeScreen from './screens/HomeScreen';
 import AddToiletScreen from './screens/AddToiletScreen';
-import ChooseFilter from './screens/ChooseFilter';
+import ChooseFilter from './screens/ChooseFilterScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,7 +13,7 @@ function App() {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="Home"
-          component={HomePage}
+          component={HomeScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen name="AddToilet" component={AddToiletScreen} />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     Dimensions,
     StyleSheet,
@@ -18,12 +18,12 @@ import { searchNearbyPlaces, searchNearbyPlacesByUser, getInitialLocation } from
 import { getDistanceFromLatLonInKm } from '../utils/utils';
 
 const markersRef = {};
-export default function HomePage({ navigation }) {
+export default function HomeScreen({ navigation }) {
     const [pin, setPin] = useState(null);
     const [region, setRegion] = useState(null);
     const [places, setPlaces] = useState([]);
     const [placesByUser, setPlacesByUser] = useState([]);
-    const mapRef = createRef();
+    const mapRef = useRef();
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [isListViewVisible, setIsListViewVisible] = useState(true);
 
