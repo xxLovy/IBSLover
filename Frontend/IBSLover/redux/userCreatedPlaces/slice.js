@@ -1,34 +1,36 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { fetchCurrentLocation } from './Operations';
+import { fetchNearByPlacesByUser } from './operations';
 
 const initialState = {
-    latitude: 0,
-    longitude: 0,
-    isLoading: false,
-    error: null,
+    places: {
+        items: [],
+        isLoading: false,
+        error: null,
+    },
 }
 
-export const pinSlice = createSlice({
-    name: 'pin',
+export const userPlacesSlice = createSlice({
+    name: 'userPlaces',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchCurrentLocation.pending, (state) => {
-                state.pin.isLoading = true;
+            .addCase(fetchNearByPlacesByUser.pending, (state) => {
+                console.log('fetching user places api')
+                state.places.isLoading = true;
             })
-            .addCase(fetchCurrentLocation.fulfilled, (state, action) => {
-                state.pin.isLoading = false;
-                state.pin.longitude = action.payload.coords.longitude;
-                state.pin.latitude = action.payload.coords.latitude;
+            .addCase(fetchNearByPlacesByUser.fulfilled, (state, action) => {
+                console.log('done')
+                state.places.isLoading = false;
+                state.places.items = action.payload;
             })
-            .addCase(fetchCurrentLocation.rejected, (state, action) => {
-                state.pin.isLoading = false;
-                state.pin.error = action.payload;
+            .addCase(fetchNearByPlacesByUser.rejected, (state, action) => {
+                console.log('failed')
+                state.places.isLoading = false;
+                state.places.error = action.payload;
             })
     }
 })
 
 
-export const pinReducer = pinSlice.reducer;
-export const { setFilter } = pinSlice.actions;
+export const userPlacesReducer = userPlacesSlice.reducer;

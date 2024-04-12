@@ -14,7 +14,7 @@ import MapView, { Callout, Marker } from 'react-native-maps';
 import customMarkerImage from '../assets/ToiletMarker0.png';
 import NaviBar from '../components/NaviBar';
 import ToiletByUser from '../assets/ToiletByUser.png'
-import { searchNearbyPlaces, searchNearbyPlacesByUser, getInitialLocation } from '../utils/api';
+// import { searchNearbyPlaces, searchNearbyPlacesByUser, getInitialLocation } from '../utils/api';
 import { getDistanceFromLatLonInKm } from '../utils/utils';
 
 const markersRef = {};

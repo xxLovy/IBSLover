@@ -142,3 +142,4 @@ export const searchNearbyPlacesByUser = async (pin, setPlacesByUser) => {
         }
     }
 };
+

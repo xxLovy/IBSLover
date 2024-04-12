@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectHasListView } from '../redux/stateManage/selectors';
+import { setListView } from '../redux/stateManage/slice';
+import { useNavigation } from '@react-navigation/native';
+import { selectCurrentLocation } from '../redux/pin/selectors';
 
-const NaviBar = ({ onCurrentLocationPress, onHideListPress, onAddToiletPress, isListViewVisible, onChooseFilters }) => {
+const NaviBar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const menuAnimation = new Animated.Value(0);
+    const dispatch = useDispatch()
+    const isListViewVisible = useSelector(selectHasListView)
+    const navigation = useNavigation()
+    const pin = useSelector(selectCurrentLocation)
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -22,6 +31,22 @@ const NaviBar = ({ onCurrentLocationPress, onHideListPress, onAddToiletPress, is
     });
 
     const menuText = menuOpen ? "x" : "...";
+
+    const onHideListPress = () => {
+        dispatch(setListView())
+    }
+    const onChooseFilters = () => {
+        navigation.navigate('ChooseFilter');
+    }
+
+    const onAddToiletPress = () => {
+        navigation.navigate('AddToilet');
+    }
+
+    const onCurrentLocationPress = () => {
+        return
+    }
+
 
     return (
         <View style={styles.container}>
