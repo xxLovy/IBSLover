@@ -32,7 +32,6 @@ const ListView = () => {
                         };
                         dispatch(setMapRefRegion(newRegion))
                         dispatch(setSelectedMarker(index + 1))
-                        console.log(index)
 
                     }}
                 >
