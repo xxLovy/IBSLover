@@ -1,7 +1,7 @@
 import { Text, View, TouchableOpacity } from 'react-native'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import MapView, { Callout, Marker } from 'react-native-maps';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import tw from 'twrnc'
 import { selectCurrentLocation } from '../redux/pin/selectors';
 import { selectgooglePlaces } from '../redux/googleMapsPlaces/selectors';
@@ -13,8 +13,11 @@ import ToiletByUser from '../assets/ToiletByUser.png'
 import { selectBannedWord, selectVotingCount } from '../redux/filter/selectors';
 import Refresh from './Refresh';
 import { mergePlaces } from '../utils/utils';
+import { selectMapRefRegion, selectSelectedMarker } from '../redux/stateManage/selectors';
+import { setSelectedMarker } from '../redux/stateManage/slice';
 
 const MmapView = () => {
+    const markerRef = {}
     const pin = useSelector(selectCurrentLocation);
     const placesByGoogle = useSelector(selectgooglePlaces);
     const placesByUser = useSelector(selectUserPlaces);
@@ -22,6 +25,13 @@ const MmapView = () => {
     const bannedWord = useSelector(selectBannedWord)
     const votingCountFilter = useSelector(selectVotingCount)
     const mapRef = useRef();
+    const mapRefRegion = useSelector(selectMapRefRegion)
+    const selectedMarker = useSelector(selectSelectedMarker)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        if (mapRefRegion && mapRef) mapRef?.current?.animateToRegion(mapRefRegion, 1000)
+    }, [mapRefRegion])
 
     if (pin.latitude === 0 && pin.longitude === 0) {
         return null; // Or render a loading indicator
@@ -40,6 +50,12 @@ const MmapView = () => {
                         longitudeDelta: 0.005,
                     }
                 }
+                onRegionChangeComplete={() => {
+                    if (selectedMarker) {
+                        markerRef[selectedMarker].showCallout();
+                        dispatch(setSelectedMarker(null));
+                    }
+                }}
             // provider='google'
             >
                 <Marker
@@ -68,9 +84,9 @@ const MmapView = () => {
                             title={place.name}
                             description={place.vicinity}
                             image={place.voteCount ? ToiletByUser : customMarkerImage}
-                        // ref={(ref) => {
-                        //     markersRef[index] = ref;
-                        // }}
+                            ref={(ref) => {
+                                markerRef[index + 1] = ref
+                            }}
                         >
                             <Callout>
                                 <View>

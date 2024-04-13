@@ -1,4 +1,4 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import tw from 'twrnc'
@@ -6,11 +6,13 @@ import { selectBannedWord, selectVotingCount } from '../redux/filter/selectors';
 import { selectUserPlaces } from '../redux/userCreatedPlaces/selectors';
 import { mergePlaces } from '../utils/utils';
 import { selectgooglePlaces } from '../redux/googleMapsPlaces/selectors';
+import { setMapRefRegion, setSelectedMarker } from '../redux/stateManage/slice';
 
 const ListView = () => {
     const placesByGoogle = useSelector(selectgooglePlaces)
     const placesByUser = useSelector(selectUserPlaces)
     const allPlaces = mergePlaces(placesByGoogle, placesByUser)
+    const dispatch = useDispatch()
 
     const bannedWord = useSelector(selectBannedWord);
     const votingCountFilter = useSelector(selectVotingCount)
@@ -20,7 +22,7 @@ const ListView = () => {
         if (item.voteCount && item.voteCount <= votingCountFilter) return;
         else {
             return (
-                <TouchableOpacity
+                <TouchableHighlight
                     onPress={() => {
                         let newRegion = {
                             latitude: item.geometry.location.lat,
@@ -28,10 +30,10 @@ const ListView = () => {
                             latitudeDelta: 0.005,
                             longitudeDelta: 0.005,
                         };
-                        // mapRef.current.animateToRegion(newRegion, 1000); // Smooth transition
+                        dispatch(setMapRefRegion(newRegion))
+                        dispatch(setSelectedMarker(index + 1))
+                        console.log(index)
 
-                        // // Save the selected marker's reference
-                        // setSelectedMarker(markersRef[index]);
                     }}
                 >
 
@@ -43,7 +45,7 @@ const ListView = () => {
                         <Text style={tw`text-xs text-gray-500`}>Distance: {item.distance} km</Text>
                     </View>
 
-                </TouchableOpacity >
+                </TouchableHighlight >
             )
         }
 
@@ -55,6 +57,7 @@ const ListView = () => {
                 renderItem={renderPlace}
                 keyExtractor={(item, index) => index.toString()}
             />
+
         </SafeAreaView >
 
     )

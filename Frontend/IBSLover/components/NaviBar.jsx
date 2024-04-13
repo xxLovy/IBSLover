@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectHasListView } from '../redux/stateManage/selectors';
-import { setListView } from '../redux/stateManage/slice';
+import { selectHasListView, selectMapRefRegion } from '../redux/stateManage/selectors';
+import { setListView, setMapRefRegion } from '../redux/stateManage/slice';
 import { useNavigation } from '@react-navigation/native';
 import { selectCurrentLocation } from '../redux/pin/selectors';
 
@@ -13,6 +13,7 @@ const NaviBar = () => {
     const isListViewVisible = useSelector(selectHasListView)
     const navigation = useNavigation()
     const pin = useSelector(selectCurrentLocation)
+    const mapRefRegion = useSelector(selectMapRefRegion)
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -44,7 +45,12 @@ const NaviBar = () => {
     }
 
     const onCurrentLocationPress = () => {
-        return
+        dispatch(setMapRefRegion({
+            ...mapRefRegion,
+            latitude: pin.latitude,
+            longitude: pin.longitude
+        })
+        )
     }
 
 

@@ -11,18 +11,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchCurrentLocation } from '../redux/pin/operations';
 import { fetchGoogleMaps } from '../redux/googleMapsPlaces/operations';
 import { selectCurrentLocation } from '../redux/pin/selectors';
-import { selectHasListView } from '../redux/stateManage/selectors';
+import { selectHasListView, selectMapRefRegion } from '../redux/stateManage/selectors';
 import { fetchNearByPlacesByUser } from '../redux/userCreatedPlaces/operations';
 import { fetchKeywords } from '../redux/filter/operations';
 import { navigateToPlace } from '../utils/helper';
 import { selectgooglePlaces } from '../redux/googleMapsPlaces/selectors';
+import { selectBannedWord } from '../redux/filter/selectors';
+import { setMapRefRegion } from '../redux/stateManage/slice';
 
 export default function HomeScreen_copy() {
     const dispatch = useDispatch();
-    const mapRef = useRef();
     const pin = useSelector(selectCurrentLocation);
     const hasListView = useSelector(selectHasListView);
+    // currently, PANIC! only fetches result by GoogleMaps
     const places = useSelector(selectgooglePlaces)
+    const bannedWord = useSelector(selectBannedWord)
+    const mapRefRegion = useSelector(selectMapRefRegion)
+    if (places) {
+        let selectedPlaces = places.forEach(places => {
+            return !bannedWord.includes(places.KWD)
+        });
+    } else {
+        let selectedPlaces = []
+    }
+
 
     useEffect(() => {
         dispatch(fetchCurrentLocation());
@@ -32,6 +44,11 @@ export default function HomeScreen_copy() {
         dispatch(fetchGoogleMaps(pin));
         dispatch(fetchNearByPlacesByUser(pin))
         dispatch(fetchKeywords())
+        dispatch(setMapRefRegion({
+            ...mapRefRegion,
+            latitude: pin.latitude,
+            longitude: pin.longitude,
+        }))
     }, [dispatch, pin]);
 
     return (
@@ -47,7 +64,7 @@ export default function HomeScreen_copy() {
                     title="PANIC!"
                     color="red"
                     onPress={() => {
-                        navigateToPlace(places[0].geometry.location.lat, places[0].geometry.location.lng, places[0].name);
+                        navigateToPlace(selectedPlaces[0].geometry.location.lat, selectedPlaces[0].geometry.location.lng, selectedPlaces[0].name);
                     }}
                 />
             </View>
