@@ -6,7 +6,6 @@ import AddToiletScreen from './screens/AddToiletScreen';
 import ChooseFilter from './screens/ChooseFilterScreen';
 import { store } from './redux/store'
 import { Provider } from 'react-redux';
-import HomeScreen_copy from './screens/HomeScreen_copy';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,7 +16,7 @@ function App() {
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen
             name="Home"
-            component={HomeScreen_copy}
+            component={HomeScreen}
             options={{ headerShown: false }}
           />
           <Stack.Screen name="AddToilet" component={AddToiletScreen} />

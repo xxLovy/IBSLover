@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import {
     Button,
     SafeAreaView,
@@ -19,7 +19,7 @@ import { selectgooglePlaces } from '../redux/googleMapsPlaces/selectors';
 import { selectBannedWord } from '../redux/filter/selectors';
 import { setMapRefRegion } from '../redux/stateManage/slice';
 
-export default function HomeScreen_copy() {
+export default function HomeScreen() {
     const dispatch = useDispatch();
     const pin = useSelector(selectCurrentLocation);
     const hasListView = useSelector(selectHasListView);
