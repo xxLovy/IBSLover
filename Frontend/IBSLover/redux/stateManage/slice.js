@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    hasListView: true
+    hasListView: true,
 }
 
 export const stateManageSlice = createSlice({
@@ -10,10 +10,9 @@ export const stateManageSlice = createSlice({
     reducers: {
         setListView: (state) => {
             state.hasListView = !state.hasListView
-        },
+        }
     },
 })
-
 
 export const { setListView } = stateManageSlice.actions
 export const stateManageReducer = stateManageSlice.reducer;

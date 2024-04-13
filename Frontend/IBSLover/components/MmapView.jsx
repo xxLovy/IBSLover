@@ -10,11 +10,17 @@ import customMarkerImage from '../assets/ToiletMarker0.png';
 import { navigateToPlace } from '../utils/helper';
 import NaviBar from './NaviBar';
 import ToiletByUser from '../assets/ToiletByUser.png'
+import { selectBannedWord, selectVotingCount } from '../redux/filter/selectors';
+import Refresh from './Refresh';
+import { mergePlaces } from '../utils/utils';
 
 const MmapView = () => {
     const pin = useSelector(selectCurrentLocation);
     const placesByGoogle = useSelector(selectgooglePlaces);
-    const placesByUser = useSelector(selectUserPlaces)
+    const placesByUser = useSelector(selectUserPlaces);
+    const allPlaces = mergePlaces(placesByGoogle, placesByUser)
+    const bannedWord = useSelector(selectBannedWord)
+    const votingCountFilter = useSelector(selectVotingCount)
     const mapRef = useRef();
 
     if (pin.latitude === 0 && pin.longitude === 0) {
@@ -49,66 +55,47 @@ const MmapView = () => {
 
 
 
-                {placesByGoogle && placesByGoogle.map((place, index) => (
+                {allPlaces && allPlaces.map((place, index) => {
+                    if (!place.voteCount && bannedWord.includes(place.KWD)) return;
+                    if (place.voteCount && place.voteCount <= votingCountFilter) return;
+                    else return (
+                        <Marker
+                            key={index}
+                            coordinate={{
+                                latitude: place.geometry.location.lat,
+                                longitude: place.geometry.location.lng,
+                            }}
+                            title={place.name}
+                            description={place.vicinity}
+                            image={place.voteCount ? ToiletByUser : customMarkerImage}
+                        // ref={(ref) => {
+                        //     markersRef[index] = ref;
+                        // }}
+                        >
+                            <Callout>
+                                <View>
+                                    <Text style={tw`font-semibold text-center`}>{place.name}</Text>
+                                    <Text>{place.vicinity}</Text>
+                                    <TouchableOpacity onPress={() => {
+                                        navigateToPlace(place.geometry.location.lat, place.geometry.location.lng, place.name);
+                                    }}>
+                                        <Text style={tw`text-blue-500 mt-2 text-center`}>Click to navigate</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </Callout>
 
-                    <Marker
-                        key={index}
-                        coordinate={{
-                            latitude: place.geometry.location.lat,
-                            longitude: place.geometry.location.lng,
-                        }}
-                        title={place.name}
-                        description={place.vicinity}
-                        image={customMarkerImage}
-                    // ref={(ref) => {
-                    //     markersRef[index] = ref;
-                    // }}
-                    >
-                        <Callout>
-                            <View>
-                                <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{place.name}</Text>
-                                <Text>{place.vicinity}</Text>
-                                <TouchableOpacity onPress={() => {
-                                    navigateToPlace(place.geometry.location.lat, place.geometry.location.lng, place.name);
-                                }}>
-                                    <Text style={{ color: 'blue', marginTop: 5, textAlign: 'center' }}>Click to navigate</Text>
-                                </TouchableOpacity>
+                        </Marker>
+                    )
 
-                            </View>
-                        </Callout>
-                    </Marker>
-                ))}
+                })}
 
-                {placesByUser && placesByUser.map((place, index) => (
-                    <Marker
-                        key={index}
-                        coordinate={{
-                            latitude: place.geometry.location.lat,
-                            longitude: place.geometry.location.lng,
-                        }}
-                        title={place.name}
-                        description={place.vicinity}
-                        image={ToiletByUser}
-                    >
-                        <Callout>
-                            <View>
-                                <Text style={{ fontWeight: 'bold', textAlign: 'center' }}>{place.name}</Text>
-                                <Text>{place.vicinity}</Text>
-                                <Text>Vote Count: {place.voteCount}</Text>
-                                <TouchableOpacity onPress={() => {
-                                    navigateToPlace(place.geometry.location.lat, place.geometry.location.lng, place.name);
-                                }}>
-                                    <Text style={{ color: 'blue', marginTop: 5, textAlign: 'center' }}>Click to navigate</Text>
-                                </TouchableOpacity>
-
-                            </View>
-                        </Callout>
-                    </Marker>
-                ))}
 
             </MapView>
             <View style={tw`absolute top-0 right-0 p-4`}>
                 <NaviBar />
+            </View>
+            <View style={tw`absolute top-0 left-0 p-4`}>
+                <Refresh />
             </View>
         </View>
     )

@@ -15,3 +15,16 @@ export function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
 export function deg2rad(deg) {
     return deg * (Math.PI / 180);
 }
+
+export function mergePlaces(place1, place2) {
+    let allPlaces = [];
+    if (place1 && place2) {
+        allPlaces = place1.concat(place2);
+    } else if (place1) {
+        allPlaces = place1;
+    } else if (place2) {
+        allPlaces = place2;
+    }
+    allPlaces.sort((a, b) => a.distance - b.distance);
+    return allPlaces
+}

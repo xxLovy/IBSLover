@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { selectCurrentLocation } from '../redux/pin/selectors';
+import { useNavigation } from '@react-navigation/native';
 
 const api = 'http://13.238.182.211:80';
 
@@ -10,6 +11,7 @@ const AddToiletScreen = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const pin = useSelector(selectCurrentLocation)
+    const navigation = useNavigation()
 
     const submitToiletLocation = async () => {
         if (!name.trim()) {

@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectKeyword, selectVotingCount } from '../redux/filter/selectors';
+import { setBannedWord, setVotingCount } from '../redux/filter/slice';
+import { useNavigation } from '@react-navigation/native';
 
-const ChooseFilter = ({ navigation, route }) => {
+const ChooseFilter = () => {
     const [selectedKeywords, setSelectedKeywords] = useState([]);
-    const [votingCount, setVotingCount] = useState('');
-    const keywords = [
-        'Starbucks',
-        'McDonald\'s',
-        'Walmart',
-        'City Supper',
-        'IKEA',
-    ];
+    const [votingCountLocal, setVotingCountLocal] = useState('');
+    const dispatch = useDispatch()
+    const keywords = useSelector(selectKeyword)
+    const currentVotingCount = useSelector(selectVotingCount);
+    const navigation = useNavigation()
+    const handleResetFilters = () => {
+        dispatch(setBannedWord([]));
+        dispatch(setVotingCount(0));
+        navigation.goBack();
+    }
 
     const handleKeywordToggle = (keyword) => {
         const updatedKeywords = selectedKeywords.includes(keyword)
@@ -19,16 +25,12 @@ const ChooseFilter = ({ navigation, route }) => {
         setSelectedKeywords(updatedKeywords);
     };
 
-    const { applyFilters } = route.params;
-
     const handleApplyFilters = () => {
-        console.log('applied')
-        // 调用applyFilters函数并传递所选的关键字和投票计数/
-        applyFilters(selectedKeywords, parseInt(votingCount));
+        const parsedVotingCount = parseInt(votingCountLocal); // 将文本转换为整数
+        if (parsedVotingCount) { dispatch(setVotingCount(parsedVotingCount)); }
+        dispatch(setBannedWord(selectedKeywords));
         navigation.goBack();
     };
-
-
     return (
         <View style={styles.container}>
             <Text style={styles.heading}>General Filter</Text>
@@ -50,12 +52,15 @@ const ChooseFilter = ({ navigation, route }) => {
             <TextInput
                 style={styles.input}
                 placeholder="Enter voting count..."
-                value={votingCount}
-                onChangeText={setVotingCount}
+                value={votingCountLocal} // 将 votingCount 转换为字符串显示在输入框中
+                onChangeText={setVotingCountLocal}
                 keyboardType="numeric"
             />
             <TouchableOpacity style={styles.applyButton} onPress={handleApplyFilters}>
                 <Text style={styles.applyButtonText}>Apply Filters</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.applyButton} onPress={handleResetFilters}>
+                <Text style={styles.applyButtonText}>Reset Filters</Text>
             </TouchableOpacity>
         </View>
     );
@@ -100,6 +105,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingVertical: 15,
         alignItems: 'center',
+        margin: 10
     },
     applyButtonText: {
         color: '#fff',
