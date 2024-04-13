@@ -123,11 +123,17 @@ app.get('/search', async (req, res) => {
 
                     return true; // return all results
                 });
+
+                filteredResults.forEach(result => {
+                    result.KWD = keyword;
+                });
+
                 allResults.push(...filteredResults);
             }
         }
 
         const sortedResults = sortByDistance(allResults);
+
         res.json(sortedResults);
     } catch (error) {
         console.error(error);
@@ -216,7 +222,14 @@ app.get('/toilets', async (req, res) => {
     }
 });
 
-
+app.get('/fetchKeywords', (req, res) => {
+    try {
+        res.json(keywords);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('An error occurred while fetching keywords');
+    }
+});
 
 // Start
 const PORT = process.env.PORT || 80;
