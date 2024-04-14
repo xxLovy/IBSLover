@@ -56,7 +56,8 @@ const ToiletLocationSchema = new mongoose.Schema({
     positions: [{
         type: { type: String, default: 'Point' },
         coordinates: [Number],
-    }]
+    }],
+    userId: String,
 });
 
 ToiletLocationSchema.index({ coordinates: '2dsphere' });
