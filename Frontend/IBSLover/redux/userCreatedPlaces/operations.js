@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios';
 import { getDistanceFromLatLonInKm } from '../../utils/utils';
 
-const api = 'http://13.238.182.211:80';
+const api = 'https://xxxxuan.xyz';
 
 export const fetchNearByPlacesByUser = createAsyncThunk(
     'toilets/fetchNearByPlacesByUser',

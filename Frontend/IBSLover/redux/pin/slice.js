@@ -5,7 +5,7 @@ const initialState = {
     pin: {
         latitude: 0,
         longitude: 0,
-        isLoading: false,
+        isLoading: true,
         error: null,
     },
 }

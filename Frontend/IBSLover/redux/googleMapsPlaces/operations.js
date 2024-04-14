@@ -3,7 +3,7 @@ import { getDistanceFromLatLonInKm } from '../../utils/utils';
 import axios from 'axios';
 import { Alert } from 'react-native';
 
-const api = 'http://13.238.182.211:80';
+const api = 'https://xxxxuan.xyz';
 
 export const fetchGoogleMaps = createAsyncThunk(
     'toilets/fetchGoogleMaps',

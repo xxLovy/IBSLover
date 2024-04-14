@@ -7,6 +7,7 @@ import { selectCurrentLocation } from '../redux/pin/selectors';
 import { selectgooglePlaces } from '../redux/googleMapsPlaces/selectors';
 import { selectUserPlaces } from '../redux/userCreatedPlaces/selectors'
 import customMarkerImage from '../assets/ToiletMarker0.png';
+import toiletBySelf from '../assets/ToiletBySelf.png'
 import { navigateToPlace } from '../utils/helper';
 import NaviBar from './NaviBar';
 import ToiletByUser from '../assets/ToiletByUser.png'
@@ -28,6 +29,7 @@ const MmapView = () => {
     const mapRefRegion = useSelector(selectMapRefRegion)
     const selectedMarker = useSelector(selectSelectedMarker)
     const dispatch = useDispatch()
+    const userId = null
 
     useEffect(() => {
         if (mapRefRegion && mapRef) mapRef?.current?.animateToRegion(mapRefRegion, 1000)
@@ -83,7 +85,7 @@ const MmapView = () => {
                             }}
                             title={place.name}
                             description={place.vicinity}
-                            image={place.voteCount ? ToiletByUser : customMarkerImage}
+                            image={place.voteCount ? place.userId === userId ? toiletBySelf : ToiletByUser : customMarkerImage}
                             ref={(ref) => {
                                 markerRef[index + 1] = ref
                             }}
