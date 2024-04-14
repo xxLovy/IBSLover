@@ -98,6 +98,9 @@ function sortByDistance(results) {
 
 // Routers
 // send request to Google maps
+app.get('/', async (req, res) => {
+    res.send('Hi! welcome!')
+})
 app.get('/search', async (req, res) => {
     try {
         const { latitude, longitude } = req.query;
