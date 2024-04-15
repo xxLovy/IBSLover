@@ -21,6 +21,8 @@ import { selectBannedWord } from '../redux/filter/selectors';
 import { setMapRefRegion } from '../redux/stateManage/slice';
 import { mergePlaces } from '../utils/utils';
 import { selectUserPlaces } from '../redux/userCreatedPlaces/selectors';
+import { selectUser } from '../redux/auth/selectors';
+import { setIsSignedin, setUserInfo } from '../redux/auth/slice';
 
 export default function HomeScreen() {
     const dispatch = useDispatch();
@@ -32,12 +34,12 @@ export default function HomeScreen() {
     const bannedWord = useSelector(selectBannedWord)
     const mapRefRegion = useSelector(selectMapRefRegion)
     const allPlaces = mergePlaces(placesByGoogle, placesByUser)
-    const userId = null
+    const user = useSelector(selectUser)
     const isLoading = useSelector(selectIsLoadingWhileGoogle)
     const selectedPlaces = allPlaces.filter((item) => {
         if (item.KWD && bannedWord.includes(item.KWD)) {
             return false
-        } else if (item.userId && item.userId !== userId) {
+        } else if (item.userId && !item.userId?.includes(user?.userId)) {
             return false
         } else if (!item.userId && !item.KWD) {
             return false
@@ -58,6 +60,8 @@ export default function HomeScreen() {
             latitude: pin.latitude,
             longitude: pin.longitude,
         }))
+        dispatch(setUserInfo({}))
+        dispatch(setIsSignedin(false))
     }, [dispatch, pin]);
 
     return (

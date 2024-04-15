@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     user: {},
+    isSignedin: false,
 }
 
 export const userSlice = createSlice({
@@ -11,9 +12,12 @@ export const userSlice = createSlice({
         setUserInfo: (state, action) => {
             state.user = action.payload.user;
         },
+        setIsSignedin: (state, action) => {
+            state.isSignedin = action.payload
+        }
     },
 })
 
 
 export const userReducer = userSlice.reducer;
-export const { setUserInfo } = userSlice.actions;
+export const { setUserInfo, setIsSignedin } = userSlice.actions;

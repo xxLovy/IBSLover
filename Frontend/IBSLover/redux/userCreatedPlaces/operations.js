@@ -19,7 +19,8 @@ export const fetchNearByPlacesByUser = createAsyncThunk(
                             lng: place.coordinates.coordinates[0],
                             lat: place.coordinates.coordinates[1],
                         }
-                    }
+                    },
+                    userId: place.userId
                 };
                 return newPlace;
             });

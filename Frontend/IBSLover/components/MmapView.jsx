@@ -16,6 +16,7 @@ import Refresh from './Refresh';
 import { mergePlaces } from '../utils/utils';
 import { selectMapRefRegion, selectSelectedMarker } from '../redux/stateManage/selectors';
 import { setSelectedMarker } from '../redux/stateManage/slice';
+import { selectUser } from '../redux/auth/selectors';
 
 const MmapView = () => {
     const markerRef = {}
@@ -29,7 +30,7 @@ const MmapView = () => {
     const mapRefRegion = useSelector(selectMapRefRegion)
     const selectedMarker = useSelector(selectSelectedMarker)
     const dispatch = useDispatch()
-    const userId = null
+    const user = useSelector(selectUser)
 
     useEffect(() => {
         if (mapRefRegion && mapRef) mapRef?.current?.animateToRegion(mapRefRegion, 1000)
@@ -85,7 +86,7 @@ const MmapView = () => {
                             }}
                             title={place.name}
                             description={place.vicinity}
-                            image={place.voteCount ? place.userId === userId ? toiletBySelf : ToiletByUser : customMarkerImage}
+                            image={place.voteCount ? place.userId?.includes(user?.userId) && user?.userId !== undefined ? toiletBySelf : ToiletByUser : customMarkerImage}
                             ref={(ref) => {
                                 markerRef[index + 1] = ref
                             }}

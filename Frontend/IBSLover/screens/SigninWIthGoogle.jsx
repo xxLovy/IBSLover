@@ -6,13 +6,18 @@ import {
 } from "@react-native-google-signin/google-signin";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { selectIsSignedin, selectUser } from "../redux/auth/selectors";
+import { setIsSignedin, setUserInfo } from "../redux/auth/slice";
+import { useNavigation } from "@react-navigation/native";
 
 
 
 const SigninWIthGoogle = () => {
     const [error, setError] = useState();
-    const [userInfo, setUserInfo] = useState();
     const dispatch = useDispatch()
+    const user = useSelector(selectUser)
+    const isSignedin = useSelector(selectIsSignedin)
+    const navigation = useNavigation()
 
     const configureGoogleSignIn = () => {
         GoogleSignin.configure({
@@ -33,26 +38,30 @@ const SigninWIthGoogle = () => {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            setUserInfo(userInfo);
             dispatch(setUserInfo(userInfo));
+            console.log('user login')
+            dispatch(setIsSignedin(true))
             setError();
+            navigation.navigate('Home')
         } catch (e) {
             setError(e);
         }
     };
 
     const logout = () => {
-        setUserInfo(undefined);
-        dispatch(setUserInfo(userInfo))
+        dispatch(setUserInfo({ user: undefined }))
+        console.log("user logout")
+        dispatch(setIsSignedin(false))
         GoogleSignin.revokeAccess();
         GoogleSignin.signOut();
+        navigation.navigate('Home')
     };
 
     return (
         <View style={styles.container}>
             <Text>{JSON.stringify(error)}</Text>
-            {userInfo && <Text>{JSON.stringify(userInfo.user)}</Text>}
-            {userInfo ? (
+            {/* {isSignedin && user && <Text>{JSON.stringify(user.user)}</Text>} */}
+            {isSignedin ? (
                 <Button title="Logout" onPress={logout} />
             ) : (
                 <GoogleSigninButton
@@ -61,7 +70,6 @@ const SigninWIthGoogle = () => {
                     onPress={signIn}
                 />
             )}
-            <StatusBar style="auto" />
         </View>
     );
 }

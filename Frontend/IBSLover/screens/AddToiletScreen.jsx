@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { selectCurrentLocation } from '../redux/pin/selectors';
 import { useNavigation } from '@react-navigation/native';
+import { selectUser } from '../redux/auth/selectors';
 
 const api = 'https://xxxxuan.xyz';
 
@@ -12,7 +13,7 @@ const AddToiletScreen = () => {
     const [description, setDescription] = useState('');
     const pin = useSelector(selectCurrentLocation)
     const navigation = useNavigation()
-    const userId = null
+    const user = useSelector(selectUser)
 
     const submitToiletLocation = async () => {
         if (!name.trim()) {
@@ -34,7 +35,7 @@ const AddToiletScreen = () => {
                                 longitude: pin.longitude,
                                 name: name,
                                 description: description,
-                                userId: userId,
+                                userId: user?.userId,
                             });
                             // Handle the response.
                             // console.log(response);
