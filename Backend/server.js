@@ -57,7 +57,16 @@ const ToiletLocationSchema = new mongoose.Schema({
         type: { type: String, default: 'Point' },
         coordinates: [Number],
     }],
+    userId: [{ type: String }]
+});
+
+const UserSchema = new mongoose.Schema({
     userId: String,
+    userFirstName: String,
+    userLastName: String,
+    userEmail: String,
+    userCreated: [{ type: String }],
+    userFavorite: [{ type: String }]
 });
 
 ToiletLocationSchema.index({ coordinates: '2dsphere' });
@@ -149,7 +158,7 @@ app.get('/search', async (req, res) => {
 // Add a new toilet location or update existing one
 app.post('/add-toilet', async (req, res) => {
     try {
-        const { latitude, longitude, name, description } = req.body;
+        const { latitude, longitude, name, description, userId } = req.body;
         if (!latitude || !longitude || !name) {
             return res.status(400).send('Missing required fields: latitude, longitude, and name.');
         }
@@ -173,6 +182,7 @@ app.post('/add-toilet', async (req, res) => {
             // If a nearby toilet is found, increment votes and add new position to the positions list
             nearbyToilet.votes += 1;
             nearbyToilet.positions.push({ type: "Point", coordinates: [longitude, latitude] });
+            nearbyToilet.userId.push({ userId: userId })
             await nearbyToilet.save();
             res.status(200).json(nearbyToilet);
         } else {
@@ -187,8 +197,10 @@ app.post('/add-toilet', async (req, res) => {
                 votes: 1,
                 positions: [{ type: "Point", coordinates: [longitude, latitude] }]
             });
-            await newToiletLocation.save();
-            res.status(201).json(newToiletLocation);
+            newToiletLocation.userId.push({ userId: userId })
+            const savedToilet = await newToiletLocation.save();
+            const newToiletId = savedToilet._id;
+            res.status(201).json({ id: newToiletId });
         }
     } catch (error) {
         console.error('Error adding/updating toilet location:', error);
