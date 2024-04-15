@@ -77,7 +77,7 @@ export default function HomeScreen() {
                             onPress={() => {
                                 navigateToPlace(selectedPlaces[0].geometry.location.lat, selectedPlaces[0].geometry.location.lng, selectedPlaces[0].name);
                             }}
-                            disabled={isLoading}
+                            disabled={isLoading || !selectedPlaces}
 
                         />
                     </View>

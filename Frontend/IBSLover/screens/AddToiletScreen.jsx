@@ -12,6 +12,7 @@ const AddToiletScreen = () => {
     const [description, setDescription] = useState('');
     const pin = useSelector(selectCurrentLocation)
     const navigation = useNavigation()
+    const userId = null
 
     const submitToiletLocation = async () => {
         if (!name.trim()) {
@@ -33,6 +34,7 @@ const AddToiletScreen = () => {
                                 longitude: pin.longitude,
                                 name: name,
                                 description: description,
+                                userId: userId,
                             });
                             // Handle the response.
                             // console.log(response);

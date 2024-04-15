@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, Animated, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectHasListView, selectMapRefRegion } from '../redux/stateManage/selectors';
 import { setListView, setMapRefRegion } from '../redux/stateManage/slice';
@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { selectCurrentLocation } from '../redux/pin/selectors';
 import { Icon } from '@rneui/themed';
 import tw from 'twrnc';
+import { selectIsLoggedIn, selectUser } from '../redux/auth/selectors';
 
 
 const NaviBar = () => {
@@ -17,6 +18,7 @@ const NaviBar = () => {
     const navigation = useNavigation();
     const pin = useSelector(selectCurrentLocation);
     const mapRefRegion = useSelector(selectMapRefRegion);
+    const user = useSelector(selectUser)
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -76,14 +78,19 @@ const NaviBar = () => {
                             {/* <Text>Current Location</Text> */}
                             <Icon name="location-searching" type="ionicons" color="black" size={16} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={onAddToiletPress} style={[tw`px-4 py-2 border-b border-gray-300`]}>
-                            {/* <Text>Add Toilet</Text> */}
-                            <Icon name="add-circle-outline" type="ionicons" color="black" size={16} />
-                        </TouchableOpacity>
 
-                        <TouchableOpacity onPress={onChooseFilters} style={[tw`px-4 py-2`]}>
+                        <TouchableOpacity onPress={(e) => navigation.navigate('ChooseFilter')} style={[tw`px-4 py-2 border-b border-gray-300`]}>
                             {/* <Text>Filters</Text> */}
                             <Icon name="filter-list-off" type="ionicons" color="black" size={16} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={(e) => navigation.navigate('Signin')} style={[tw`px-4 py-2 border-b border-gray-300`]}>
+                            {/* <Text>Filters</Text> */}
+                            <Icon name={user ? "logout" : "login"} type="ionicons" color="black" size={16} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={(e) => user ? navigation.navigate('AddToilet') : Alert.alert('Login to use add toilet feature')} style={[tw`px-4 py-2 border-b border-gray-300`]}>
+                            {/* <Text>Add Toilet</Text> */}
+                            <Icon name="add-circle-outline" type="ionicons" color="black" size={16} />
                         </TouchableOpacity>
                     </>
                 ) : null}

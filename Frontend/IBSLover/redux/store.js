@@ -4,6 +4,7 @@ import { googlePlacesReducer } from './googleMapsPlaces/slice'
 import { stateManageReducer } from './stateManage/slice'
 import { userPlacesReducer } from './userCreatedPlaces/slice'
 import { filterReducer } from './filter/slice'
+import { userReducer } from './auth/slice'
 
 export const store = configureStore({
     reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
         stateManage: stateManageReducer,
         userPlaces: userPlacesReducer,
         filter: filterReducer,
+        user: userReducer,
     },
 })
 

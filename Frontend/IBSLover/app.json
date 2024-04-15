@@ -14,9 +14,21 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.xxxuan.IBSLover"
+      "bundleIdentifier": "com.xxxuan.IBSLover",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.398793852102-9n8h304aucoi2oos8catmv0vku44o6be"
+            ]
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {

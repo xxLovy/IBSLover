@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import AddToiletScreen from './screens/AddToiletScreen';
 import ChooseFilter from './screens/ChooseFilterScreen';
+import SigninWIthGoogle from './screens/SigninWIthGoogle';
 import { store } from './redux/store'
 import { Provider } from 'react-redux';
 
@@ -21,6 +22,7 @@ function App() {
           />
           <Stack.Screen name="AddToilet" component={AddToiletScreen} />
           <Stack.Screen name="ChooseFilter" component={ChooseFilter} />
+          <Stack.Screen name="Signin" component={SigninWIthGoogle} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
