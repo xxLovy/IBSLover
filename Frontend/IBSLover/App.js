@@ -14,13 +14,18 @@ function App() {
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="AddToilet" component={AddToiletScreen} />
-          <Stack.Screen name="ChooseFilter" component={ChooseFilter} />
+          <Stack.Group>
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{ headerShown: false }}
+            />
+
+          </Stack.Group>
+          <Stack.Group screenOptions={{ presentation: 'modal' }}>
+            <Stack.Screen name="ChooseFilter" component={ChooseFilter} />
+            <Stack.Screen name="AddToilet" component={AddToiletScreen} />
+          </Stack.Group>
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
