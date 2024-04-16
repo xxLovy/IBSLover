@@ -23,6 +23,7 @@ import { mergePlaces } from '../utils/utils';
 import { selectUserPlaces } from '../redux/userCreatedPlaces/selectors';
 import { selectUser } from '../redux/auth/selectors';
 import { setIsSignedin, setUserInfo } from '../redux/auth/slice';
+import Loading from '../components/Loading';
 
 export default function HomeScreen() {
     const dispatch = useDispatch();
@@ -66,7 +67,7 @@ export default function HomeScreen() {
 
     return (
         <SafeAreaView style={tw`flex-1`}>
-            {pin.isLoading ? <Text style={tw`text-lg flex justify-center items-center`}>Fetching your current location...</Text> :
+            {pin.isLoading ? <View style={tw`flex-1 justify-center items-center`}><Loading text={"Fetching your current location..."} /></View> :
                 <View style={tw`flex-1`}>
                     <View style={hasListView ? tw`flex-6` : tw`flex-1`}>
                         <MmapView />
