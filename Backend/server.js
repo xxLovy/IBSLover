@@ -57,17 +57,17 @@ const ToiletLocationSchema = new mongoose.Schema({
         type: { type: String, default: 'Point' },
         coordinates: [Number],
     }],
-    userId: [{ type: String }]
+    userId: [{ userId: String }]
 });
 
-const UserSchema = new mongoose.Schema({
-    userId: String,
-    userFirstName: String,
-    userLastName: String,
-    userEmail: String,
-    userCreated: [{ type: String }],
-    userFavorite: [{ type: String }]
-});
+// const UserSchema = new mongoose.Schema({
+//     userId: String,
+//     userFirstName: String,
+//     userLastName: String,
+//     userEmail: String,
+//     userCreated: [{ type: String }],
+//     userFavorite: [{ type: String }]
+// });
 
 ToiletLocationSchema.index({ coordinates: '2dsphere' });
 const ToiletLocation = mongoose.model('ToiletLocation', ToiletLocationSchema);
@@ -159,7 +159,8 @@ app.get('/search', async (req, res) => {
 app.post('/add-toilet', async (req, res) => {
     try {
         const { latitude, longitude, name, description, userId } = req.body;
-        if (!latitude || !longitude || !name) {
+        console.log(req.body)
+        if (!latitude || !longitude || !name || !userId) {
             return res.status(400).send('Missing required fields: latitude, longitude, and name.');
         }
 
@@ -248,7 +249,7 @@ app.get('/fetchKeywords', (req, res) => {
 });
 
 // Start
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 4001;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
