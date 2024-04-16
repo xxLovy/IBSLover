@@ -86,7 +86,7 @@ const MmapView = () => {
                             }}
                             title={place.name}
                             description={place.vicinity}
-                            image={place.voteCount ? place.userId?.includes(user?.userId) && user?.userId !== undefined ? toiletBySelf : ToiletByUser : customMarkerImage}
+                            image={place.voteCount ? place.userId?.userId?.includes(user?.userId) && user?.userId !== undefined ? toiletBySelf : ToiletByUser : customMarkerImage}
                             ref={(ref) => {
                                 markerRef[index + 1] = ref
                             }}

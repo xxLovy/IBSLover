@@ -21,7 +21,7 @@ const ListView = () => {
     const votingCountFilter = useSelector(selectVotingCount)
 
     const renderPlace = ({ item, index }) => {
-        console.log(item.userId)
+        console.log(item.userId?.userId)
         console.log(user?.userId)
         if (!item.voteCount && bannedWord.includes(item.KWD)) return;
         if (item.voteCount && item.voteCount <= votingCountFilter) return;
@@ -43,7 +43,7 @@ const ListView = () => {
                 >
 
 
-                    <View style={tw`p-4 border-b border-gray-200 ${item.voteCount ? item?.userId?.includes(user?.userId) && user?.userId !== undefined ? `bg-purple-100` : `bg-blue-100` : 'bg-green-100'}`}>
+                    <View style={tw`p-4 border-b border-gray-200 ${item.voteCount ? item?.userId?.userId?.includes(user?.userId) && user?.userId !== undefined ? `bg-purple-100` : `bg-blue-100` : 'bg-green-100'}`}>
                         <Text style={tw`text-base font-semibold`}>{item.name}</Text>
                         <Text style={tw`text-sm text-gray-600`}>{item.vicinity}</Text>
                         {item.voteCount && <Text style={tw`text-sm text-gray-600`}>Vote Count: {item.voteCount}</Text>}

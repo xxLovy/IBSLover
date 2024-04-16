@@ -30,22 +30,27 @@ const AddToiletScreen = () => {
                     text: 'Yes',
                     onPress: async () => {
                         try {
-                            const response = await axios.post(`${api}/add-toilet`, {
-                                latitude: pin.latitude,
-                                longitude: pin.longitude,
-                                name: name,
-                                description: description,
-                                userId: user?.userId,
-                            });
-                            // Handle the response.
-                            // console.log(response);
-                            if (response.status === 201) {
-                                Alert.alert('Success', 'Toilet location added successfully!');
-                            } else if (response.status === 200) {
-                                Alert.alert('Success', 'Your vote for the toilet location has been successfully cast!');
+                            if (user && user.userId) {
+                                const response = await axios.post(`${api}/add-toilet`, {
+                                    latitude: pin.latitude,
+                                    longitude: pin.longitude,
+                                    name: name,
+                                    description: description,
+                                    userId: user.userId,
+                                });
+                                // Handle the response.
+                                // console.log(response);
+                                if (response.status === 201) {
+                                    Alert.alert('Success', 'Toilet location added successfully!');
+                                } else if (response.status === 200) {
+                                    Alert.alert('Success', 'Your vote for the toilet location has been successfully cast!');
+                                }
+
+                                navigation.goBack(); // Navigate back to the homepage
+                            } else {
+                                Alert.alert('Error', 'Failed to add toilet location.');
                             }
 
-                            navigation.goBack(); // Navigate back to the homepage
                         } catch (error) {
                             console.error(error);
                             Alert.alert('Error', 'Failed to add toilet location.');

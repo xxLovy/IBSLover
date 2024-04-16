@@ -39,9 +39,9 @@ export default function HomeScreen() {
     const selectedPlaces = allPlaces.filter((item) => {
         if (item.KWD && bannedWord.includes(item.KWD)) {
             return false
-        } else if (item.userId && !item.userId?.includes(user?.userId)) {
+        } else if (item.userId?.userId && !item.userId?.userId?.includes(user?.userId)) {
             return false
-        } else if (!item.userId && !item.KWD) {
+        } else if (!item.userId?.userId && !item.KWD) {
             return false
         }
         return true
