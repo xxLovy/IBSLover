@@ -55,7 +55,6 @@ touch .env
 ```plaintext
 GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY
 MONGODB_URI=YOUR_MONGODB_URI
-REDIS_URI=YOUR_REDIS_URI
 ```
 
 - Now, install backend dependencies:
@@ -84,15 +83,20 @@ cd Frontend/IBSLover
 npm install
 ```
 
-- Start the frontend service, which will run in your local simulator:
+- Edit `global.js` file, add your backend server(api services) here.
 
-```plaintext
-npx expo start
+```js
+export const api = 'YOUR_SERVER_ADDRESS'
 ```
 
-- While inside the expo client, hit `i` for the iOS simulator or `a` for the Android simulator (note: Android has yet to be tested).
++ Replace `com.xxxuan.IBSLover`  with your `bundleIdentifier`   and `CFBundleURLSchemes` in `app.json`
 
-**IMPORTANT NOTICE: Ensure that the backend service is started before attempting to run the frontend.**
++ Run `eas build:configure` in your terminal to generate a `eas.json` file.
++ Run `eas build --profile development --platform ios `  to generate a `.ipa` file with expo.
++ Follow the instructions, download this `.ipa` file on your iPhone
++ Click the file just downloaded then run `npx expo start --dev--client` to get started **Make sure you iPhone and your mac are in the same network so you can connect**
+
+**IMPORTANT NOTICE: 1. Presumably, your backend service should be on a remote server that can be reached. And a domain name for https configuration.(iPhone will automatically block http request)2. Ensure that the backend service is started before attempting to run the frontend.**
 
 ## TODO
 

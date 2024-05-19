@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios';
-const api = 'https://xxxxuan.xyz';
+import { api } from '../../global';
 
 export const fetchKeywords = createAsyncThunk(
     'filter/fetchKeywords',

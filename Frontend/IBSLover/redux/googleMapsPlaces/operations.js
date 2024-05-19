@@ -2,8 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { getDistanceFromLatLonInKm } from '../../utils/utils';
 import axios from 'axios';
 import { Alert } from 'react-native';
-
-const api = 'https://xxxxuan.xyz';
+import { api } from '../../global';
 
 export const fetchGoogleMaps = createAsyncThunk(
     'toilets/fetchGoogleMaps',

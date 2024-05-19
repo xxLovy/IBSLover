@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit')
+const morgan = require('morgan');
 
 // constants
 const radius = 1000;
@@ -34,6 +35,7 @@ const apiLimiter = rateLimit({
     }
 });
 app.use('/search', apiLimiter);
+app.use(morgan('dev'));
 
 
 // DB

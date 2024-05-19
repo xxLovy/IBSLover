@@ -5,8 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectCurrentLocation } from '../redux/pin/selectors';
 import { useNavigation } from '@react-navigation/native';
 import { selectUser } from '../redux/auth/selectors';
-
-const api = 'https://xxxxuan.xyz';
+import { api } from '../global';
 
 const AddToiletScreen = () => {
     const [name, setName] = useState('');

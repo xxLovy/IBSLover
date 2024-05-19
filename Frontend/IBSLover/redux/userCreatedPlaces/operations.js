@@ -1,8 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios';
 import { getDistanceFromLatLonInKm } from '../../utils/utils';
-
-const api = 'https://xxxxuan.xyz';
+import { api } from '../../global';
 
 export const fetchNearByPlacesByUser = createAsyncThunk(
     'toilets/fetchNearByPlacesByUser',
