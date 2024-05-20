@@ -12,7 +12,7 @@ export const getGooglePlaces = async (req: Request, res: Response) => {
         const longitude = Number(locationParts[1])
         // TODO: use DB to cache
 
-        let allPlaces = []
+        let allPlaces: IToilet[] = []
         for (const keyword of keywords) {
             const params = {
                 location: `${latitude},${longitude}`,
@@ -25,8 +25,7 @@ export const getGooglePlaces = async (req: Request, res: Response) => {
                     name: place.name,
                     description: place.vicinity,
                     location: {
-                        latitude: Number(place.geometry.location.lat),
-                        longitude: Number(place.geometry.location.lng),
+                        coordinates: [place.geometry.location.lng, place.geometry.location.lat]
                     },
                     lastUpdateTime: String(Date.now()),
                     // openingHours?: ,

@@ -6,10 +6,15 @@ const ToiletsSchema = new Schema({
     description: { type: String },
     location: {
         type: {
-            latitude: Number,
-            longitude: Number,
+            type: String,
+            enum: ['Point'],
+            required: true
         },
-        required: true
+        coordinates: {
+            // 0 for lon, 1 for lat
+            type: [Number],
+            required: true
+        }
     },
     lastUpdateTime: { type: String, required: true },
     openingHours: { type: Date },
@@ -52,13 +57,17 @@ const ToiletsSchema = new Schema({
     isRemoved: { type: Boolean, required: true, default: false },
     votesCount: { type: Number },
     isFromUser: { type: Boolean, required: true, default: false },
-    keyword: { type: String }
+    keyword: { type: String },
+    users: { type: [String] },
+    removeMsg: { type: String }
 })
 
 export interface IToilet {
     name: string;
     description?: string;
-    location: locations;
+    location: {
+        coordinates: number[]; // [longitude, latitude]
+    };
     lastUpdateTime: string;
     openingHours?: Date;
     isOpening?: boolean;
@@ -75,8 +84,10 @@ export interface IToilet {
     votesCount?: number;
     isFromUser: boolean;
     keyword?: string;
+    users?: string[];
+    removeMsg?: string;
 }
-
+ToiletsSchema.index({ 'location': '2dsphere' });
 const Toilet = models?.Toilet || model<IToilet>('Toilet', ToiletsSchema);
 export default Toilet;
 

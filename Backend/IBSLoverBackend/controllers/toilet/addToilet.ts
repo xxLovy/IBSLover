@@ -1,0 +1,40 @@
+import type { Request, Response } from "express";
+import Toilet, { type IToilet } from "../../database/models/toilet.model";
+import { MAX_DISTANCE } from "../../constants";
+
+
+export const addToilet = async (req: Request, res: Response) => {
+    try {
+        const { toilet } = req.body as { toilet: IToilet }
+        const { userId } = req.params
+        let nearbyToilets = await Toilet.find({
+            'location': {
+                $nearSphere: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [toilet.location.coordinates[0], toilet.location.coordinates[1]]
+                    },
+                    $maxDistance: MAX_DISTANCE
+                }
+            },
+            isFromUser: true
+        });
+
+
+        if (nearbyToilets.length > 0) {
+            const toiletIds = nearbyToilets.map(toilet => toilet._id.toString());
+            res.status(201).json(toiletIds);
+            // user choose a id to click then return to vote toilet
+        } else {
+            const newToilet = new Toilet({
+                ...toilet
+            })
+            newToilet.users.push(userId)
+            await newToilet.save();
+            res.status(200).json(newToilet);
+        }
+    } catch (error) {
+        console.error('Error adding/updating toilet location:', error);
+        res.status(500).send('An error occurred while adding/updating the toilet location.');
+    }
+}
