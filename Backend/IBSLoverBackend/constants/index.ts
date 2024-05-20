@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 export const IP_REQUEST_LIMIT = 1;
@@ -16,6 +15,7 @@ export const keywords = [
 const radius = 1000;
 const KEY = process.env.GOOGLE_MAPS_API_KEY;
 export const URL = process.env.MONGODB_URI;
+export const PORT = 3030
 
 export const GOOGLE_URL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${KEY}&radius=${radius}`
 

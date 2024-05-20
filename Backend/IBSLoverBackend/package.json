@@ -9,6 +9,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "mongoose": "^8.4.0"
+    "mongoose": "^8.4.0",
+    "morgan": "^1.10.0"
   }
 }
