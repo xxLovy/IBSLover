@@ -1,5 +1,5 @@
 import type { Request, Response } from "express"
-import { keywords } from "../constants"
+import { keywords } from "../../constants"
 
 
 export const getKeyWords = async (req: Request, res: Response) => {

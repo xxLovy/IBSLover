@@ -5,8 +5,13 @@ import { MAX_DISTANCE } from "../../constants";
 
 export const addToilet = async (req: Request, res: Response) => {
     try {
-        const { toilet } = req.body as { toilet: IToilet }
-        const { userId } = req.params
+        const { toilet } = req.body as { toilet: IToilet };
+        const { userId } = req.params;
+
+        if (!userId) {
+            return res.status(400).send("User ID is required");
+        }
+
         let nearbyToilets = await Toilet.find({
             'location': {
                 $nearSphere: {
@@ -20,16 +25,14 @@ export const addToilet = async (req: Request, res: Response) => {
             isFromUser: true
         });
 
-
         if (nearbyToilets.length > 0) {
             const toiletIds = nearbyToilets.map(toilet => toilet._id.toString());
-            res.status(201).json(toiletIds);
-            // user choose a id to click then return to vote toilet
+            return res.status(201).json(toiletIds);
         } else {
             const newToilet = new Toilet({
                 ...toilet
-            })
-            newToilet.users.push(userId)
+            });
+            newToilet.users.push(userId);
             await newToilet.save();
             res.status(200).json(newToilet);
         }
@@ -37,4 +40,4 @@ export const addToilet = async (req: Request, res: Response) => {
         console.error('Error adding/updating toilet location:', error);
         res.status(500).send('An error occurred while adding/updating the toilet location.');
     }
-}
+};

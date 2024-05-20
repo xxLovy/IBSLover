@@ -1,7 +1,7 @@
 import { Router } from "express"
-import { getGooglePlaces } from "../controllers/getGooglePlaces"
-import { getKeyWords } from "../controllers/getKeywords"
-import { getUserCreatedToilets } from "../controllers/getUserCreatedToilets"
+import { getGooglePlaces } from "../controllers/fetch/getGooglePlaces"
+import { getKeyWords } from "../controllers/fetch/getKeywords"
+import { getUserCreatedToilets } from "../controllers/fetch/getUserCreatedToilets"
 
 const normalRouter = Router()
 

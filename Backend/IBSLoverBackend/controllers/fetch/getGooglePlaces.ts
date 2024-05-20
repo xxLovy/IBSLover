@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import { GOOGLE_URL, keywords } from "../constants";
+import { GOOGLE_URL, keywords } from "../../constants";
 import axios from "axios";
-import type { IToilet } from "../database/models/toilet.model";
+import type { IToilet } from "../../database/models/toilet.model";
 
 export const getGooglePlaces = async (req: Request, res: Response) => {
     try {

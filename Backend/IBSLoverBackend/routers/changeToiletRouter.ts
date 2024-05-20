@@ -7,24 +7,9 @@ import { voteToilet } from "../controllers/toilet/voteToilet";
 
 const toiletRouter = Router()
 
-toiletRouter.post(
-    "addToilet",
-    addToilet
-)
-
-toiletRouter.patch(
-    "editToilet",
-    editToilet
-)
-
-toiletRouter.delete(
-    "removeToilet",
-    removeToilet
-)
-
-toiletRouter.get(
-    "voteToilet",
-    voteToilet
-)
+toiletRouter.post("/addToilet/:userId", addToilet);
+toiletRouter.patch("/editToilet/:userId/:toiletId", editToilet);
+toiletRouter.get("/removeToilet/:userId/:toiletId/:msg", removeToilet);
+toiletRouter.get("/voteToilet/:userId/:toiletId", voteToilet);
 
 export default toiletRouter

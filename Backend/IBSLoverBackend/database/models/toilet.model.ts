@@ -8,7 +8,7 @@ const ToiletsSchema = new Schema({
         type: {
             type: String,
             enum: ['Point'],
-            required: true
+            required: true,
         },
         coordinates: {
             // 0 for lon, 1 for lat
