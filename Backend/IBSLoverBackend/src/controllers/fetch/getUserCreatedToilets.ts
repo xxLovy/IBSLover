@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import Toilet from "../../database/models/toilet.model"
+import Toilet from "../../database/models/toilet.model";
 
 
 export const getUserCreatedToilets = async (req: Request, res: Response) => {

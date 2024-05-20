@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import "dotenv/config";
-import { PORT, URL } from "./constants/index.js";
-import app from "./app.js";
+import { PORT, URL } from "./src/constants/index.js";
+import app from "./src/app.js";
 
 mongoose
     .connect(URL!)
@@ -11,7 +11,7 @@ mongoose
         });
     })
     .catch((error) => {
-        console.log('连接失败');
+        console.log('connection failed');
         console.log(error.message);
         process.exit(1);
     });

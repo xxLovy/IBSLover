@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
-import type { IToilet } from "../../database/models/toilet.model";
-import Toilet from "../../database/models/toilet.model";
+import Toilet, { type IToilet } from "../../database/models/toilet.model";
 
 
 export const editToilet = async (req: Request, res: Response) => {
