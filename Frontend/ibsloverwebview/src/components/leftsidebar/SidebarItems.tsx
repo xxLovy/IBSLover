@@ -4,6 +4,7 @@ import { sidebarItems, checkboxItems } from '../../../constants';
 import { fetchCurrentLocation } from '@/redux/pin/operations';
 import { useAppDispatch } from '@/redux/hooks';
 import { setListStateTrue } from '@/redux/listView';
+import { setAccessible, setChildren, setFree, setGenderNeutral, setMen, setWomen } from '@/redux/filter';
 
 const SidebarItems = () => {
     const dispatch = useAppDispatch();
@@ -47,10 +48,31 @@ const SidebarItems = () => {
     };
 
     const handleCheckboxChange = (key: string) => {
-        setSelectedFeatures(prevState => ({
-            ...prevState,
-            [key]: !prevState[key]
-        }));
+        const newValue = !selectedFeatures[key];
+        setSelectedFeatures({
+            ...selectedFeatures,
+            [key]: newValue
+        });
+        switch (key) {
+            case 'women':
+                dispatch(setWomen(newValue));
+                break;
+            case 'men':
+                dispatch(setMen(newValue));
+                break;
+            case 'accessible':
+                dispatch(setAccessible(newValue));
+                break;
+            case 'children':
+                dispatch(setChildren(newValue));
+                break;
+            case 'free':
+                dispatch(setFree(newValue));
+                break;
+            case 'genderNeutral':
+                dispatch(setGenderNeutral(newValue));
+                break;
+        }
     };
 
     return (
