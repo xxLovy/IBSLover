@@ -1,0 +1,33 @@
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import Navbar from "@/components/navbar/Navbar";
+import Footer from "@/components/footer/Footer";
+import ReduxProvider from "@/redux/ReduxProvider";
+
+
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <html>
+      <body>
+        <ReduxProvider>
+          <header className="bg-gray-100 flex items-center" style={{ "height": "60px" }}>
+            <Navbar />
+          </header>
+
+          <div>
+            {children}
+          </div>
+          <div className="absolute bottom-0">
+            <Footer />
+          </div>
+        </ReduxProvider>
+      </body>
+
+    </html >
+  )
+}
+
+
+export default Layout
+
