@@ -8,10 +8,11 @@ interface PinState {
     error: string | null;
 }
 
+
 const initialState: { pin: PinState } = {
     pin: {
-        latitude: 0,
-        longitude: 0,
+        latitude: 37.7749,
+        longitude: -122.4194,
         isLoading: false,
         error: null,
     },

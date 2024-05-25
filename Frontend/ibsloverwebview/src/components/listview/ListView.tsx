@@ -4,7 +4,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { dummyToilets } from '../../../constants';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { selectListState, setListStateFalse } from '@/redux/listView';
-import ToiletCard from '../ToiletCard';;
+import ToiletCard from '../ToiletCard'; import { RootState } from '@/redux/store';
+;
 
 interface ToiletComponentProps {
     toilets: Toilet[];
@@ -16,6 +17,7 @@ export const ListView: React.FC = () => {
     const dispatch = useAppDispatch();
     const listState = useAppSelector(selectListState);
     const [selectedToilet, setSelectedToilet] = useState<Toilet | null>(null);
+    const mapReduxRef = useAppSelector((state: RootState) => state.map.mapRef);
 
     function handleClose(): void {
         dispatch(setListStateFalse());
@@ -23,6 +25,7 @@ export const ListView: React.FC = () => {
 
     function handleToiletClick(toilet: Toilet): void {
         setSelectedToilet(toilet);
+        mapReduxRef?.panTo({ lat: toilet.location.coordinates[1], lng: toilet.location.coordinates[0] })
     }
 
     function handleCloseToilet(): void {

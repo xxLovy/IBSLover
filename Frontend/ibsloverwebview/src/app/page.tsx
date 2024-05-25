@@ -7,7 +7,6 @@ export default function Home() {
     <main className="h-full w-full bg-gray-100 relative">
       <MapView />
 
-      {/* 使用绝对定位将侧边栏放置在地图上 */}
       <div className="absolute top-0 left-0 z-10">
         <Sidebar />
       </div>

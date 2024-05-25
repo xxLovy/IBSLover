@@ -1,11 +1,11 @@
 "use client"
 import React, { useRef, useEffect } from 'react'
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import { useDispatch, useSelector } from 'react-redux';
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { setMapRef } from '@/redux/mapSlice';
 import { RootState } from '@/redux/store';
 import { selectCurrentLocation } from '@/redux/pin/selectors';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { dummyToilets } from '../../../constants';
 
 const containerStyle = {
     width: '100vw',
@@ -22,6 +22,7 @@ export function MyComponent() {
     const dispatch = useAppDispatch();
     const mapReduxRef = useAppSelector((state: RootState) => state.map.mapRef);
     const pin = useAppSelector(selectCurrentLocation)
+    const toilets = dummyToilets
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -62,6 +63,10 @@ export function MyComponent() {
         >
             { /* Child components, such as markers, info windows, etc. */}
             <>
+                <Marker position={{ lat: pin.latitude, lng: pin.longitude }} />
+                {toilets.map((item: Toilet, index) => (
+                    <Marker position={{ lat: item.location.coordinates[1], lng: item.location.coordinates[0] }} />
+                ))}
             </>
         </GoogleMap>
     ) : <></>
