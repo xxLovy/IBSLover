@@ -2,7 +2,9 @@ import React from 'react'
 
 const page = () => {
     return (
-        <div>page</div>
+        <div>
+            Github link: <a className='hover:text-red-600' href='https://github.com/xxLovy/IBSLover'>https://github.com/xxLovy/IBSLover</a>
+        </div>
     )
 }
 

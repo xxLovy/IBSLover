@@ -18,7 +18,8 @@ const Footer = () => {
             </Link>
 
             <div className='flex w-full justify-end'>
-                <ul className='flex flex-row'>
+                <span className='pr-10 hover:text-red-500 cursor-pointer'>Private Policy</span>
+                {/* <ul className='flex flex-row'>
                     {navlinks.map((item, index) => (
                         <Link
                             href={item.route}
@@ -26,7 +27,7 @@ const Footer = () => {
                             <li className='pr-10 cursor-pointer hover:text-red-500' key={index}>{item.lable}</li>
                         </Link>
                     ))}
-                </ul>
+                </ul> */}
             </div>
 
         </div>

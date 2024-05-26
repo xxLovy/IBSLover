@@ -11,14 +11,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <html>
       <body>
         <ReduxProvider>
-          <header className="bg-gray-100 flex items-center" style={{ "height": "60px" }}>
+          <header className="bg-gray-100 flex items-center h-[60px]">
             <Navbar />
           </header>
 
           <div>
             {children}
           </div>
-          <div className="absolute bottom-0">
+          <div className="absolute bottom-0 w-full">
             <Footer />
           </div>
         </ReduxProvider>

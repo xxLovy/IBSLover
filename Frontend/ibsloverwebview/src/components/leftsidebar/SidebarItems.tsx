@@ -5,6 +5,7 @@ import { fetchCurrentLocation } from '@/redux/pin/operations';
 import { useAppDispatch } from '@/redux/hooks';
 import { setListStateTrue } from '@/redux/listView';
 import { setAccessible, setChildren, setFree, setGenderNeutral, setMen, setWomen } from '@/redux/filter';
+import { useRouter } from 'next/navigation';
 
 const SidebarItems = () => {
     const dispatch = useAppDispatch();
@@ -17,13 +18,14 @@ const SidebarItems = () => {
         free: false,
         genderNeutral: false
     });
+    const router = useRouter();
 
     const handleFilter = () => {
         setFilterState(!filterState);
     };
 
     const handleAdd = () => {
-        console.log(2);
+        router.push("/addToilet")
     };
 
     const handleFind = () => {
