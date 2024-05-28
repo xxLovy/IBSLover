@@ -1,7 +1,6 @@
 import React from 'react'
-import { addToiletText1, addToiletText2, addToiletText3 } from '../../../constants'
-import WithoutLogin from './AddToiletWithoutLogin';
-import AddToiletWithLogin from './AddToiletWithLogin'
+import WithoutLogin from '../../../components/AddToiletWithoutLogin';
+import AddToiletWithLogin from '../../../components/AddToiletWithLogin'
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 

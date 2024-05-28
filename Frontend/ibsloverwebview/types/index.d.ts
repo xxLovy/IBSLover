@@ -167,4 +167,6 @@ declare type Toilet = {
     removeMsg?: string;
     _id: string;
     __v?: string;
+    price?: string;
+
 }

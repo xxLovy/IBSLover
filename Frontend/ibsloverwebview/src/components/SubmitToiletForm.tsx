@@ -29,19 +29,21 @@ const formSchema = z.object({
     notes: z.string().optional()
 })
 
-type TFormSchema = z.infer<typeof formSchema>
+export type TFormSchema = z.infer<typeof formSchema>
 
-const AddToiletForm = () => {
+const SubmitToiletForm = ({ defaultForm }: { defaultForm?: TFormSchema }) => {
     const form = useForm<TFormSchema>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
+        defaultValues: defaultForm || {
             name: "",
             women: "dontknow",
             men: "dontknow",
             accessible: "dontknow",
             children: "dontknow",
             genderNeutral: "dontknow",
-            free: "dontknow"
+            free: "dontknow",
+            price: "",
+            notes: ""
         }
     })
 
@@ -103,4 +105,4 @@ const AddToiletForm = () => {
     )
 }
 
-export default AddToiletForm
+export default SubmitToiletForm

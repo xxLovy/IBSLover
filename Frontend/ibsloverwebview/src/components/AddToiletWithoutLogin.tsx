@@ -1,5 +1,5 @@
 import React from 'react'
-import { addToiletText1, addToiletText2, addToiletText3 } from '../../../constants'
+import { addToiletText1, addToiletText2, addToiletText3 } from '../../constants'
 import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
 
 

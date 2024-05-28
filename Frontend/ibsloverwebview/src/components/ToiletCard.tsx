@@ -1,4 +1,5 @@
 "use client"
+import Link from 'next/link';
 import React from 'react';
 
 interface ToiletCardProps {
@@ -50,7 +51,9 @@ const ToiletCard: React.FC<ToiletCardProps> = ({ toilet, onClose }) => {
                     <p className="text-gray-600 mt-2">Hours may vary with national holidays or seasonal changes. If you know these hours to be out of date, please edit this toilet.</p>
                 </div>
                 <div className='flex'>
-                    Edit
+                    <Link href={`/${toilet._id}/editToilet`}>
+                        Edit
+                    </Link>
                 </div>
             </div>
             <style jsx>{`
