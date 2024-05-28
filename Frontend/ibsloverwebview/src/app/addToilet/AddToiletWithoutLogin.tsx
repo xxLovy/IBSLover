@@ -1,5 +1,7 @@
 import React from 'react'
 import { addToiletText1, addToiletText2, addToiletText3 } from '../../../constants'
+import { RegisterLink, LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
+
 
 const WithoutLogin = () => {
     return (
@@ -9,6 +11,8 @@ const WithoutLogin = () => {
             <p className='pl-20 lr-20'>{addToiletText2}</p>
             {/* <SigninButton/> */}
             <p className='pl-20 lr-20 text-red-600'>{addToiletText3}</p>
+            <LoginLink>Sign in</LoginLink>
+            <RegisterLink>Sign up</RegisterLink>
         </div>
     )
 }
