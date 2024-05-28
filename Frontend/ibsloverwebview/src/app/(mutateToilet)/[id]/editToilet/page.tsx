@@ -5,6 +5,8 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import React from 'react'
 import { dummyToilets } from '../../../../../constants';
 import { TFormSchema } from '@/components/SubmitToiletForm';
+import { Button } from '@/components/ui/button';
+import DeleteToilet from '@/components/DeleteToilet';
 
 const page = async ({ params }: { params: { id: string } }) => {
     const { isAuthenticated } = getKindeServerSession()
@@ -25,7 +27,12 @@ const page = async ({ params }: { params: { id: string } }) => {
     return (
         <>
             {isLoggedIn ?
-                <EditToiletWithLogin defaultForm={defaultForm} />
+                <div>
+                    <EditToiletWithLogin defaultForm={defaultForm} />
+                    <DeleteToilet id={params.id} />
+                </div>
+
+
                 :
                 <WithoutLogin />
             }
