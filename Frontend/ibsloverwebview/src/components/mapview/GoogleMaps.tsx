@@ -7,7 +7,7 @@ import { selectCurrentLocation, selectSuccess } from '@/redux/pin/slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { dummyToilets } from '../../../constants';
 import ToiletCard from '../ToiletCard';
-import { selectFilterState } from '@/redux/filter';
+import { IFilter, selectFilterState } from '@/redux/filter';
 import { fetchToiletFromGoogle } from '@/redux/toilet/operations';
 import { selectToiletFromGoogle, selectToiletFromUser } from '@/redux/toilet/slice';
 
@@ -31,8 +31,9 @@ export function MyComponent() {
     const toiletsFromGoogle = useAppSelector(selectToiletFromGoogle)
     const toilets = toiletsFromUser.concat(toiletsFromGoogle)
     const [selectedToilet, setSelectedToilet] = useState<Toilet | null>(null);
-    const filter = useAppSelector(selectFilterState)
+    const toiletFilter = useAppSelector(selectFilterState)
     const isSuccessful = useAppSelector(selectSuccess)
+    const [filteredToilets, setFilteredToilets] = useState<Toilet[]>([]);
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -74,7 +75,30 @@ export function MyComponent() {
         }
     }, [pin])
 
-    useEffect(() => { }, [filter])
+    useEffect(() => {
+        const applyFilters = (toilets: Toilet[], filter: IFilter) => {
+            return toilets.filter(toilet => {
+                if (toilet.isFromUser) {
+                    return (
+                        (!filter.women || toilet.features?.women) &&
+                        (!filter.men || toilet.features?.men) &&
+                        (!filter.accessible || toilet.features?.accessible) &&
+                        (!filter.children || toilet.features?.children) &&
+                        (!filter.free || toilet.features?.free) &&
+                        (!filter.genderNeutral || toilet.features?.genderNeutral)
+                        // && (toilet.votesCount >= filter.voteCount) &&
+                        // (filter.keyword.length === 0 || filter.keyword.some(keyword => toilet.keywords.includes(keyword)))
+                    );
+                } else {
+                    return true
+                }
+
+            });
+        };
+
+        const filtered = applyFilters(toilets, toiletFilter);
+        setFilteredToilets(filtered);
+    }, [toiletsFromUser, toiletsFromGoogle, toiletFilter])
 
     return isLoaded ? (
         <GoogleMap
@@ -87,7 +111,7 @@ export function MyComponent() {
             { /* Child components, such as markers, info windows, etc. */}
             <>
                 <Marker position={{ lat: pin.latitude, lng: pin.longitude }} />
-                {toilets.map((item: Toilet, index) => (
+                {filteredToilets.map((item: Toilet, index) => (
                     <Marker position={{ lat: item.location.coordinates[1], lng: item.location.coordinates[0] }} onClick={() => handleToiletClick(item)} />
                 ))}
                 {selectedToilet ? (
