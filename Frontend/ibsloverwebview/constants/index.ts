@@ -295,3 +295,12 @@ export const aboutPageText = `This is an open source project aim to help you fin
 Imagine someday you are about to shit in your pants, but you have no idea where to go! And you start to search on your map "where is the nearest public toilet?" "oh no😫😫😫 There is no public toilet AT ALL!!" "where is the closest McDonald's??" "Ah! Found it". And you walk 10 minutes to get there. But what you don't know is there is a nearer place you can go to release your stomach JUST BESIDES YOU!!! And this project is to help you avoid this situation.
 
 `
+
+
+
+export const addToiletText1 = `Want to Contribute Toilet Data?`
+export const addToiletText2 = `A publicly-accessible toilet means any toilet that the public are allowed to access without needing to be a customer.
+
+To add or edit a public toilet you will first need to Log in or Sign Up:
+`
+export const addToiletText3 = `Important! You must ensure that you are now standing on or nearby a toilet so you can add a toilet`
