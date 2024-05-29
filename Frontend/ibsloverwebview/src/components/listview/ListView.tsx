@@ -5,6 +5,7 @@ import { dummyToilets } from '../../../constants';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { selectListState, setListStateFalse } from '@/redux/listView';
 import ToiletCard from '../ToiletCard'; import { RootState } from '@/redux/store';
+import { selectToiletFromGoogle, selectToiletFromUser } from '@/redux/toilet/slice';
 ;
 
 interface ToiletComponentProps {
@@ -13,7 +14,10 @@ interface ToiletComponentProps {
 }
 
 export const ListView: React.FC = () => {
-    const toilets = dummyToilets;
+    // const toilets = dummyToilets;
+    const toiletsFromUser = useAppSelector(selectToiletFromUser)
+    const toiletsFromGoogle = useAppSelector(selectToiletFromGoogle)
+    const toilets = toiletsFromUser.concat(toiletsFromGoogle)
     const dispatch = useAppDispatch();
     const listState = useAppSelector(selectListState);
     const [selectedToilet, setSelectedToilet] = useState<Toilet | null>(null);

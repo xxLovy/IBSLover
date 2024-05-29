@@ -3,11 +3,13 @@ import React, { useRef, useEffect, useState } from 'react'
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { setMapRef } from '@/redux/mapSlice';
 import { RootState } from '@/redux/store';
-import { selectCurrentLocation } from '@/redux/pin/selectors';
+import { selectCurrentLocation, selectSuccess } from '@/redux/pin/slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { dummyToilets } from '../../../constants';
 import ToiletCard from '../ToiletCard';
-import { selectFilterState } from '@/redux/filter';
+import { IFilter, selectFilterState } from '@/redux/filter';
+import { fetchToiletFromGoogle } from '@/redux/toilet/operations';
+import { selectToiletFromGoogle, selectToiletFromUser } from '@/redux/toilet/slice';
 
 const containerStyle = {
     width: '100vw',
@@ -24,9 +26,14 @@ export function MyComponent() {
     const dispatch = useAppDispatch();
     const mapReduxRef = useAppSelector((state: RootState) => state.map.mapRef);
     const pin = useAppSelector(selectCurrentLocation)
-    const toilets = dummyToilets
+    // const toilets = dummyToilets
+    const toiletsFromUser = useAppSelector(selectToiletFromUser)
+    const toiletsFromGoogle = useAppSelector(selectToiletFromGoogle)
+    const toilets = toiletsFromUser.concat(toiletsFromGoogle)
     const [selectedToilet, setSelectedToilet] = useState<Toilet | null>(null);
-    const filter = useAppSelector(selectFilterState)
+    const toiletFilter = useAppSelector(selectFilterState)
+    const isSuccessful = useAppSelector(selectSuccess)
+    const [filteredToilets, setFilteredToilets] = useState<Toilet[]>([]);
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -43,6 +50,7 @@ export function MyComponent() {
     }
 
     const onLoad = React.useCallback(function callback(map: google.maps.Map) {
+        dispatch(fetchToiletFromGoogle({ latitude: pin.latitude, longitude: pin.longitude }))
         mapRef.current = map;
         dispatch(setMapRef(map));
         setMap(map);
@@ -62,9 +70,35 @@ export function MyComponent() {
 
     useEffect(() => {
         mapReduxRef?.panTo({ lat: pin.latitude, lng: pin.longitude })
+        if (isSuccessful) {
+            dispatch(fetchToiletFromGoogle({ latitude: pin.latitude, longitude: pin.longitude }))
+        }
     }, [pin])
 
-    useEffect(() => { }, [filter])
+    useEffect(() => {
+        const applyFilters = (toilets: Toilet[], filter: IFilter) => {
+            return toilets.filter(toilet => {
+                if (toilet.isFromUser) {
+                    return (
+                        (!filter.women || toilet.features?.women) &&
+                        (!filter.men || toilet.features?.men) &&
+                        (!filter.accessible || toilet.features?.accessible) &&
+                        (!filter.children || toilet.features?.children) &&
+                        (!filter.free || toilet.features?.free) &&
+                        (!filter.genderNeutral || toilet.features?.genderNeutral)
+                        // && (toilet.votesCount >= filter.voteCount) &&
+                        // (filter.keyword.length === 0 || filter.keyword.some(keyword => toilet.keywords.includes(keyword)))
+                    );
+                } else {
+                    return true
+                }
+
+            });
+        };
+
+        const filtered = applyFilters(toilets, toiletFilter);
+        setFilteredToilets(filtered);
+    }, [toiletsFromUser, toiletsFromGoogle, toiletFilter])
 
     return isLoaded ? (
         <GoogleMap
@@ -77,7 +111,7 @@ export function MyComponent() {
             { /* Child components, such as markers, info windows, etc. */}
             <>
                 <Marker position={{ lat: pin.latitude, lng: pin.longitude }} />
-                {toilets.map((item: Toilet, index) => (
+                {filteredToilets.map((item: Toilet, index) => (
                     <Marker position={{ lat: item.location.coordinates[1], lng: item.location.coordinates[0] }} onClick={() => handleToiletClick(item)} />
                 ))}
                 {selectedToilet ? (

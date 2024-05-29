@@ -1,3 +1,7 @@
+export const APIURL = "http://127.0.0.1:3030/api"
+
+
+
 export const navlinks = [
     {
         lable: "Add a toilet",
