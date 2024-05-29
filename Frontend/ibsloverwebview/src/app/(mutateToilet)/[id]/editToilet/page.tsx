@@ -7,11 +7,16 @@ import { dummyToilets } from '../../../../../constants';
 import { TFormSchema } from '@/components/SubmitToiletForm';
 import { Button } from '@/components/ui/button';
 import DeleteToilet from '@/components/DeleteToilet';
+import { selectToiletFromGoogle, selectToiletFromUser } from '@/redux/toilet/slice';
+import { useAppSelector } from '@/redux/hooks';
 
 const page = async ({ params }: { params: { id: string } }) => {
     const { isAuthenticated } = getKindeServerSession()
     const isLoggedIn = await isAuthenticated();
-    const toilet: Toilet = dummyToilets.filter((item) => (item._id === params.id))[0]
+    const toiletsFromUser = useAppSelector(selectToiletFromUser)
+    const toiletsFromGoogle = useAppSelector(selectToiletFromGoogle)
+    const toilets = toiletsFromUser.concat(toiletsFromGoogle)
+    const toilet: Toilet = toilets.filter((item) => (item._id === params.id))[0]
     const defaultForm: TFormSchema = {
         name: toilet.name,
         women: toilet.features!.women,

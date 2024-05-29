@@ -166,7 +166,7 @@ declare type Toilet = {
     users?: string[];
     removeMsg?: string;
     _id: string;
-    __v?: string;
     price?: string;
-
 }
+
+declare type location = { latitude: number, longitude: number }

@@ -1,11 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { fetchCurrentLocation } from './operations';
+import { RootState } from '../store';
 
 interface PinState {
     latitude: number;
     longitude: number;
     isLoading: boolean;
     error: string | null;
+    success: boolean;
 }
 
 
@@ -15,6 +17,7 @@ const initialState: { pin: PinState } = {
         longitude: -122.4194,
         isLoading: false,
         error: null,
+        success: false
     },
 };
 
@@ -33,6 +36,7 @@ export const pinSlice = createSlice({
                     state.pin.isLoading = false;
                     state.pin.latitude = action.payload.latitude;
                     state.pin.longitude = action.payload.longitude;
+                    state.pin.success = true
                 }
             )
             .addCase(
@@ -46,3 +50,8 @@ export const pinSlice = createSlice({
 });
 
 export const pinReducer = pinSlice.reducer;
+
+export const selectCurrentLocation = (state: RootState) => state.pin.pin;
+export const selectIsLoading = (state: RootState) => state.pin.pin.isLoading;
+export const selectError = (state: RootState) => state.pin.pin.error;
+export const selectSuccess = (state: RootState) => state.pin.pin.success

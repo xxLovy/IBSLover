@@ -3,11 +3,13 @@ import React, { useRef, useEffect, useState } from 'react'
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { setMapRef } from '@/redux/mapSlice';
 import { RootState } from '@/redux/store';
-import { selectCurrentLocation } from '@/redux/pin/selectors';
+import { selectCurrentLocation, selectSuccess } from '@/redux/pin/slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { dummyToilets } from '../../../constants';
 import ToiletCard from '../ToiletCard';
 import { selectFilterState } from '@/redux/filter';
+import { fetchToiletFromGoogle } from '@/redux/toilet/operations';
+import { selectToiletFromGoogle, selectToiletFromUser } from '@/redux/toilet/slice';
 
 const containerStyle = {
     width: '100vw',
@@ -24,9 +26,13 @@ export function MyComponent() {
     const dispatch = useAppDispatch();
     const mapReduxRef = useAppSelector((state: RootState) => state.map.mapRef);
     const pin = useAppSelector(selectCurrentLocation)
-    const toilets = dummyToilets
+    // const toilets = dummyToilets
+    const toiletsFromUser = useAppSelector(selectToiletFromUser)
+    const toiletsFromGoogle = useAppSelector(selectToiletFromGoogle)
+    const toilets = toiletsFromUser.concat(toiletsFromGoogle)
     const [selectedToilet, setSelectedToilet] = useState<Toilet | null>(null);
     const filter = useAppSelector(selectFilterState)
+    const isSuccessful = useAppSelector(selectSuccess)
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -43,6 +49,7 @@ export function MyComponent() {
     }
 
     const onLoad = React.useCallback(function callback(map: google.maps.Map) {
+        dispatch(fetchToiletFromGoogle({ latitude: pin.latitude, longitude: pin.longitude }))
         mapRef.current = map;
         dispatch(setMapRef(map));
         setMap(map);
@@ -62,6 +69,9 @@ export function MyComponent() {
 
     useEffect(() => {
         mapReduxRef?.panTo({ lat: pin.latitude, lng: pin.longitude })
+        if (isSuccessful) {
+            dispatch(fetchToiletFromGoogle({ latitude: pin.latitude, longitude: pin.longitude }))
+        }
     }, [pin])
 
     useEffect(() => { }, [filter])

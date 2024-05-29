@@ -2,10 +2,11 @@
 import React, { useState } from 'react';
 import { sidebarItems, checkboxItems } from '../../../constants';
 import { fetchCurrentLocation } from '@/redux/pin/operations';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setListStateTrue } from '@/redux/listView';
 import { setAccessible, setChildren, setFree, setGenderNeutral, setMen, setWomen } from '@/redux/filter';
 import { useRouter } from 'next/navigation';
+import { selectError, selectIsLoading, selectSuccess } from '@/redux/pin/slice';
 
 const SidebarItems = () => {
     const dispatch = useAppDispatch();
@@ -19,6 +20,7 @@ const SidebarItems = () => {
         genderNeutral: false
     });
     const router = useRouter();
+    const success = useAppSelector(selectSuccess)
 
     const handleFilter = () => {
         setFilterState(!filterState);

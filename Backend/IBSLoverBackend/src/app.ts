@@ -3,6 +3,7 @@ import express from "express";
 import normalRouter from "./routers/fetchInfoRouter";
 import toiletRouter from "./routers/changeToiletRouter";
 import morgan from "morgan";
+import testRouter from "./routers/testRouter";
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(morgan('common'));
 
 app.use("/api/normal", normalRouter);
 app.use("/api/toilet", toiletRouter);
+app.use("/test", testRouter)
 app.use((req, res) => {
     res.status(404).json({ message: "Not found" });
 });
