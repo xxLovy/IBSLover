@@ -29,8 +29,6 @@ export const addToilet = createAsyncThunk(
     }
 )
 
-
-
 export const fetchToiletFromUser = createAsyncThunk(
     "toilet/user",
     async (_, thunkAPI) => {

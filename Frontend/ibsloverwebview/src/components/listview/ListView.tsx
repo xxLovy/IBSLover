@@ -6,6 +6,8 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { selectListState, setListStateFalse } from '@/redux/listView';
 import ToiletCard from '../ToiletCard'; import { RootState } from '@/redux/store';
 import { selectToiletFromGoogle, selectToiletFromUser } from '@/redux/toilet/slice';
+import { selectCurrentLocation } from '@/redux/pin/slice';
+import { calculateDistance } from '@/lib/distance';
 ;
 
 interface ToiletComponentProps {
@@ -22,6 +24,16 @@ export const ListView: React.FC = () => {
     const listState = useAppSelector(selectListState);
     const [selectedToilet, setSelectedToilet] = useState<Toilet | null>(null);
     const mapReduxRef = useAppSelector((state: RootState) => state.map.mapRef);
+    const pin = useAppSelector(selectCurrentLocation);
+    const toiletsWithDistance: Toilet[] = toilets.map((item) => {
+        const newToilet: Toilet = {
+            ...item,
+            distance: calculateDistance(pin.latitude, pin.longitude, item.location.coordinates[1], item.location.coordinates[0])
+        }
+        return newToilet
+    })
+    toiletsWithDistance.sort((a, b) => a.distance! - b.distance!);
+
 
     function handleClose(): void {
         dispatch(setListStateFalse());
@@ -47,7 +59,7 @@ export const ListView: React.FC = () => {
                         ✕
                     </button>
                     <ScrollArea className="h-96">
-                        <ToiletComponent toilets={toilets} onToiletClick={handleToiletClick} />
+                        <ToiletComponent toilets={toiletsWithDistance} onToiletClick={handleToiletClick} />
                     </ScrollArea>
                 </div>
             ) : null}
@@ -69,6 +81,7 @@ const ToiletComponent: React.FC<ToiletComponentProps> = ({ toilets, onToiletClic
                 >
                     <li className="font-bold">{item.name}</li>
                     <li className="text-gray-600">{item.description}</li>
+                    <li>Distance: {item.distance && item.distance * 1000} meters</li>
                 </ul>
             ))}
         </div>

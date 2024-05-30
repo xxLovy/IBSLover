@@ -167,6 +167,7 @@ declare type Toilet = {
     removeMsg?: string;
     _id: string;
     price?: string;
+    distance?: number;
 }
 
 declare type location = { latitude: number, longitude: number }

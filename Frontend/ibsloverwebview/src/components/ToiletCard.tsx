@@ -50,6 +50,7 @@ const ToiletCard: React.FC<ToiletCardProps> = ({ toilet, onClose }) => {
                     </ul> */}
                     <p className="text-gray-600 mt-2">Hours may vary with national holidays or seasonal changes. If you know these hours to be out of date, please edit this toilet.</p>
                 </div>
+                <div>Distance: {toilet.distance && toilet.distance * 1000} meters</div>
                 <div className='flex'>
                     <Link href={`/${toilet._id}/editToilet`}>
                         Edit
