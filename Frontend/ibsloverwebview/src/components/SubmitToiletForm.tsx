@@ -20,6 +20,9 @@ import { login } from "@/redux/user/operations"
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { addToilet } from "@/redux/toilet/operations"
 import { selectCurrentLocation } from "@/redux/pin/slice"
+import { selectSelectedToilets, selectToiletFromUser } from "@/redux/toilet/slice"
+import { useState, useEffect } from "react"
+import VoteToilet from "./VoteToilet"
 
 const formSchema = z.object({
     name: z.string(),
@@ -36,6 +39,16 @@ const formSchema = z.object({
 export type TFormSchema = z.infer<typeof formSchema>
 
 const SubmitToiletForm = ({ toilet }: { toilet?: Toilet }) => {
+    const [isVoting, setIsVoting] = useState(false);
+    const toiletsToVote = useAppSelector(selectSelectedToilets);
+    useEffect(() => {
+        console.log(toiletsToVote)
+        if (toiletsToVote.length > 0) {
+            setIsVoting(true)
+        } else {
+            setIsVoting(false)
+        }
+    }, [toiletsToVote])
     const dispatch = useAppDispatch();
     const location = useAppSelector(selectCurrentLocation)
     const {
@@ -70,9 +83,7 @@ const SubmitToiletForm = ({ toilet }: { toilet?: Toilet }) => {
     })
 
     function onSubmit(values: TFormSchema) {
-        console.log("dispatching")
         dispatch(login({ kindeId: user?.id || '', username: user?.email || '' }))
-        console.log("ok")
         let newToilet: Toilet;
         if (toilet) {
             newToilet = {
@@ -120,55 +131,68 @@ const SubmitToiletForm = ({ toilet }: { toilet?: Toilet }) => {
     }
 
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Toilet Name</FormLabel>
-                            <FormControl>
-                                <Input {...field} placeholder="Put a toilet name or street name here" />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                {checkboxItems.map(item => (
-                    item.key !== "free" && (
-                        <RadioGroupField
-                            key={item.key}
-                            name={item.key as any}
-                            label={item.label}
+        <>
+            <div>
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                        <FormField
                             control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Toilet Name</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} placeholder="Put a toilet name or street name here" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                    )
-                ))}
-                <RadioGroupField
-                    name="free"
-                    label="Free"
-                    control={form.control}
-                    showInputOnYes={true}
-                    inputLabel="Price"
-                />
+                        {checkboxItems.map(item => (
+                            item.key !== "free" && (
+                                <RadioGroupField
+                                    key={item.key}
+                                    name={item.key as any}
+                                    label={item.label}
+                                    control={form.control}
+                                />
+                            )
+                        ))}
+                        <RadioGroupField
+                            name="free"
+                            label="Free"
+                            control={form.control}
+                            showInputOnYes={true}
+                            inputLabel="Price"
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="notes"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Notes</FormLabel>
-                            <FormControl>
-                                <Input {...field} placeholder="Put a note here" />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <Button type="submit">Submit</Button>
-            </form>
-        </Form>
+                        <FormField
+                            control={form.control}
+                            name="notes"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Notes</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} placeholder="Put a note here" />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <Button type="submit">Submit</Button>
+                    </form>
+                </Form>
+            </div>
+
+
+            {isVoting &&
+                <div className="">
+                    <VoteToilet />
+                    <h2 onClick={() => setIsVoting(false)}>Reset</h2>
+                </div>
+            }
+        </>
+
     )
 }
 

@@ -19,8 +19,10 @@ export const addToilet = createAsyncThunk(
                 throw new Error('Failed to update toilet')
             } else if (response.status === 201) {
                 // there are already some toilets nearby. ask user if the toilet she wants to add is from one of those
-                const toiletIds = await response.json()
-                console.log("There are already some toilets nearby")
+                const tempToilets = await response.json()
+                const toiletIds: string[] = [].concat(tempToilets)
+                console.log(`There are already some toilets nearby ${toiletIds}`)
+                return toiletIds
             } else if (response.status == 200) {
                 const data = await response.json()
                 console.log('User updated successfully:', data)
@@ -67,6 +69,9 @@ export const editToilet = createAsyncThunk(
         try {
             const response = await fetch(`${APIURL}/toilet/editToilet/${userId}/${toilet._id}`, {
                 method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({
                     toilet
                 })
@@ -106,7 +111,7 @@ export const voteToilet = createAsyncThunk(
         try {
             const response = await fetch(`${APIURL}/toilet/voteToilet/${userId}/${toiletId}`)
             if (!response.ok) {
-                throw new Error('Failed to remove toilet')
+                throw new Error('Failed to vote toilet')
             }
         } catch (err: any) {
             console.log(err)
