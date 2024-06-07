@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { dummyToilets } from '../../../constants';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -8,6 +8,7 @@ import ToiletCard from '../ToiletCard'; import { RootState } from '@/redux/store
 import { selectToiletFromGoogle, selectToiletFromUser } from '@/redux/toilet/slice';
 import { selectCurrentLocation } from '@/redux/pin/slice';
 import { calculateDistance } from '@/lib/distance';
+import { IFilter, selectFilterState } from '@/redux/filter';
 ;
 
 interface ToiletComponentProps {
@@ -33,6 +34,8 @@ export const ListView: React.FC = () => {
         return newToilet
     })
     toiletsWithDistance.sort((a, b) => a.distance! - b.distance!);
+    const toiletFilter = useAppSelector(selectFilterState)
+    const [filteredToilets, setFilteredToilets] = useState<Toilet[]>([]);
 
 
     function handleClose(): void {
@@ -48,6 +51,31 @@ export const ListView: React.FC = () => {
         setSelectedToilet(null)
     }
 
+    useEffect(() => {
+        const applyFilters = (toilets: Toilet[], filter: IFilter) => {
+            return toilets.filter(toilet => {
+                if (toilet.isFromUser) {
+                    return (
+                        (!filter.women || toilet.features?.women) &&
+                        (!filter.men || toilet.features?.men) &&
+                        (!filter.accessible || toilet.features?.accessible) &&
+                        (!filter.children || toilet.features?.children) &&
+                        (!filter.free || toilet.features?.free) &&
+                        (!filter.genderNeutral || toilet.features?.genderNeutral)
+                        // && (toilet.votesCount >= filter.voteCount) &&
+                        // (filter.keyword.length === 0 || filter.keyword.some(keyword => toilet.keywords.includes(keyword)))
+                    );
+                } else {
+                    return true
+                }
+
+            });
+        };
+
+        const filtered = applyFilters(toiletsWithDistance, toiletFilter);
+        setFilteredToilets(filtered);
+    }, [toiletsFromUser, toiletsFromGoogle, toiletFilter])
+
     return (
         <>
             {listState ? (
@@ -59,7 +87,7 @@ export const ListView: React.FC = () => {
                         ✕
                     </button>
                     <ScrollArea className="h-96">
-                        <ToiletComponent toilets={toiletsWithDistance} onToiletClick={handleToiletClick} />
+                        <ToiletComponent toilets={filteredToilets} onToiletClick={handleToiletClick} />
                     </ScrollArea>
                 </div>
             ) : null}

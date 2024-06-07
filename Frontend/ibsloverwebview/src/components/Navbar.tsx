@@ -1,5 +1,5 @@
 import React from 'react'
-import { navlinks } from '../../../constants'
+import { navlinks } from '../../constants'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'

@@ -7,10 +7,14 @@ export const addToilet = createAsyncThunk(
         try {
             const response = await fetch(`${APIURL}/toilet/addToilet/${userId}`, {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({
                     toilet
                 })
-            })
+            });
+
             if (!response.ok) {
                 throw new Error('Failed to update toilet')
             } else if (response.status === 201) {

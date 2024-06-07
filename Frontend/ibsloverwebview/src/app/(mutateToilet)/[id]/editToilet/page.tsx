@@ -17,23 +17,13 @@ const page = async ({ params }: { params: { id: string } }) => {
     const toiletsFromGoogle = useAppSelector(selectToiletFromGoogle)
     const toilets = toiletsFromUser.concat(toiletsFromGoogle)
     const toilet: Toilet = toilets.filter((item) => (item._id === params.id))[0]
-    const defaultForm: TFormSchema = {
-        name: toilet.name,
-        women: toilet.features!.women,
-        men: toilet.features!.men,
-        accessible: toilet.features!.accessible,
-        children: toilet.features!.children,
-        genderNeutral: toilet.features!.genderNeutral,
-        free: toilet.features!.free,
-        price: toilet?.price,
-        notes: toilet.description,
-    }
+
 
     return (
         <>
             {isLoggedIn ?
                 <div>
-                    <EditToiletWithLogin defaultForm={defaultForm} />
+                    <EditToiletWithLogin toilet={toilet} />
                     <DeleteToilet id={params.id} />
                 </div>
 

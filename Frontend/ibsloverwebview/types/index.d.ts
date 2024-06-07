@@ -165,9 +165,20 @@ declare type Toilet = {
     keyword?: string;
     users?: string[];
     removeMsg?: string;
-    _id: string;
+    _id?: string;
     price?: string;
     distance?: number;
 }
 
 declare type location = { latitude: number, longitude: number }
+
+declare type User = {
+    username: string;
+    toilets?: string[];
+    favorites?: string[];
+    kindeId: string;
+    family_name?: string;
+    given_name?: string;
+    picture?: string;
+    email?: string;
+}

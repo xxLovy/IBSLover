@@ -10,12 +10,16 @@ import {
     FormField,
     FormItem,
     FormLabel,
-    FormDescription,
     FormMessage,
 } from "@/components/ui/form"
 import { checkboxItems } from "../../constants"
 import RadioGroupField from "./FormRadioGroup"
 import { Input } from "./ui/input"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
+import { login } from "@/redux/user/operations"
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { addToilet } from "@/redux/toilet/operations"
+import { selectCurrentLocation } from "@/redux/pin/slice"
 
 const formSchema = z.object({
     name: z.string(),
@@ -31,7 +35,25 @@ const formSchema = z.object({
 
 export type TFormSchema = z.infer<typeof formSchema>
 
-const SubmitToiletForm = ({ defaultForm }: { defaultForm?: TFormSchema }) => {
+const SubmitToiletForm = ({ toilet }: { toilet?: Toilet }) => {
+    const dispatch = useAppDispatch();
+    const location = useAppSelector(selectCurrentLocation)
+    const {
+        user,
+    } = useKindeBrowserClient();
+    let defaultForm: TFormSchema | undefined = toilet ?
+        {
+            name: toilet.name,
+            women: toilet.features!.women,
+            men: toilet.features!.men,
+            accessible: toilet.features!.accessible,
+            children: toilet.features!.children,
+            genderNeutral: toilet.features!.genderNeutral,
+            free: toilet.features!.free,
+            price: toilet?.price,
+            notes: toilet.description,
+        } : undefined
+
     const form = useForm<TFormSchema>({
         resolver: zodResolver(formSchema),
         defaultValues: defaultForm || {
@@ -48,8 +70,53 @@ const SubmitToiletForm = ({ defaultForm }: { defaultForm?: TFormSchema }) => {
     })
 
     function onSubmit(values: TFormSchema) {
-        // TODO: dispatch
-        console.log(values)
+        console.log("dispatching")
+        dispatch(login({ kindeId: user?.id || '', username: user?.email || '' }))
+        console.log("ok")
+        let newToilet: Toilet;
+        if (toilet) {
+            newToilet = {
+                ...toilet,
+                name: values.name,
+                description: values.notes,
+                lastUpdateTime: String(new Date()),
+                features: {
+                    children: values.children as threeCases,
+                    //women, men, accessible, genderNeutral, free
+                    women: values.women as threeCases,
+                    accessible: values.accessible as threeCases,
+                    genderNeutral: values.genderNeutral as threeCases,
+                    free: values.free as threeCases,
+                    men: values.men as threeCases
+                },
+                price: values.price,
+            }
+        } else {
+            newToilet = {
+                name: values.name,
+                description: values.notes,
+                lastUpdateTime: String(new Date()),
+                features: {
+                    children: values.children as threeCases,
+                    //women, men, accessible, genderNeutral, free
+                    women: values.women as threeCases,
+                    accessible: values.accessible as threeCases,
+                    genderNeutral: values.genderNeutral as threeCases,
+                    free: values.free as threeCases,
+                    men: values.men as threeCases
+                },
+                price: values.price,
+                isFromUser: true,
+                isRemoved: false,
+                votesCount: 0,
+                location: {
+                    type: "Point",
+                    coordinates: [location.longitude, location.latitude]
+                }
+            }
+        }
+
+        dispatch(addToilet({ toilet: newToilet, userId: user?.id || '' }))
     }
 
     return (
