@@ -8,6 +8,9 @@ const UserSchema = new Schema({
     },
     favorites: {
         type: [String]
+    },
+    kindeId: {
+        type: String, required: true
     }
 })
 
@@ -15,6 +18,7 @@ export interface IUser extends Document {
     username: string;
     toilets?: string[];
     favorites?: string[];
+    kindeId: string;
 }
 
 const User = models?.User || model<IUser>('User', UserSchema);
