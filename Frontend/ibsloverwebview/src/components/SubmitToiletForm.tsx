@@ -18,7 +18,7 @@ import { Input } from "./ui/input"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { login } from "@/redux/user/operations"
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import { addToilet } from "@/redux/toilet/operations"
+import { addToilet, editToilet } from "@/redux/toilet/operations"
 import { selectCurrentLocation } from "@/redux/pin/slice"
 import { selectSelectedToilets, selectToiletFromUser } from "@/redux/toilet/slice"
 import { useState, useEffect } from "react"
@@ -38,7 +38,7 @@ const formSchema = z.object({
 
 export type TFormSchema = z.infer<typeof formSchema>
 
-const SubmitToiletForm = ({ toilet }: { toilet?: Toilet }) => {
+const SubmitToiletForm = ({ toiletId }: { toiletId?: string }) => {
     const [isVoting, setIsVoting] = useState(false);
     const toiletsToVote = useAppSelector(selectSelectedToilets);
     useEffect(() => {
@@ -54,6 +54,8 @@ const SubmitToiletForm = ({ toilet }: { toilet?: Toilet }) => {
     const {
         user,
     } = useKindeBrowserClient();
+    const toilets = useAppSelector(selectToiletFromUser)
+    const toilet = toilets.filter(item => item._id === toiletId)[0]
     let defaultForm: TFormSchema | undefined = toilet ?
         {
             name: toilet.name,
@@ -127,7 +129,12 @@ const SubmitToiletForm = ({ toilet }: { toilet?: Toilet }) => {
             }
         }
 
-        dispatch(addToilet({ toilet: newToilet, userId: user?.id || '' }))
+        if (toilet) {
+            dispatch(editToilet({ toilet: newToilet, userId: user?.id || '' }))
+        } else {
+            dispatch(addToilet({ toilet: newToilet, userId: user?.id || '' }))
+        }
+
     }
 
     return (
