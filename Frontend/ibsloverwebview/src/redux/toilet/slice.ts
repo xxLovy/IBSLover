@@ -8,7 +8,8 @@ interface IToiletState {
     googleToilets: Toilet[];
     loading: boolean;
     error: string | null;
-    voting: boolean
+    voting: boolean;
+    selectedToiletIds: string[];
 }
 
 const initialState: IToiletState = {
@@ -16,7 +17,8 @@ const initialState: IToiletState = {
     googleToilets: [],
     loading: false,
     error: null,
-    voting: false
+    voting: false,
+    selectedToiletIds: []
 };
 
 export const toiletSlice = createSlice({
@@ -30,12 +32,13 @@ export const toiletSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(addToilet.fulfilled, (state, action: PayloadAction<Toilet | string>) => {
+            .addCase(addToilet.fulfilled, (state, action: PayloadAction<Toilet | string[]>) => {
                 state.loading = false;
-                if (typeof action.payload === "string") {
+                if (Array.isArray(action.payload)) {
                     state.voting = true
+                    state.selectedToiletIds = state.selectedToiletIds.concat(action.payload)
                 } else {
-                    state.userToilets.push(action.payload);
+                    // state.userToilets.push(action.payload as Toilet);
                 }
             })
             .addCase(addToilet.rejected, (state, action: PayloadAction<any>) => {
@@ -117,6 +120,7 @@ export const toiletSlice = createSlice({
 
 export const toiletReducer = toiletSlice.reducer;
 export const selectToiletFromUser = (state: RootState) => state.toilet.userToilets;
+export const selectSelectedToilets = (state: RootState) => state.toilet.selectedToiletIds;
 export const selectToiletFromGoogle = (state: RootState) => state.toilet.googleToilets;
 export const selectToiletLoading = (state: RootState) => state.toilet.loading;
 export const selectToiletError = (state: RootState) => state.toilet.error;

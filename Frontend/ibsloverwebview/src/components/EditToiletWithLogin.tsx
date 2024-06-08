@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import React from 'react'
 import SubmitToiletForm, { TFormSchema } from './SubmitToiletForm';
 
-const EditToiletWithLogin = async ({ defaultForm }: { defaultForm: TFormSchema }) => {
+const EditToiletWithLogin = async ({ toiletId }: { toiletId: string }) => {
     const { isAuthenticated } = getKindeServerSession();
     const isLoggedIn = await isAuthenticated();
 
@@ -12,7 +12,7 @@ const EditToiletWithLogin = async ({ defaultForm }: { defaultForm: TFormSchema }
     }
     return (
         <div>
-            <SubmitToiletForm defaultForm={defaultForm} />
+            <SubmitToiletForm toiletId={toiletId} />
         </div>
     )
 }

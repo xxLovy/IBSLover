@@ -4,6 +4,7 @@ import mapReducer from './mapSlice';
 import { listViewReducer } from './listView';
 import { filterReducer } from './filter';
 import { toiletReducer } from './toilet/slice';
+import { userReducer } from './user/slice';
 // import { googlePlacesReducer } from './googleMapsPlaces/slice'
 // import { stateManageReducer } from './stateManage/slice'
 // import { userPlacesReducer } from './userCreatedPlaces/slice'
@@ -16,12 +17,12 @@ export const store = configureStore({
         map: mapReducer,
         listView: listViewReducer,
         filter: filterReducer,
-        toilet: toiletReducer
+        toilet: toiletReducer,
         // googlePlaces: googlePlacesReducer,
         // stateManage: stateManageReducer,
         // userPlaces: userPlacesReducer,
         // filter: filterReducer,
-        // user: userReducer,
+        user: userReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({ serializableCheck: false }),

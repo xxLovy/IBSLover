@@ -8,8 +8,10 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { dummyToilets } from '../../../constants';
 import ToiletCard from '../ToiletCard';
 import { IFilter, selectFilterState } from '@/redux/filter';
-import { fetchToiletFromGoogle } from '@/redux/toilet/operations';
+import { fetchToiletFromGoogle, fetchToiletFromUser } from '@/redux/toilet/operations';
 import { selectToiletFromGoogle, selectToiletFromUser } from '@/redux/toilet/slice';
+import { calculateDistance } from '@/lib/distance';
+
 
 const containerStyle = {
     width: '100vw',
@@ -29,7 +31,16 @@ export function MyComponent() {
     // const toilets = dummyToilets
     const toiletsFromUser = useAppSelector(selectToiletFromUser)
     const toiletsFromGoogle = useAppSelector(selectToiletFromGoogle)
-    const toilets = toiletsFromUser.concat(toiletsFromGoogle)
+    let toilets = toiletsFromUser.concat(toiletsFromGoogle)
+    const toiletsWithDistance: Toilet[] = toilets.map((item) => {
+        const newToilet: Toilet = {
+            ...item,
+            distance: calculateDistance(pin.latitude, pin.longitude, item.location.coordinates[1], item.location.coordinates[0])
+        }
+        return newToilet
+    })
+    toiletsWithDistance.sort((a, b) => a.distance! - b.distance!);
+    toilets = toiletsWithDistance
     const [selectedToilet, setSelectedToilet] = useState<Toilet | null>(null);
     const toiletFilter = useAppSelector(selectFilterState)
     const isSuccessful = useAppSelector(selectSuccess)
@@ -50,6 +61,7 @@ export function MyComponent() {
     }
 
     const onLoad = React.useCallback(function callback(map: google.maps.Map) {
+        dispatch(fetchToiletFromUser())
         dispatch(fetchToiletFromGoogle({ latitude: pin.latitude, longitude: pin.longitude }))
         mapRef.current = map;
         dispatch(setMapRef(map));
@@ -99,6 +111,8 @@ export function MyComponent() {
         const filtered = applyFilters(toilets, toiletFilter);
         setFilteredToilets(filtered);
     }, [toiletsFromUser, toiletsFromGoogle, toiletFilter])
+    const MarkerGoogle = '/MarkerGoogle.svg';
+    const MarkerUser = '/MarkerUser.svg'
 
     return isLoaded ? (
         <GoogleMap
@@ -112,7 +126,7 @@ export function MyComponent() {
             <>
                 <Marker position={{ lat: pin.latitude, lng: pin.longitude }} />
                 {filteredToilets.map((item: Toilet, index) => (
-                    <Marker position={{ lat: item.location.coordinates[1], lng: item.location.coordinates[0] }} onClick={() => handleToiletClick(item)} />
+                    <Marker position={{ lat: item.location.coordinates[1], lng: item.location.coordinates[0] }} onClick={() => handleToiletClick(item)} icon={item.isFromUser ? MarkerUser : MarkerGoogle} />
                 ))}
                 {selectedToilet ? (
                     <ToiletCard toilet={selectedToilet} onClose={handleCloseToilet} />
