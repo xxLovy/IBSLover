@@ -24,6 +24,7 @@ export const addToilet = async (req: Request, res: Response) => {
             },
             isFromUser: true
         });
+        console.log(nearbyToilets)
 
         if (nearbyToilets.length > 0) {
             const toiletIds = nearbyToilets.map(toilet => toilet._id.toString());
