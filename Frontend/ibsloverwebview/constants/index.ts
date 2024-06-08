@@ -38,10 +38,11 @@ export const sidebarItems = [
         click: "Find"
     },
     {
-        lable: "List View",
+        lable: "Show List View",
+        lable2: "Hide List View",
         icon: "",
         click: "List"
-    }
+    },
 ]
 
 

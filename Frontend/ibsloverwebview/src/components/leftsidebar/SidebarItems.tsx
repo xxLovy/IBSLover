@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { sidebarItems, checkboxItems } from '../../../constants';
 import { fetchCurrentLocation } from '@/redux/pin/operations';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { setListStateTrue } from '@/redux/listView';
+import { selectListState, setListStateReverse, setListStateTrue } from '@/redux/listView';
 import { setAccessible, setChildren, setFree, setGenderNeutral, setMen, setWomen } from '@/redux/filter';
 import { useRouter } from 'next/navigation';
 import { selectError, selectIsLoading, selectSuccess } from '@/redux/pin/slice';
@@ -19,6 +19,7 @@ const SidebarItems = () => {
         free: false,
         genderNeutral: false
     });
+    const showListView = useAppSelector(selectListState)
     const router = useRouter();
     const success = useAppSelector(selectSuccess)
 
@@ -35,7 +36,7 @@ const SidebarItems = () => {
     };
 
     const handleList = () => {
-        dispatch(setListStateTrue());
+        dispatch(setListStateReverse());
     };
 
     const handleClick = (clickType: "Filter" | "Add" | "Find" | "List") => {
@@ -85,7 +86,7 @@ const SidebarItems = () => {
                 {sidebarItems.map((item, index) => (
                     <li key={index} className='pt-5 cursor-pointer hover:text-red-500'>
                         <span onClick={() => handleClick(item.click as "Filter" | "Add" | "Find" | "List")}>
-                            {item.lable}
+                            {(showListView && item.lable2) ? item.lable2 : item.lable}
                         </span>
                         {item.click === "Filter" && filterState && (
                             <div className="mt-2 ml-4 text-black">

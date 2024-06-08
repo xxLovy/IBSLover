@@ -1,6 +1,7 @@
 "use client"
 import Link from 'next/link';
 import React from 'react';
+import { Button } from './ui/button';
 
 interface ToiletCardProps {
     toilet: Toilet;
@@ -22,12 +23,12 @@ const ToiletCard: React.FC<ToiletCardProps> = ({ toilet, onClose }) => {
                 <div className="mb-4">
                     <h3 className="text-lg font-semibold">Features</h3>
                     <ul className="list-disc list-inside">
-                        <li>Women: {toilet.features?.women}</li>
-                        <li>Men: {toilet.features?.men}</li>
-                        <li>Accessible: {toilet.features?.accessible}</li>
-                        <li>Children: {toilet.features?.children}</li>
-                        <li>Free: {toilet.features?.free ? 'Yes' : `No, Fee: ${toilet.features?.fee}p`}</li>
-                        <li>Gender Neutral: {toilet.features?.genderNeutral}</li>
+                        <li key={0}>Women: {toilet.features?.women}</li>
+                        <li key={1}>Men: {toilet.features?.men}</li>
+                        <li key={2}>Accessible: {toilet.features?.accessible}</li>
+                        <li key={3}>Children: {toilet.features?.children}</li>
+                        <li key={4}>Free: {toilet.features?.free ? 'Yes' : `No, Fee: ${toilet.features?.fee}p`}</li>
+                        <li key={5}>Gender Neutral: {toilet.features?.genderNeutral}</li>
                         {/* <li>Baby Changing: {toilet.features?.babyChanging}</li>
                         <li>Urinal Only: {toilet.features?.urinalOnly}</li>
                         <li>Automatic: {toilet.features?.automatic}</li> */}
@@ -52,9 +53,13 @@ const ToiletCard: React.FC<ToiletCardProps> = ({ toilet, onClose }) => {
                 </div>
                 <div>Distance: {toilet.distance && toilet.distance * 1000} meters</div>
                 <div className='flex'>
-                    <Link href={`/${toilet._id}/editToilet`}>
-                        Edit
-                    </Link>
+                    {toilet.isFromUser &&
+                        <Button>
+                            <Link href={`/${toilet._id}/editToilet`}>
+                                Edit
+                            </Link>
+                        </Button>
+                    }
                 </div>
             </div>
             <style jsx>{`

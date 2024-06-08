@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import { navlinks } from '../../../constants'
+import { navlinks } from '../../constants'
 
 const Footer = () => {
     return (

@@ -1,10 +1,9 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { dummyToilets } from '../../../constants';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { selectListState, setListStateFalse } from '@/redux/listView';
-import ToiletCard from '../ToiletCard'; import { RootState } from '@/redux/store';
+import ToiletCard from './ToiletCard'; import { RootState } from '@/redux/store';
 import { selectToiletFromGoogle, selectToiletFromUser } from '@/redux/toilet/slice';
 import { selectCurrentLocation } from '@/redux/pin/slice';
 import { calculateDistance } from '@/lib/distance';
@@ -107,7 +106,7 @@ const ToiletComponent: React.FC<ToiletComponentProps> = ({ toilets, onToiletClic
                     className={`p-5 pr-10 ${index !== 0 ? 'border-t border-gray-300' : ''} cursor-pointer hover:bg-gray-200`}
                     onClick={() => onToiletClick(item)}
                 >
-                    <li className="font-bold">{item.name}</li>
+                    <li className={`font-bold ${!item.isFromUser ? "text-black" : "text-blue-900"}`}>{item.name}</li>
                     <li className="text-gray-600">{item.description}</li>
                     <li>Distance: {item.distance && item.distance * 1000} meters</li>
                 </ul>

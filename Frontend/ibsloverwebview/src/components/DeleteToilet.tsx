@@ -22,7 +22,6 @@ const DeleteToilet = ({ id }: { id: string }) => {
     const dispatch = useAppDispatch()
     const { user } = useKindeBrowserClient();
     function handleDelete() {
-        //TODO: dispatch
         dispatch(removeToilet({ toiletId: id, userId: user?.id || "", msg: msg }))
     }
 

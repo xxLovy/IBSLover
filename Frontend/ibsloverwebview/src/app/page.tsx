@@ -1,5 +1,5 @@
 import Sidebar from "@/components/leftsidebar/Sidebar";
-import ListView from "@/components/listview/ListView";
+import ListView from "@/components/ListView";
 import MapView from "@/components/mapview/MapView";
 
 export default function Home() {

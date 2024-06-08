@@ -20,9 +20,12 @@ export const listViewSlice = createSlice({
         setListStateTrue: (state) => {
             state.listState = true;
         },
+        setListStateReverse: (state) => {
+            state.listState = !state.listState
+        }
     },
 });
 
-export const { setListStateFalse, setListStateTrue } = listViewSlice.actions;
+export const { setListStateFalse, setListStateTrue, setListStateReverse } = listViewSlice.actions;
 export const listViewReducer = listViewSlice.reducer;
 export const selectListState = (state: RootState) => state.listView.listState;
