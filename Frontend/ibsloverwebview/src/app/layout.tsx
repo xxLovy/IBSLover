@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ReduxProvider from "@/redux/ReduxProvider";
+import { Toaster } from "@/components/ui/toaster"
 
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -22,6 +23,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <Footer />
           </div> */}
         </ReduxProvider>
+        <Toaster />
       </body>
 
     </html >

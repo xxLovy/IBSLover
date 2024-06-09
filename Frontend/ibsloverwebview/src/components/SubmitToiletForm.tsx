@@ -20,9 +20,12 @@ import { login } from "@/redux/user/operations"
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { addToilet, editToilet } from "@/redux/toilet/operations"
 import { selectCurrentLocation } from "@/redux/pin/slice"
-import { selectSelectedToilets, selectToiletFromUser } from "@/redux/toilet/slice"
+import { selectAddSuccess, selectEditSuccess, selectRemoveSuccess, selectSelectedToilets, selectToiletFromUser, selectVoteSuccess, setAddToastFalse, setEditToastFalse, setRemoveToastFalse, setVoteToastFalse } from "@/redux/toilet/slice"
 import { useState, useEffect } from "react"
 import VoteToilet from "./VoteToilet"
+import { useToast } from "./ui/use-toast"
+import { redirect } from "next/navigation"
+
 
 const formSchema = z.object({
     name: z.string(),
@@ -56,6 +59,12 @@ const SubmitToiletForm = ({ toiletId }: { toiletId?: string }) => {
     } = useKindeBrowserClient();
     const toilets = useAppSelector(selectToiletFromUser)
     const toilet = toilets.filter(item => item._id === toiletId)[0]
+    const addSuccess = useAppSelector(selectAddSuccess);
+    const editSuccess = useAppSelector(selectEditSuccess);
+    const voteSuccess = useAppSelector(selectVoteSuccess);
+    const removeSuccess = useAppSelector(selectRemoveSuccess);
+    const { toast } = useToast();
+
     let defaultForm: TFormSchema | undefined = toilet ?
         {
             name: toilet.name,
@@ -136,6 +145,40 @@ const SubmitToiletForm = ({ toiletId }: { toiletId?: string }) => {
         }
 
     }
+    useEffect(() => {
+        if (addSuccess) {
+            dispatch(setAddToastFalse())
+            toast({
+                title: "Success",
+                description: `You have successfully added a toilet`,
+            });
+            redirect("/")
+        }
+        if (editSuccess) {
+            dispatch(setEditToastFalse())
+            toast({
+                title: "Success",
+                description: `You have successfully edited a toilet`,
+            });
+            redirect("/")
+        }
+        if (voteSuccess) {
+            dispatch(setVoteToastFalse())
+            toast({
+                title: "Success",
+                description: `You have successfully voted a toilet`,
+            });
+            redirect("/")
+        }
+        if (removeSuccess) {
+            dispatch(setRemoveToastFalse())
+            toast({
+                title: "Success",
+                description: `You have successfully removed a toilet`,
+            });
+            redirect("/")
+        }
+    }, [addSuccess, editSuccess, voteSuccess, removeSuccess])
 
     return (
         <>

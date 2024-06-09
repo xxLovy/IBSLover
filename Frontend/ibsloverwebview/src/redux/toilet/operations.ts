@@ -97,6 +97,7 @@ export const removeToilet = createAsyncThunk(
             if (!response.ok) {
                 throw new Error('Failed to remove toilet')
             }
+            return toiletId
 
         } catch (err: any) {
             console.log(err)
