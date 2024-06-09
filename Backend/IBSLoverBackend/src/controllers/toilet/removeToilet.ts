@@ -21,7 +21,7 @@ export const removeToilet = async (req: Request, res: Response) => {
         removingToilet.users.push(userId);
 
         await removingToilet.save();
-        res.status(200).json({ message: "Remove successful", removingToilet });
+        res.status(200).json(toiletId);
     } catch (error) {
         console.error(error);
         res.status(500).send('An error occurred while removing the toilet.');

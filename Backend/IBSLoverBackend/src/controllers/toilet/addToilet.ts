@@ -22,7 +22,8 @@ export const addToilet = async (req: Request, res: Response) => {
                     $maxDistance: MAX_DISTANCE
                 }
             },
-            isFromUser: true
+            isFromUser: true,
+            isRemoved: { $ne: true } // Ensure the removing property is not true
         });
         console.log(nearbyToilets)
 
