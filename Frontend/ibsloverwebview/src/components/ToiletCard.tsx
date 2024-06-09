@@ -42,12 +42,6 @@ const ToiletCard: React.FC<ToiletCardProps> = ({ toilet, onClose }) => {
                             <FeatureComponent lable='Gender Neutral' status={toilet.features?.genderNeutral} Icon='' key={3} />
                             <FeatureComponent lable='Children' status={toilet.features?.children} Icon='' key={4} />
                             <FeatureComponent lable='Free' status={toilet.features?.free} Icon='' key={5} />
-                            {/* <li className="flex items-center">Women: <span className="ml-2">{getStatusIcon(toilet.features?.women)}</span></li>
-                            <li className="flex items-center">Men: <span className="ml-2">{getStatusIcon(toilet.features?.men)}</span></li>
-                            <li className="flex items-center">Accessible: <span className="ml-2">{getStatusIcon(toilet.features?.accessible)}</span></li>
-                            <li className="flex items-center">Gender Neutral: <span className="ml-2">{getStatusIcon(toilet.features?.genderNeutral)}</span></li>
-                            <li className="flex items-center">Children: <span className="ml-2">{getStatusIcon(toilet.features?.children)}</span></li>
-                            <li className="flex items-center">Free: <span className="ml-2">{getStatusIcon(toilet.features?.free)}</span></li> */}
                         </ul>
                     </div>
                     <div>
@@ -59,14 +53,36 @@ const ToiletCard: React.FC<ToiletCardProps> = ({ toilet, onClose }) => {
                     <div>
                         <h3 className="text-lg font-semibold">Opening Hours</h3>
                         <ul className="list-none">
-                            <li>Monday: {toilet.openingHours?.monday || 'Unknown'}</li>
-                            <li>Tuesday: {toilet.openingHours?.tuesday || 'Unknown'}</li>
-                            <li>Wednesday: {toilet.openingHours?.wednesday || 'Unknown'}</li>
-                            <li>Thursday: {toilet.openingHours?.thursday || 'Unknown'}</li>
-                            <li>Friday: {toilet.openingHours?.friday || 'Unknown'}</li>
-                            <li>Saturday: {toilet.openingHours?.saturday || 'Unknown'}</li>
-                            <li>Sunday: {toilet.openingHours?.sunday || 'Unknown'}</li>
+                            <li className='flex justify-between pr-10' key="monday">
+                                <span>Monday </span>
+                                <span>{toilet.openingHours?.monday || 'Unknown'}</span>
+                            </li>
+                            <li className='flex justify-between pr-10' key="tuesday">
+                                <span>Tuesday </span>
+                                <span>{toilet.openingHours?.tuesday || 'Unknown'}</span>
+                            </li>
+                            <li className='flex justify-between pr-10' key="wednesday">
+                                <span>Wednesday </span>
+                                <span>{toilet.openingHours?.wednesday || 'Unknown'}</span>
+                            </li>
+                            <li className='flex justify-between pr-10' key="thursday">
+                                <span>Thursday </span>
+                                <span>{toilet.openingHours?.thursday || 'Unknown'}</span>
+                            </li>
+                            <li className='flex justify-between pr-10' key="friday">
+                                <span>Friday </span>
+                                <span>{toilet.openingHours?.friday || 'Unknown'}</span>
+                            </li>
+                            <li className='flex justify-between pr-10' key="saturday">
+                                <span>Saturday </span>
+                                <span>{toilet.openingHours?.saturday || 'Unknown'}</span>
+                            </li>
+                            <li className='flex justify-between pr-10' key="sunday">
+                                <span>Sunday </span>
+                                <span>{toilet.openingHours?.sunday || 'Unknown'}</span>
+                            </li>
                         </ul>
+
                         <p className="text-gray-600 mt-2">Hours may vary with national holidays or seasonal changes. If you know these hours to be out of date, please edit this toilet.</p>
                     </div>
                 </div>

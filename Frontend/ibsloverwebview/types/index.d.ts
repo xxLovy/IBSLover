@@ -156,7 +156,15 @@ declare type Toilet = {
         coordinates: number[]; // [longitude, latitude]
     };
     lastUpdateTime: string;
-    openingHours?: Date;
+    openingHours?: {
+        monday: string;
+        tuesday: string;
+        wednesday: string;
+        thursday: string;
+        friday: string;
+        saturday: string;
+        sunday: string;
+    };
     isOpening?: boolean;
     features?: features;
     isRemoved: boolean;
