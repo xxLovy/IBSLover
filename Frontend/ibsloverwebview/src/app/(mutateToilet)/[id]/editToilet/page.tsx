@@ -13,6 +13,9 @@ const page = async ({ params }: { params: { id: string } }) => {
         <>
             {isLoggedIn ?
                 <div>
+                    <div>
+                        <p>Here you can edit the toilet you just choose</p>
+                    </div>
                     <EditToiletWithLogin toiletId={id} />
                     <DeleteToilet id={params.id} />
                 </div>

@@ -26,7 +26,7 @@ const RadioGroupField: React.FC<RadioGroupFieldProps> = ({ name, label, control,
             name={name}
             render={({ field }) => (
                 <FormItem>
-                    <FormLabel>{label}</FormLabel>
+                    <FormLabel className="font-bold text-lg">{label}</FormLabel>
                     <FormControl>
                         <Controller
                             name={name}
@@ -35,19 +35,19 @@ const RadioGroupField: React.FC<RadioGroupFieldProps> = ({ name, label, control,
                                 <RadioGroup
                                     value={field.value}
                                     onValueChange={field.onChange}
-                                    className="flex flex-row"
+                                    className="flex flex-row justify-between"
                                 >
-                                    <div className="flex items-center space-x-2">
+                                    <div className="flex items-center space-x-5">
                                         <RadioGroupItem value="yes" id={`${name}-yes`} />
-                                        <Label htmlFor={`${name}-yes`}>yes</Label>
+                                        <Label htmlFor={`${name}-yes`} className="text-lg">Yes</Label>
                                     </div>
-                                    <div className="flex items-center space-x-2">
+                                    <div className="flex items-center space-x-5">
                                         <RadioGroupItem value="no" id={`${name}-no`} />
-                                        <Label htmlFor={`${name}-no`}>no</Label>
+                                        <Label htmlFor={`${name}-no`} className="text-lg">No</Label>
                                     </div>
-                                    <div className="flex items-center space-x-2">
+                                    <div className="flex items-center space-x-5">
                                         <RadioGroupItem value="dontknow" id={`${name}-dontknow`} />
-                                        <Label htmlFor={`${name}-dontknow`}>dont know</Label>
+                                        <Label htmlFor={`${name}-dontknow`} className="text-lg">Dont know</Label>
                                     </div>
                                 </RadioGroup>
                             )}

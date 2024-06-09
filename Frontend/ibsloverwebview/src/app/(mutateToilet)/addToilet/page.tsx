@@ -11,7 +11,12 @@ const page = async () => {
     return (
         <>
             {isLoggedIn ?
-                <AddToiletWithLogin />
+                <>
+                    <div>
+                        <p>Here you can choose the toilet to add by filling the form below. Thanks for your contribution</p>
+                    </div>
+                    <AddToiletWithLogin />
+                </>
                 :
                 <WithoutLogin />
             }

@@ -30,7 +30,7 @@ const DeleteToilet = ({ id }: { id: string }) => {
         <div className='flex flex-row p-10 w-full justify-center'>
             <AlertDialog>
                 <AlertDialogTrigger asChild>
-                    <Button>Delete</Button>
+                    <Button className='w-2/3'>Delete</Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                     <AlertDialogHeader>

@@ -28,7 +28,7 @@ import { redirect } from "next/navigation"
 
 
 const formSchema = z.object({
-    name: z.string(),
+    name: z.string().min(2),
     women: z.string(),
     men: z.string(),
     accessible: z.string(),
@@ -181,8 +181,8 @@ const SubmitToiletForm = ({ toiletId }: { toiletId?: string }) => {
     }, [addSuccess, editSuccess, voteSuccess, removeSuccess])
 
     return (
-        <>
-            <div>
+        <div className="flex justify-center items-center min-h-screen p-5">
+            <div className="bg-white p-10 rounded-lg shadow-lg w-2/3">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <FormField
@@ -190,7 +190,7 @@ const SubmitToiletForm = ({ toiletId }: { toiletId?: string }) => {
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Toilet Name</FormLabel>
+                                    <FormLabel className="font-bold text-xl">Toilet Name</FormLabel>
                                     <FormControl>
                                         <Input {...field} placeholder="Put a toilet name or street name here" />
                                     </FormControl>
@@ -221,7 +221,7 @@ const SubmitToiletForm = ({ toiletId }: { toiletId?: string }) => {
                             name="notes"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Notes</FormLabel>
+                                    <FormLabel className="font-bold text-xl">Notes</FormLabel>
                                     <FormControl>
                                         <Input {...field} placeholder="Put a note here" />
                                     </FormControl>
@@ -229,19 +229,20 @@ const SubmitToiletForm = ({ toiletId }: { toiletId?: string }) => {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit" className="w-full">Submit</Button>
                     </form>
                 </Form>
             </div>
 
 
-            {isVoting &&
+            {
+                isVoting &&
                 <div className="">
                     <VoteToilet />
                     <h2 onClick={() => setIsVoting(false)}>Reset</h2>
                 </div>
             }
-        </>
+        </div >
 
     )
 }
