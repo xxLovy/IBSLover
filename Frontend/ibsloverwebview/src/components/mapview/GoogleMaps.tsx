@@ -150,7 +150,7 @@ export function MyComponent() {
             <>
                 <Marker position={{ lat: pin.latitude, lng: pin.longitude }} />
                 {filteredToilets.map((item: Toilet, index) => (
-                    <Marker position={{ lat: item.location.coordinates[1], lng: item.location.coordinates[0] }} onClick={() => handleToiletClick(item)} icon={item.isFromUser ? MarkerUser : MarkerGoogle} />
+                    <Marker position={{ lat: item.location.coordinates[1], lng: item.location.coordinates[0] }} key={index} onClick={() => handleToiletClick(item)} icon={item.isFromUser ? MarkerUser : MarkerGoogle} />
                 ))}
                 {selectedToilet ? (
                     <ToiletCard toilet={selectedToilet} onClose={handleCloseToilet} />
