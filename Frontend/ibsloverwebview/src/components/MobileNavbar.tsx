@@ -47,7 +47,7 @@ const MobileNavBar = async () => {
                         <ul className='flex flex-col items-center w-full h-full'>
                             {navlinks.map((item, index) => (
                                 <Link href={item.route} key={index} className='flex py-5 w-2/3 justify-center rounded-md my-5 border-black bg-gray-200'>
-                                    <li className='py-2 cursor-pointer'>{item.lable}</li>
+                                    <li className='py-2 cursor-pointer' key={index}>{item.lable}</li>
                                 </Link>
                             ))}
 

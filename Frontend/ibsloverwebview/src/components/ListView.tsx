@@ -73,7 +73,7 @@ export const ListView: React.FC = () => {
 
         const filtered = applyFilters(toiletsWithDistance, toiletFilter);
         setFilteredToilets(filtered);
-    }, [toiletsFromUser, toiletsFromGoogle, toiletFilter])
+    }, [toiletsFromUser, toiletsFromGoogle, toiletFilter, toiletsWithDistance])
 
     return (
         <div>

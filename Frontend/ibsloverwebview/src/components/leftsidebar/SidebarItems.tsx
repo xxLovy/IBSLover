@@ -96,14 +96,14 @@ const SidebarItems = () => {
         <div className='flex pb-5'>
             <ul className='flex flex-col'>
                 {sidebarItems.map((item, index) => (
-                    <li key={index} className='pt-5 cursor-pointer hover:text-red-500'>
+                    <li key={index * 10} className='pt-5 cursor-pointer hover:text-red-500'>
                         <span onClick={() => handleClick(item.click as "Filter" | "Add" | "Find" | "List")}>
                             {(showListView && item.lable2) ? item.lable2 : item.lable}
                         </span>
                         {item.click === "Filter" && filterState && (
                             <div className="mt-2 ml-4 text-black">
                                 {checkboxItems.map((checkbox, idx) => (
-                                    <label key={idx} className="block">
+                                    <label key={idx * 100} className="block">
                                         <input
                                             type="checkbox"
                                             className="mr-2"

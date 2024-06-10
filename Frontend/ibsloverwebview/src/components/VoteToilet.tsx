@@ -33,7 +33,7 @@ const VoteToilet = () => {
 
             <ul>
                 {toilets.map((item, index) => (
-                    <li className='flex justify-start rounded-sm' key={index}>
+                    <li className='flex justify-start rounded-sm' key={index * 1000}>
                         <CardContent className='flex hover:bg-gray-300 cursor-pointer items-center rounded-sm pl-5 border-black' onClick={() => handleClick(item._id!)}>
                             <p>{item.name}</p>
                         </CardContent>
