@@ -92,6 +92,9 @@ export const removeToilet = createAsyncThunk(
     "toilet/remove",
     async ({ toiletId, userId, msg }: { toiletId: string, userId: string, msg: string }, thunkAPI) => {
         try {
+            if (!msg) {
+                msg = "No Message"
+            }
             const response = await fetch(`${APIURL}/toilet/removeToilet/${userId}/${toiletId}/${msg}`)
             if (!response.ok) {
                 throw new Error('Failed to remove toilet')
