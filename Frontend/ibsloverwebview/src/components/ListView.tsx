@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useState } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -16,35 +15,50 @@ interface ToiletComponentProps {
     className: string;
 }
 
+const ToiletComponent: React.FC<ToiletComponentProps> = ({ toilets, onToiletClick, className }) => {
+    return (
+        <div className={`space-y-4 ${className}`}>
+            {toilets.map((item, index) => (
+                <ul
+                    key={item._id}
+                    className={`p-5 pr-10 ${index !== 0 ? 'border-t border-gray-300' : ''} cursor-pointer hover:bg-gray-200`}
+                    onClick={() => onToiletClick(item)}
+                >
+                    <li className={`font-bold ${!item.isFromUser ? "text-black" : "text-blue-900"}`}>{item.name}</li>
+                    <li className="text-gray-600">{item.description}</li>
+                    <li>Distance: {item.distance && item.distance * 1000} meters</li>
+                </ul>
+            ))}
+        </div>
+    );
+};
+
 export const ListView: React.FC = () => {
+    const dispatch = useAppDispatch();
     const toiletsFromUser = useAppSelector(selectToiletFromUser);
     const toiletsFromGoogle = useAppSelector(selectToiletFromGoogle);
     const toilets = toiletsFromUser.concat(toiletsFromGoogle);
-    const dispatch = useAppDispatch();
     const listState = useAppSelector(selectListState);
     const [selectedToilet, setSelectedToilet] = useState<Toilet | null>(null);
     const mapReduxRef = useAppSelector((state: RootState) => state.map.mapRef);
     const pin = useAppSelector(selectCurrentLocation);
-    const toiletsWithDistance: Toilet[] = toilets.map((item) => {
-        const newToilet: Toilet = {
-            ...item,
-            distance: calculateDistance(pin.latitude, pin.longitude, item.location.coordinates[1], item.location.coordinates[0])
-        }
-        return newToilet;
-    });
-    toiletsWithDistance.sort((a, b) => a.distance! - b.distance!);
     const toiletFilter = useAppSelector(selectFilterState);
     const [filteredToilets, setFilteredToilets] = useState<Toilet[]>([]);
+
+    const toiletsWithDistance: Toilet[] = toilets.map((item) => ({
+        ...item,
+        distance: calculateDistance(pin.latitude, pin.longitude, item.location.coordinates[1], item.location.coordinates[0]),
+    }));
+
+    toiletsWithDistance.sort((a, b) => a.distance! - b.distance!);
 
     function handleClose(): void {
         dispatch(setListStateFalse());
     }
 
     function handleToiletClick(toilet: Toilet): void {
-        if (selectedToilet !== toilet) {
-            setSelectedToilet(toilet);
-            mapReduxRef?.panTo({ lat: toilet.location.coordinates[1], lng: toilet.location.coordinates[0] });
-        }
+        setSelectedToilet(toilet);
+        mapReduxRef?.panTo({ lat: toilet.location.coordinates[1], lng: toilet.location.coordinates[0] });
     }
 
     function handleCloseToilet(): void {
@@ -58,12 +72,12 @@ export const ListView: React.FC = () => {
             return toilets.filter(toilet => {
                 if (toilet.isFromUser && toilet.features) {
                     return (
-                        ((filter.women && (toilet.features.women === "yes" || toilet.features.women === "dontknow") || !filter.women)) &&
+                        ((filter.women && (toilet.features.women === "yes" || toilet.features.women === "dontknow")) || !filter.women) &&
                         ((filter.men && (toilet.features.men === "yes" || toilet.features.men === "dontknow")) || !filter.men) &&
                         ((filter.accessible && (toilet.features.accessible === "yes" || toilet.features.accessible === "dontknow")) || !filter.accessible) &&
-                        ((filter.children && (toilet.features.children === "yes" || toilet.features.children === "dontknow") || !filter.children)) &&
+                        ((filter.children && (toilet.features.children === "yes" || toilet.features.children === "dontknow")) || !filter.children) &&
                         ((filter.free && (toilet.features.free === "yes" || toilet.features.free === "dontknow")) || !filter.free) &&
-                        ((filter.genderNeutral && (toilet.features.genderNeutral === "yes" || toilet.features.genderNeutral === "dontknow") || !filter.genderNeutral))
+                        ((filter.genderNeutral && (toilet.features.genderNeutral === "yes" || toilet.features.genderNeutral === "dontknow")) || !filter.genderNeutral)
                     );
                 } else {
                     return true;
@@ -73,7 +87,7 @@ export const ListView: React.FC = () => {
 
         const filtered = applyFilters(toiletsWithDistance, toiletFilter);
         setFilteredToilets(filtered);
-    }, [toiletsFromUser, toiletsFromGoogle, toiletFilter, pin]);
+    }, [toiletsFromUser, toiletsFromGoogle, toiletFilter, toiletsWithDistance]);
 
     return (
         <div>
@@ -92,7 +106,6 @@ export const ListView: React.FC = () => {
                             </ScrollArea>
                         </div>
                     </div>
-
                     <div className='flex md:hidden w-full h-auto bg-white rounded-2xl pt-5 pl-3 flex-col border-2'>
                         <ScrollArea className="w-full h-[24vh]">
                             <ToiletComponent toilets={filteredToilets} onToiletClick={handleToiletClick} className='block md:hidden' />
@@ -103,24 +116,6 @@ export const ListView: React.FC = () => {
             {selectedToilet ? (
                 <ToiletCard toilet={selectedToilet} onClose={handleCloseToilet} />
             ) : null}
-        </div>
-    );
-};
-
-const ToiletComponent: React.FC<ToiletComponentProps> = ({ toilets, onToiletClick, className }) => {
-    return (
-        <div className={`space-y-4 ${className}`}>
-            {toilets.map((item) => (
-                <ul
-                    key={item._id}
-                    className={`p-5 pr-10 border-t border-gray-300 cursor-pointer hover:bg-gray-200`}
-                    onClick={() => onToiletClick(item)}
-                >
-                    <li className={`font-bold ${!item.isFromUser ? "text-black" : "text-blue-900"}`}>{item.name}</li>
-                    <li className="text-gray-600">{item.description}</li>
-                    <li>Distance: {item.distance && item.distance * 1000} meters</li>
-                </ul>
-            ))}
         </div>
     );
 };
