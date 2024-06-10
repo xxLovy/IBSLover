@@ -16,8 +16,8 @@ const SidebarItems = () => {
         men: false,
         accessible: false,
         children: false,
-        free: false,
-        genderNeutral: false
+        free: true,
+        genderNeutral: false,
     });
     const showListView = useAppSelector(selectListState)
     const router = useRouter();
@@ -53,6 +53,7 @@ const SidebarItems = () => {
     };
 
     const handleCheckboxChange = (key: string) => {
+        console.log(selectedFeatures)
         const newValue = !selectedFeatures[key];
         setSelectedFeatures({
             ...selectedFeatures,

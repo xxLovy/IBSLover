@@ -79,7 +79,6 @@ export const editToilet = createAsyncThunk(
             if (!response.ok) {
                 throw new Error('Failed to update toilet')
             }
-
             const data = await response.json()
             console.log('Toilet updated successfully:', data)
         } catch (err: any) {

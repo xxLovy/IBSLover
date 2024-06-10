@@ -18,7 +18,7 @@ const initialState: IFilter = {
     men: false,
     accessible: false,
     children: false,
-    free: false,
+    free: true,
     genderNeutral: false,
     voteCount: 0,
     keyword: []
