@@ -2,11 +2,11 @@ import type { Request, Response } from "express";
 import { GOOGLE_URL, keywords } from "../../constants";
 import axios from "axios";
 import type { IToilet } from "../../database/models/toilet.model";
+import { checkAPIKeyLimit } from "../../middlewares/apiLimiter";
 
 export const getGooglePlaces = async (req: Request, res: Response) => {
     try {
         const url = GOOGLE_URL;
-        // const url = 'http://127.0.0.1:3030/test/fetchDummy'
         const location = req.query.location as string;
 
         if (!location) {
@@ -25,7 +25,13 @@ export const getGooglePlaces = async (req: Request, res: Response) => {
             return res.status(400).send('Location coordinates are invalid');
         }
 
+        const limitCheck = await checkAPIKeyLimit();
+        if (!limitCheck) {
+            return res.status(429).send('API usage limit exceeded for today.');
+        }
+
         let allPlaces: IToilet[] = [];
+
         for (const keyword of keywords) {
             const params = {
                 location: `${latitude},${longitude}`,
