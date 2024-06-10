@@ -24,7 +24,7 @@ const Navbar = async () => {
                 <ul className='flex flex-row'>
                     {isLoggedIn && <li className='pr-10 cursor-pointer hover:text-red-500 flex flex-row' key="logout"><LogoutLink>Logout</LogoutLink></li>}
                     {navlinks.map((item, index) => (
-                        <Link href={item.route} key={index}> {/* 添加 key 属性到 Link 组件 */}
+                        <Link href={item.route} key={index * 1000}> {/* 添加 key 属性到 Link 组件 */}
                             <li className='pr-10 cursor-pointer hover:text-red-500'>{item.lable}</li>
                         </Link>
                     ))}
