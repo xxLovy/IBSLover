@@ -48,7 +48,9 @@ export const ListView: React.FC = () => {
     }
 
     function handleCloseToilet(): void {
-        setSelectedToilet(null)
+        if (selectedToilet !== null) {
+            setSelectedToilet(null);
+        }
     }
 
     useEffect(() => {
@@ -73,7 +75,7 @@ export const ListView: React.FC = () => {
 
         const filtered = applyFilters(toiletsWithDistance, toiletFilter);
         setFilteredToilets(filtered);
-    }, [toiletsFromUser, toiletsFromGoogle, toiletFilter, toiletsWithDistance])
+    }, [toiletsFromUser, toiletsFromGoogle, toiletFilter])
 
     return (
         <div>
