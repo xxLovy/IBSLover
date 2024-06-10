@@ -1,14 +1,14 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { selectListState, setListStateFalse } from '@/redux/listView';
-import ToiletCard from './ToiletCard'; import { RootState } from '@/redux/store';
+import ToiletCard from './ToiletCard';
+import { RootState } from '@/redux/store';
 import { selectToiletFromGoogle, selectToiletFromUser } from '@/redux/toilet/slice';
 import { selectCurrentLocation } from '@/redux/pin/slice';
 import { calculateDistance } from '@/lib/distance';
 import { IFilter, selectFilterState } from '@/redux/filter';
-;
 
 interface ToiletComponentProps {
     toilets: Toilet[];
@@ -17,10 +17,9 @@ interface ToiletComponentProps {
 }
 
 export const ListView: React.FC = () => {
-    // const toilets = dummyToilets;
-    const toiletsFromUser = useAppSelector(selectToiletFromUser)
-    const toiletsFromGoogle = useAppSelector(selectToiletFromGoogle)
-    const toilets = toiletsFromUser.concat(toiletsFromGoogle)
+    const toiletsFromUser = useAppSelector(selectToiletFromUser);
+    const toiletsFromGoogle = useAppSelector(selectToiletFromGoogle);
+    const toilets = toiletsFromUser.concat(toiletsFromGoogle);
     const dispatch = useAppDispatch();
     const listState = useAppSelector(selectListState);
     const [selectedToilet, setSelectedToilet] = useState<Toilet | null>(null);
@@ -31,20 +30,21 @@ export const ListView: React.FC = () => {
             ...item,
             distance: calculateDistance(pin.latitude, pin.longitude, item.location.coordinates[1], item.location.coordinates[0])
         }
-        return newToilet
-    })
+        return newToilet;
+    });
     toiletsWithDistance.sort((a, b) => a.distance! - b.distance!);
-    const toiletFilter = useAppSelector(selectFilterState)
+    const toiletFilter = useAppSelector(selectFilterState);
     const [filteredToilets, setFilteredToilets] = useState<Toilet[]>([]);
-
 
     function handleClose(): void {
         dispatch(setListStateFalse());
     }
 
     function handleToiletClick(toilet: Toilet): void {
-        setSelectedToilet(toilet);
-        mapReduxRef?.panTo({ lat: toilet.location.coordinates[1], lng: toilet.location.coordinates[0] })
+        if (selectedToilet !== toilet) {
+            setSelectedToilet(toilet);
+            mapReduxRef?.panTo({ lat: toilet.location.coordinates[1], lng: toilet.location.coordinates[0] });
+        }
     }
 
     function handleCloseToilet(): void {
@@ -64,18 +64,16 @@ export const ListView: React.FC = () => {
                         ((filter.children && (toilet.features.children === "yes" || toilet.features.children === "dontknow") || !filter.children)) &&
                         ((filter.free && (toilet.features.free === "yes" || toilet.features.free === "dontknow")) || !filter.free) &&
                         ((filter.genderNeutral && (toilet.features.genderNeutral === "yes" || toilet.features.genderNeutral === "dontknow") || !filter.genderNeutral))
-                        // && (toilet.votesCount >= filter.voteCount) &&
-                        // (filter.keyword.length === 0 || filter.keyword.some(keyword => toilet.keywords.includes(keyword)))
                     );
                 } else {
-                    return true
+                    return true;
                 }
             });
         };
 
         const filtered = applyFilters(toiletsWithDistance, toiletFilter);
         setFilteredToilets(filtered);
-    }, [toiletsFromUser, toiletsFromGoogle, toiletFilter])
+    }, [toiletsFromUser, toiletsFromGoogle, toiletFilter, pin]);
 
     return (
         <div>
@@ -112,10 +110,10 @@ export const ListView: React.FC = () => {
 const ToiletComponent: React.FC<ToiletComponentProps> = ({ toilets, onToiletClick, className }) => {
     return (
         <div className={`space-y-4 ${className}`}>
-            {toilets.map((item, index) => (
+            {toilets.map((item) => (
                 <ul
                     key={item._id}
-                    className={`p-5 pr-10 ${index !== 0 ? 'border-t border-gray-300' : ''} cursor-pointer hover:bg-gray-200`}
+                    className={`p-5 pr-10 border-t border-gray-300 cursor-pointer hover:bg-gray-200`}
                     onClick={() => onToiletClick(item)}
                 >
                     <li className={`font-bold ${!item.isFromUser ? "text-black" : "text-blue-900"}`}>{item.name}</li>
