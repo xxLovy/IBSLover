@@ -10,7 +10,6 @@ interface ToiletCardProps {
 }
 
 const ToiletCard: React.FC<ToiletCardProps> = ({ toilet, onClose }) => {
-    console.log(toilet)
     return (
         <div className="fixed bottom-0 left-0 w-full bg-white p-5 rounded-t-2xl shadow-lg transition-transform transform translate-y-full animate-slide-up z-50">
             <div className="relative">

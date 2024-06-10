@@ -19,12 +19,12 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { login } from "@/redux/user/operations"
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { addToilet, editToilet } from "@/redux/toilet/operations"
-import { selectCurrentLocation } from "@/redux/pin/slice"
+import { selectCurrentLocation, selectSuccess } from "@/redux/pin/slice"
 import { selectAddSuccess, selectEditSuccess, selectRemoveSuccess, selectSelectedToilets, selectToiletFromUser, selectVoteSuccess, setAddToastFalse, setEditToastFalse, setRemoveToastFalse, setVoteToastFalse } from "@/redux/toilet/slice"
 import { useState, useEffect } from "react"
 import VoteToilet from "./VoteToilet"
 import { useToast } from "./ui/use-toast"
-import { redirect } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 
 
 const formSchema = z.object({
@@ -64,6 +64,8 @@ const SubmitToiletForm = ({ toiletId }: { toiletId?: string }) => {
     const voteSuccess = useAppSelector(selectVoteSuccess);
     const removeSuccess = useAppSelector(selectRemoveSuccess);
     const { toast } = useToast();
+    const success = useAppSelector(selectSuccess)
+    const router = useRouter();
 
     let defaultForm: TFormSchema | undefined = toilet ?
         {
@@ -95,6 +97,15 @@ const SubmitToiletForm = ({ toiletId }: { toiletId?: string }) => {
 
     function onSubmit(values: TFormSchema) {
         dispatch(login({ kindeId: user?.id || '', username: user?.email || '' }))
+        if (!success) {
+            toast({
+                variant: "destructive",
+                title: "Oh no, something went wrong",
+                description: "Cannot get your current location.",
+            })
+            router.push("/")
+            return
+        }
         let newToilet: Toilet;
         if (toilet) {
             newToilet = {
@@ -182,7 +193,7 @@ const SubmitToiletForm = ({ toiletId }: { toiletId?: string }) => {
 
     return (
         <div className="flex justify-center items-center min-h-screen p-5">
-            <div className="bg-white p-10 rounded-lg shadow-lg w-2/3">
+            <div className="bg-white p-10 rounded-lg shadow-lg w-full md:w-2/3">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <FormField

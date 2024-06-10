@@ -32,8 +32,9 @@ const SidebarItems = () => {
     const handleAdd = () => {
         if (!success) {
             toast({
-                title: "Failed",
-                description: "Cannot get your current location",
+                variant: "destructive",
+                title: "Oh no, something went wrong",
+                description: "Cannot get your current location.",
             })
         } else {
             router.push("/addToilet")

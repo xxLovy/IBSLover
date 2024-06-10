@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input"
 const SearchBox = () => {
 
     return (
-        <div className=''>
-            <span>Search</span>
+        <div className='flex flex-col justify-center'>
+            <span className=' font-bold'>Search</span>
             <div className="pt-2">
                 <Input />
             </div>

@@ -5,6 +5,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ReduxProvider from "@/redux/ReduxProvider";
 import { Toaster } from "@/components/ui/toaster"
+import MobileNavBar from "@/components/MobileNavbar";
+import PanicFooter from "@/components/PanicFooter";
 
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -13,7 +15,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <body>
         <ReduxProvider>
           <header className="bg-gray-100 flex items-center h-[60px]">
-            <Navbar />
+            <div className="hidden md:block w-full">
+              <Navbar />
+            </div>
+            <div className="block md:hidden w-full">
+              <MobileNavBar />
+            </div>
           </header>
 
           <div>
@@ -24,6 +31,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </div> */}
         </ReduxProvider>
         <Toaster />
+
       </body>
 
     </html >

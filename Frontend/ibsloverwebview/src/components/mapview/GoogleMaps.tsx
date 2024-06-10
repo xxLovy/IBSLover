@@ -1,5 +1,5 @@
-"use client"
-import React, { useRef, useEffect, useState } from 'react'
+"use client";
+import React, { useRef, useEffect, useState } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { setMapRef } from '@/redux/mapSlice';
 import { RootState } from '@/redux/store';
@@ -10,19 +10,13 @@ import { IFilter, selectFilterState } from '@/redux/filter';
 import { fetchToiletFromGoogle, fetchToiletFromUser } from '@/redux/toilet/operations';
 import { selectToiletFromGoogle, selectToiletFromUser } from '@/redux/toilet/slice';
 import { calculateDistance } from '@/lib/distance';
-
-
-const containerStyle = {
-    width: '100vw',
-    height: '85vh'
-};
+import { selectListState } from '@/redux/listView';
 
 export function MyComponent() {
     const mapRef = useRef<google.maps.Map | null>(null);
     const dispatch = useAppDispatch();
     const mapReduxRef = useAppSelector((state: RootState) => state.map.mapRef);
     const pin = useAppSelector(selectCurrentLocation)
-    // const toilets = dummyToilets
     const toiletsFromUser = useAppSelector(selectToiletFromUser)
     const toiletsFromGoogle = useAppSelector(selectToiletFromGoogle)
     let toilets = toiletsFromUser.concat(toiletsFromGoogle)
@@ -39,6 +33,7 @@ export function MyComponent() {
     const toiletFilter = useAppSelector(selectFilterState)
     const [filteredToilets, setFilteredToilets] = useState<Toilet[]>([]);
     const hasUserLocation = useAppSelector(selectSuccess)
+    const showListView = useAppSelector(selectListState)
 
     const center = hasUserLocation ?
         {
@@ -49,6 +44,33 @@ export function MyComponent() {
             lat: 37.7749,
             lng: -122.4194
         };
+
+    const [containerStyle, setContainerStyle] = useState({
+        width: '100vw',
+        height: '87vh'
+    });
+
+    const handleResize = () => {
+        if (window.innerWidth <= 768 && showListView) {
+            setContainerStyle({
+                width: '100vw',
+                height: '60vh'
+            });
+        } else {
+            setContainerStyle({
+                width: '100vw',
+                height: '87vh'
+            });
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Call initially to set the correct size
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -102,8 +124,6 @@ export function MyComponent() {
                         (!filter.children || toilet.features?.children) &&
                         (!filter.free || toilet.features?.free) &&
                         (!filter.genderNeutral || toilet.features?.genderNeutral)
-                        // && (toilet.votesCount >= filter.voteCount) &&
-                        // (filter.keyword.length === 0 || filter.keyword.some(keyword => toilet.keywords.includes(keyword)))
                     );
                 } else {
                     return true
