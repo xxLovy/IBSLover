@@ -9,7 +9,7 @@ export const removeToilet = async (req: Request, res: Response) => {
         if (!userId) {
             return res.status(400).send("User ID is required");
         }
-
+        console.log(toiletId)
         let removingToilet = await Toilet.findById(toiletId);
         if (!removingToilet) {
             return res.status(404).send("Toilet not found");

@@ -25,7 +25,7 @@ export const addToilet = async (req: Request, res: Response) => {
             isFromUser: true,
             isRemoved: { $ne: true } // Ensure the removing property is not true
         });
-        console.log(nearbyToilets)
+        console.log(toilet)
 
         if (nearbyToilets.length > 0) {
             const toiletIds = nearbyToilets.map(toilet => toilet._id.toString());
@@ -35,6 +35,7 @@ export const addToilet = async (req: Request, res: Response) => {
                 ...toilet
             });
             newToilet.users.push(userId);
+            console.log(newToilet)
             await newToilet.save();
             res.status(200).json(newToilet);
         }

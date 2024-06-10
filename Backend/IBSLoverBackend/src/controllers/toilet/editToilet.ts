@@ -11,14 +11,15 @@ export const editToilet = async (req: Request, res: Response) => {
             ...tempToilet.toObject(),
             ...toilet
         }
-
         if (!userId) {
             return res.status(400).send("User ID is required");
         }
 
         toilet.users!.push(userId);
+        console.log("toilet: ")
+        console.log(toilet)
         const editedToilet = await Toilet.findByIdAndUpdate(toiletId, toilet, { new: true });
-
+        console.log("Edited toilet successfully: ", editedToilet);
         if (!editedToilet) {
             return res.status(404).send("Toilet not found");
         }

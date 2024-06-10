@@ -35,7 +35,7 @@ const ToiletsSchema = new Schema({
             enum: ["yes", "no", "dontknow"],
             default: "dontknow"
         },
-        genderNetural: {
+        genderNeutral: {
             type: String,
             enum: ["yes", "no", "dontknow"],
             default: "dontknow"
