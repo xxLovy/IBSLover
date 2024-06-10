@@ -5,8 +5,8 @@ import type { IToilet } from "../../database/models/toilet.model";
 
 export const getGooglePlaces = async (req: Request, res: Response) => {
     try {
-        // const url = GOOGLE_URL;
-        const url = 'http://127.0.0.1:3030/test/fetchDummy'
+        const url = GOOGLE_URL;
+        // const url = 'http://127.0.0.1:3030/test/fetchDummy'
         const location = req.query.location as string;
 
         if (!location) {

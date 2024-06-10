@@ -4,7 +4,10 @@ import Toilet from "../../database/models/toilet.model";
 
 export const removeToilet = async (req: Request, res: Response) => {
     try {
-        const { userId, toiletId, msg } = req.params;
+        let { userId, toiletId, msg } = req.params;
+        if (!msg) {
+            msg = "No Message"
+        }
 
         if (!userId) {
             return res.status(400).send("User ID is required");
@@ -15,7 +18,7 @@ export const removeToilet = async (req: Request, res: Response) => {
             return res.status(404).send("Toilet not found");
         }
 
-        removingToilet.removeMsg = msg;
+        removingToilet.removeMsg = "No msg";
         removingToilet.lastUpdateTime = new Date().toISOString();
         removingToilet.isRemoved = true;
         removingToilet.users.push(userId);
