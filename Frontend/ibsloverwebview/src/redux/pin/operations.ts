@@ -29,6 +29,7 @@ export const fetchCurrentLocation = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             const position: Position = await getCurrentLocation();
+            console.log(position)
             const { latitude, longitude } = position.coords;
             return { latitude, longitude };
         } catch (err: any) {

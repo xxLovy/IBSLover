@@ -7,6 +7,7 @@ import { selectListState, setListStateReverse, setListStateTrue } from '@/redux/
 import { setAccessible, setChildren, setFree, setGenderNeutral, setMen, setWomen } from '@/redux/filter';
 import { useRouter } from 'next/navigation';
 import { selectError, selectIsLoading, selectSuccess } from '@/redux/pin/slice';
+import { useToast } from '../ui/use-toast';
 
 const SidebarItems = () => {
     const dispatch = useAppDispatch();
@@ -22,13 +23,22 @@ const SidebarItems = () => {
     const showListView = useAppSelector(selectListState)
     const router = useRouter();
     const success = useAppSelector(selectSuccess)
+    const { toast } = useToast();
 
     const handleFilter = () => {
         setFilterState(!filterState);
     };
 
     const handleAdd = () => {
-        router.push("/addToilet")
+        if (!success) {
+            toast({
+                title: "Failed",
+                description: "Cannot get your current location",
+            })
+        } else {
+            router.push("/addToilet")
+        }
+
     };
 
     const handleFind = () => {

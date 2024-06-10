@@ -5,7 +5,6 @@ import { setMapRef } from '@/redux/mapSlice';
 import { RootState } from '@/redux/store';
 import { selectCurrentLocation, selectSuccess } from '@/redux/pin/slice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { dummyToilets } from '../../../constants';
 import ToiletCard from '../ToiletCard';
 import { IFilter, selectFilterState } from '@/redux/filter';
 import { fetchToiletFromGoogle, fetchToiletFromUser } from '@/redux/toilet/operations';
@@ -16,11 +15,6 @@ import { calculateDistance } from '@/lib/distance';
 const containerStyle = {
     width: '100vw',
     height: '85vh'
-};
-
-const center = {
-    lat: 37.7749,
-    lng: -122.4194
 };
 
 export function MyComponent() {
@@ -43,8 +37,18 @@ export function MyComponent() {
     toilets = toiletsWithDistance
     const [selectedToilet, setSelectedToilet] = useState<Toilet | null>(null);
     const toiletFilter = useAppSelector(selectFilterState)
-    const isSuccessful = useAppSelector(selectSuccess)
     const [filteredToilets, setFilteredToilets] = useState<Toilet[]>([]);
+    const hasUserLocation = useAppSelector(selectSuccess)
+
+    const center = hasUserLocation ?
+        {
+            lat: pin.latitude,
+            lng: pin.longitude
+        }
+        : {
+            lat: 37.7749,
+            lng: -122.4194
+        };
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -82,7 +86,7 @@ export function MyComponent() {
 
     useEffect(() => {
         mapReduxRef?.panTo({ lat: pin.latitude, lng: pin.longitude })
-        if (isSuccessful) {
+        if (hasUserLocation) {
             dispatch(fetchToiletFromGoogle({ latitude: pin.latitude, longitude: pin.longitude }))
         }
     }, [pin])
@@ -90,20 +94,21 @@ export function MyComponent() {
     useEffect(() => {
         const applyFilters = (toilets: Toilet[], filter: IFilter) => {
             return toilets.filter(toilet => {
-                if (toilet.isFromUser && toilet.features) {
+                if (toilet.isFromUser) {
                     return (
-                        ((filter.women && (toilet.features.women === "yes" || toilet.features.women === "dontknow") || !filter.women)) &&
-                        ((filter.men && (toilet.features.men === "yes" || toilet.features.men === "dontknow")) || !filter.men) &&
-                        ((filter.accessible && (toilet.features.accessible === "yes" || toilet.features.accessible === "dontknow")) || !filter.accessible) &&
-                        ((filter.children && (toilet.features.children === "yes" || toilet.features.children === "dontknow") || !filter.children)) &&
-                        ((filter.free && (toilet.features.free === "yes" || toilet.features.free === "dontknow")) || !filter.free) &&
-                        ((filter.genderNeutral && (toilet.features.genderNeutral === "yes" || toilet.features.genderNeutral === "dontknow") || !filter.genderNeutral))
+                        (!filter.women || toilet.features?.women) &&
+                        (!filter.men || toilet.features?.men) &&
+                        (!filter.accessible || toilet.features?.accessible) &&
+                        (!filter.children || toilet.features?.children) &&
+                        (!filter.free || toilet.features?.free) &&
+                        (!filter.genderNeutral || toilet.features?.genderNeutral)
                         // && (toilet.votesCount >= filter.voteCount) &&
                         // (filter.keyword.length === 0 || filter.keyword.some(keyword => toilet.keywords.includes(keyword)))
                     );
                 } else {
                     return true
                 }
+
             });
         };
 
