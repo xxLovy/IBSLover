@@ -14,7 +14,7 @@ export async function checkAPIKeyLimit() {
             }
             await existingRecord.save();
         } else {
-            await Usage.create({ date: today, count: keywords.length });
+            existingRecord = await Usage.create({ date: today, count: keywords.length });
         }
         console.log(`day:${today}, used:${existingRecord.count}, limit:${DAILY_LIMIT}`);
         return true;
