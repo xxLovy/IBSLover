@@ -1,10 +1,22 @@
+"use client"
 import MobileSideBar from "@/components/leftsidebar/MobileSideBar";
 import Sidebar from "@/components/leftsidebar/Sidebar";
 import ListView from "@/components/ListView";
 import MapView from "@/components/mapview/MapView";
 import PanicFooter from "@/components/PanicFooter";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectCurrentLocation } from "@/redux/pin/slice";
+import { fetchToiletFromUser, fetchToiletFromGoogle } from "@/redux/toilet/operations";
+import { useEffect } from "react";
 
 export default function Home() {
+  const dispatch = useAppDispatch();
+  const pin = useAppSelector(selectCurrentLocation);
+
+  useEffect(() => {
+    dispatch(fetchToiletFromUser())
+    dispatch(fetchToiletFromGoogle({ latitude: pin.latitude, longitude: pin.longitude }))
+  }, [])
   return (
     <main className="h-full w-full bg-gray-100 relative">
       <MapView />
