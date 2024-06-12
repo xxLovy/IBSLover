@@ -1,4 +1,4 @@
-export const APIURL = "https://57f9-34-227-103-206.ngrok-free.app/api"
+export const APIURL = "https://xxxxuan.xyz/api"
 
 
 
