@@ -107,28 +107,31 @@ export function MyComponent() {
     }, [mapReduxRef]);
 
     useEffect(() => {
-        mapReduxRef?.panTo({ lat: pin.latitude, lng: pin.longitude })
         if (hasUserLocation) {
+            mapReduxRef?.panTo({ lat: pin.latitude, lng: pin.longitude })
             dispatch(fetchToiletFromGoogle({ latitude: pin.latitude, longitude: pin.longitude }))
+        } else {
+            mapReduxRef?.panTo({ lat: pin.latitude, lng: pin.longitude })
         }
     }, [pin])
 
     useEffect(() => {
         const applyFilters = (toilets: Toilet[], filter: IFilter) => {
             return toilets.filter(toilet => {
-                if (toilet.isFromUser) {
+                if (toilet.isFromUser && toilet.features) {
                     return (
-                        (!filter.women || toilet.features?.women) &&
-                        (!filter.men || toilet.features?.men) &&
-                        (!filter.accessible || toilet.features?.accessible) &&
-                        (!filter.children || toilet.features?.children) &&
-                        (!filter.free || toilet.features?.free) &&
-                        (!filter.genderNeutral || toilet.features?.genderNeutral)
+                        ((filter.women && (toilet.features.women === "yes" || toilet.features.women === "dontknow") || !filter.women)) &&
+                        ((filter.men && (toilet.features.men === "yes" || toilet.features.men === "dontknow")) || !filter.men) &&
+                        ((filter.accessible && (toilet.features.accessible === "yes" || toilet.features.accessible === "dontknow")) || !filter.accessible) &&
+                        ((filter.children && (toilet.features.children === "yes" || toilet.features.children === "dontknow") || !filter.children)) &&
+                        ((filter.free && (toilet.features.free === "yes" || toilet.features.free === "dontknow")) || !filter.free) &&
+                        ((filter.genderNeutral && (toilet.features.genderNeutral === "yes" || toilet.features.genderNeutral === "dontknow") || !filter.genderNeutral))
+                        // && (toilet.votesCount >= filter.voteCount) &&
+                        // (filter.keyword.length === 0 || filter.keyword.some(keyword => toilet.keywords.includes(keyword)))
                     );
                 } else {
                     return true
                 }
-
             });
         };
 

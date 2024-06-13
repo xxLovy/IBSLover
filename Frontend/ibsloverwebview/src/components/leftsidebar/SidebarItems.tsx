@@ -33,8 +33,8 @@ const SidebarItems = () => {
         if (!success) {
             toast({
                 variant: "destructive",
-                title: "Oh no, something went wrong",
-                description: "Cannot get your current location.",
+                title: "Cannot get your current location",
+                description: "Please click PANIC! and give IBSLover the permission before adding a toilet.",
             })
         } else {
             router.push("/addToilet")
