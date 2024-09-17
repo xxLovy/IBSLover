@@ -16,16 +16,16 @@ export const googlePlacesSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchGoogleMaps.pending, (state) => {
-                console.log('fetching Google maps api')
+                console.log('fetching Google maps api2')
                 state.places.isLoading = true;
             })
             .addCase(fetchGoogleMaps.fulfilled, (state, action) => {
-                console.log('done')
+                console.log('done2')
                 state.places.isLoading = false;
                 state.places.items = action.payload;
             })
             .addCase(fetchGoogleMaps.rejected, (state, action) => {
-                console.log('failed')
+                console.log('failed2')
                 state.places.isLoading = false;
                 state.places.error = action.payload;
             })

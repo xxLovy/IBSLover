@@ -7,22 +7,39 @@ export const fetchNearByPlacesByUser = createAsyncThunk(
     'toilets/fetchNearByPlacesByUser',
     async (pin, thunkAPI) => {
         try {
-            const response = await axios.get(`${api}/toilets`);
+            const response = await axios.get(`${api}/normal/getUserCreatedToilets`);
+            // console.log(`From user: ${JSON.stringify(response.data)}`)
             const places = response.data.map(place => {
                 let newPlace = {
-                    voteCount: place.votes,
+                    id: place._id,
+                    voteCount: place.votesCount,
                     name: place.name,
+                    description: place.description,
                     vicinity: place.description,
+                    lastUpdateTime: place.lastUpdateTime,
+                    isOpening: place.isOpening,
+                    isRemoved: place.isRemoved,
+                    features: {
+                        genderNeutral: place.features.genderNeutral,
+                        children: place.features.children,
+                        women: place.features.women,
+                        men: place.features.men,
+                        accessible: place.features.accessible,
+                        free: place.features.free
+                    },
                     geometry: {
                         location: {
-                            lng: place.coordinates.coordinates[0],
-                            lat: place.coordinates.coordinates[1],
+                            lng: place.location.coordinates[0],
+                            lat: place.location.coordinates[1],
                         }
                     },
-                    userId: place.userId
+                    userId: place.users,
+                    keyword: place.keyword || '',
+                    removeMsg: place.removeMsg || ''
                 };
                 return newPlace;
             });
+
 
             const placesWithDistance = places.map(place => {
                 const distance = getDistanceFromLatLonInKm(

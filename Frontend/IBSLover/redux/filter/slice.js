@@ -24,10 +24,10 @@ export const filterSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchKeywords.pending, (state) => {
-                console.log('fetching keywords')
+                console.log('fetching keywords 1')
             })
             .addCase(fetchKeywords.fulfilled, (state, action) => {
-                console.log('fetched keywords')
+                console.log('fetched keywords 1')
                 state.filters.keyword = action.payload
             })
             .addCase(fetchKeywords.rejected, (state, action) => {

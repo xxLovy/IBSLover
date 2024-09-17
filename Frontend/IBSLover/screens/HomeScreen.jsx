@@ -38,15 +38,16 @@ export default function HomeScreen() {
     const user = useSelector(selectUser)
     const isLoading = useSelector(selectIsLoadingWhileGoogle)
     const selectedPlaces = allPlaces.filter((item) => {
-        if (item.KWD && bannedWord.includes(item.KWD)) {
-            return false
-        } else if (item.userId?.userId && !item.userId?.userId?.includes(user?.userId)) {
-            return false
-        } else if (!item.userId?.userId && !item.KWD) {
-            return false
-        }
+        // if (item.KWD && bannedWord.includes(item.KWD)) {
+        //     return false
+        // } else if (item.userId?.userId && !item.userId?.userId?.includes(user?.userId)) {
+        //     return false
+        // } else if (!item.userId?.userId && !item.KWD) {
+        //     return false
+        // }
         return true
     })
+    console.log(`Selected: ${JSON.stringify(selectedPlaces)}`)
 
     useEffect(() => {
         dispatch(fetchCurrentLocation());

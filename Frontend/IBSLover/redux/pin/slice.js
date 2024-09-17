@@ -18,10 +18,10 @@ export const pinSlice = createSlice({
         builder
             .addCase(fetchCurrentLocation.pending, (state) => {
                 state.pin.isLoading = true;
-                console.log('fetching location...')
+                console.log('fetching location...3')
             })
             .addCase(fetchCurrentLocation.fulfilled, (state, action) => {
-                console.log('fetched location...')
+                console.log('fetched location...3')
                 state.pin.isLoading = false;
                 state.pin.longitude = action.payload.coords.longitude;
                 state.pin.latitude = action.payload.coords.latitude;

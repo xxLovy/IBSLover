@@ -33,13 +33,13 @@ const SigninWIthGoogle = () => {
     });
 
     const signIn = async () => {
-        console.log("Pressed sign in");
+        console.log("Pressed sign in5");
 
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
             dispatch(setUserInfo(userInfo));
-            console.log('user login')
+            console.log('user login5')
             dispatch(setIsSignedin(true))
             setError();
             navigation.navigate('Home')
@@ -50,7 +50,7 @@ const SigninWIthGoogle = () => {
 
     const logout = () => {
         dispatch(setUserInfo({ user: undefined }))
-        console.log("user logout")
+        console.log("user logout5")
         dispatch(setIsSignedin(false))
         GoogleSignin.revokeAccess();
         GoogleSignin.signOut();

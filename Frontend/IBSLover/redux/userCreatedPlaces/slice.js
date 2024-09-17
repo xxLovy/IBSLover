@@ -16,16 +16,16 @@ export const userPlacesSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchNearByPlacesByUser.pending, (state) => {
-                console.log('fetching user places api')
+                console.log('fetching user places api4')
                 state.places.isLoading = true;
             })
             .addCase(fetchNearByPlacesByUser.fulfilled, (state, action) => {
-                console.log('done')
+                console.log('done4')
                 state.places.isLoading = false;
                 state.places.items = action.payload;
             })
             .addCase(fetchNearByPlacesByUser.rejected, (state, action) => {
-                console.log('failed')
+                console.log('failed4')
                 state.places.isLoading = false;
                 state.places.error = action.payload;
             })

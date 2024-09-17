@@ -13,13 +13,39 @@ export const fetchGoogleMaps = createAsyncThunk(
                 return;
             }
             // console.log('fetching Google maps api')
-            const response = await axios.get(`${api}/search`, {
-                params: {
-                    latitude: pin.latitude,
-                    longitude: pin.longitude,
-                },
+            const response = await axios.get(`${api}/normal/getGooglePlaces?location=${pin.latitude},${pin.longitude}`);
+            console.log(`From google: ${JSON.stringify(response.data)}`)
+            const places = response.data.map(place => {
+                let newPlace = {
+                    id: place._id,
+                    voteCount: place.votesCount,
+                    name: place.name,
+                    description: place.description,
+                    vicinity: place.description,
+                    lastUpdateTime: place.lastUpdateTime,
+                    isOpening: place.isOpening,
+                    isRemoved: place.isRemoved,
+                    features: {
+                        genderNeutral: place.features?.genderNeutral || false,
+                        children: place.features?.children || false,
+                        women: place.features?.women || false,
+                        men: place.features?.men || false,
+                        accessible: place.features?.accessible || false,
+                        free: place.features?.free || false,
+                    },
+                    geometry: {
+                        location: {
+                            lng: place.location.coordinates[0],
+                            lat: place.location.coordinates[1],
+                        }
+                    },
+                    userId: place.users,
+                    keyword: place.keyword || '',
+                    removeMsg: place.removeMsg || ''
+                };
+                return newPlace;
             });
-            const placesWithDistance = response.data.map(place => {
+            const placesWithDistance = places.map(place => {
                 const distance = getDistanceFromLatLonInKm(
                     pin.latitude,
                     pin.longitude,
@@ -84,7 +110,8 @@ export const fetchGoogleMaps = createAsyncThunk(
             console.log(error)
             if (error.response) {
                 if (error.response.status === 429) {
-                    Alert.alert("Operation too frequent", "Please try again later.");
+                    // TODO
+                    // Alert.alert("Operation too frequent", "Please try again later.");
                 } else if (error.response.status === 430) {
                     Alert.alert("Sorry", "The server's API quota for today has been reached, please come back tomorrow.");
                 } else {

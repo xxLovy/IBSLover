@@ -6,7 +6,7 @@ export const fetchKeywords = createAsyncThunk(
     'filter/fetchKeywords',
     async (_, thunkAPI) => {
         try {
-            const response = await axios.get(`${api}/fetchKeywords`);
+            const response = await axios.get(`${api}/normal/getKeywords`);
             return response.data
         }
         catch (err) {
