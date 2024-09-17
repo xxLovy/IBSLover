@@ -7,7 +7,7 @@ export const DAILY_LIMIT = 1000;
 export const MAX_DISTANCE = 20;
 export const keywords = [
     'Starbucks',
-    // 'McDonald\'s',
+    'McDonald\'s',
     // 'Walmart',
     // 'City Supper',
     // 'IKEA',
