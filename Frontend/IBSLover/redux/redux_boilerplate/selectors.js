@@ -1,1 +1,0 @@
-export const selectName = (state) => state.name;
