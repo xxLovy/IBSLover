@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { fetchCurrentLocation } from './operations';
+import { RootState } from '../store';
 
 const initialState = {
     pin: {
@@ -35,3 +36,8 @@ export const pinSlice = createSlice({
 
 
 export const pinReducer = pinSlice.reducer;
+
+export const selectCurrentLocation = (state: RootState) => state.pin.pin;
+export const selectIsLoading = (state: RootState) => state.pin.pin.isLoading;
+export const selectError = (state: RootState) => state.pin.pin.error;
+

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { selectKeyword, selectVotingCount } from '../redux/filter/selectors';
 import { setBannedWord, setVotingCount } from '../redux/filter/slice';
 import { useNavigation } from '@react-navigation/native';
@@ -8,9 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 const ChooseFilter = () => {
     const [selectedKeywords, setSelectedKeywords] = useState([]);
     const [votingCountLocal, setVotingCountLocal] = useState('');
-    const dispatch = useDispatch()
-    const keywords = useSelector(selectKeyword)
-    const currentVotingCount = useSelector(selectVotingCount);
+    const dispatch = useAppDispatch()
+    const keywords = useAppSelector(selectKeyword)
+    const currentVotingCount = useAppSelector(selectVotingCount);
     const navigation = useNavigation()
     const handleResetFilters = () => {
         dispatch(setBannedWord([]));

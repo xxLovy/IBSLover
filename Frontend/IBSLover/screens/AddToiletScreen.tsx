@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { selectCurrentLocation } from '../redux/pin/selectors';
+
 import { useNavigation } from '@react-navigation/native';
-import { selectUser } from '../redux/auth/selectors';
+import { selectUser } from '../redux/auth/slice';
 import { api } from '../global';
+import { selectCurrentLocation } from '../redux/pin/slice';
+import { useAppSelector } from '../redux/hooks';
 
 const AddToiletScreen = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const pin = useSelector(selectCurrentLocation)
+    const pin = useAppSelector(selectCurrentLocation)
     const navigation = useNavigation()
-    const user = useSelector(selectUser)
+    const user = useAppSelector(selectUser)
 
     const submitToiletLocation = async () => {
         if (!name.trim()) {

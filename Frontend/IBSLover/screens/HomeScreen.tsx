@@ -8,35 +8,33 @@ import {
 import MmapView from '../components/MmapView';
 import ListView from '../components/ListView';
 import tw from 'twrnc'
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { fetchCurrentLocation } from '../redux/pin/operations';
-import { fetchGoogleMaps } from '../redux/googleMapsPlaces/operations';
-import { selectCurrentLocation, selectIsLoading } from '../redux/pin/selectors';
-import { selectHasListView, selectMapRefRegion } from '../redux/stateManage/selectors';
-import { fetchNearByPlacesByUser } from '../redux/userCreatedPlaces/operations';
+import { fetchToiletFromGoogle, fetchToiletFromUser } from '../redux/googleMapsPlaces/operations';
+import { selectHasListView, selectMapRefRegion } from '../redux/stateManage/slice';
 import { fetchKeywords } from '../redux/filter/operations';
 import { navigateToPlace } from '../utils/helper';
-import { selectIsLoadingWhileGoogle, selectgooglePlaces } from '../redux/googleMapsPlaces/selectors';
 import { selectBannedWord } from '../redux/filter/selectors';
 import { setMapRefRegion } from '../redux/stateManage/slice';
 import { mergePlaces } from '../utils/utils';
-import { selectUserPlaces } from '../redux/userCreatedPlaces/selectors';
-import { selectUser } from '../redux/auth/selectors';
-import { setIsSignedin, setUserInfo } from '../redux/auth/slice';
+import { selectUser } from '../redux/auth/slice';
+import { setIsSignedIn, setUserInfo } from '../redux/auth/slice';
 import Loading from '../components/Loading';
+import { selectToiletFromGoogle, selectToiletFromUser, selectToiletLoading } from '../redux/googleMapsPlaces/slice';
+import { selectCurrentLocation } from '../redux/pin/slice';
 
 export default function HomeScreen() {
-    const dispatch = useDispatch();
-    const pin = useSelector(selectCurrentLocation);
-    const hasListView = useSelector(selectHasListView);
+    const dispatch = useAppDispatch();
+    const pin = useAppSelector(selectCurrentLocation);
+    const hasListView = useAppSelector(selectHasListView);
     // currently, PANIC! only fetches result by GoogleMaps
-    const placesByGoogle = useSelector(selectgooglePlaces)
-    const placesByUser = useSelector(selectUserPlaces)
-    const bannedWord = useSelector(selectBannedWord)
-    const mapRefRegion = useSelector(selectMapRefRegion)
-    const allPlaces = mergePlaces(placesByGoogle, placesByUser)
-    const user = useSelector(selectUser)
-    const isLoading = useSelector(selectIsLoadingWhileGoogle)
+    const placesByGoogle = useAppSelector(selectToiletFromGoogle)
+    const placesByUser = useAppSelector(selectToiletFromUser)
+    const bannedWord = useAppSelector(selectBannedWord)
+    const mapRefRegion = useAppSelector(selectMapRefRegion)
+    const allPlaces: Toilet[] = mergePlaces(placesByGoogle, placesByUser)
+    const user = useAppSelector(selectUser)
+    const isLoading = useAppSelector(selectToiletLoading)
     const selectedPlaces = allPlaces.filter((item) => {
         // if (item.KWD && bannedWord.includes(item.KWD)) {
         //     return false
@@ -54,8 +52,8 @@ export default function HomeScreen() {
     }, [dispatch]);
 
     useEffect(() => {
-        dispatch(fetchGoogleMaps(pin));
-        dispatch(fetchNearByPlacesByUser(pin))
+        dispatch(fetchToiletFromGoogle(pin));
+        dispatch(fetchToiletFromUser())
         dispatch(fetchKeywords())
         dispatch(setMapRefRegion({
             ...mapRefRegion,
@@ -63,7 +61,7 @@ export default function HomeScreen() {
             longitude: pin.longitude,
         }))
         dispatch(setUserInfo({}))
-        dispatch(setIsSignedin(false))
+        dispatch(setIsSignedIn(false))
     }, [dispatch, pin]);
 
     return (
@@ -81,7 +79,7 @@ export default function HomeScreen() {
                             title="PANIC!"
                             color="red"
                             onPress={() => {
-                                navigateToPlace(selectedPlaces[0].geometry.location.lat, selectedPlaces[0].geometry.location.lng, selectedPlaces[0].name);
+                                navigateToPlace(selectedPlaces[0].location.coordinates[1], selectedPlaces[0].location.coordinates[0], selectedPlaces[0].name);
                             }}
                             disabled={isLoading || !selectedPlaces}
 

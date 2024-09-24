@@ -5,18 +5,18 @@ import {
     GoogleSigninButton,
 } from "@react-native-google-signin/google-signin";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { selectIsSignedin, selectUser } from "../redux/auth/selectors";
-import { setIsSignedin, setUserInfo } from "../redux/auth/slice";
+import { selectIsSignedIn, selectUser } from "../redux/auth/slice";
+import { setIsSignedIn, setUserInfo } from "../redux/auth/slice";
 import { useNavigation } from "@react-navigation/native";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 
 
 const SigninWIthGoogle = () => {
     const [error, setError] = useState();
-    const dispatch = useDispatch()
-    const user = useSelector(selectUser)
-    const isSignedin = useSelector(selectIsSignedin)
+    const dispatch = useAppDispatch()
+    const user = useAppSelector(selectUser)
+    const isSignedin = useAppSelector(selectIsSignedIn)
     const navigation = useNavigation()
 
     const configureGoogleSignIn = () => {
@@ -40,7 +40,7 @@ const SigninWIthGoogle = () => {
             const userInfo = await GoogleSignin.signIn();
             dispatch(setUserInfo(userInfo));
             console.log('user login5')
-            dispatch(setIsSignedin(true))
+            dispatch(setIsSignedIn(true))
             setError();
             navigation.navigate('Home')
         } catch (e) {
@@ -51,7 +51,7 @@ const SigninWIthGoogle = () => {
     const logout = () => {
         dispatch(setUserInfo({ user: undefined }))
         console.log("user logout5")
-        dispatch(setIsSignedin(false))
+        dispatch(setIsSignedIn(false))
         GoogleSignin.revokeAccess();
         GoogleSignin.signOut();
         navigation.navigate('Home')

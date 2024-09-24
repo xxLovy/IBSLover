@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Animated, Alert } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectHasListView, selectMapRefRegion } from '../redux/stateManage/selectors';
+import { useAppSelector, useAppDispatch } from '../redux/hooks';
+import { selectHasListView, selectMapRefRegion } from '../redux/stateManage/slice';
 import { setListView, setMapRefRegion } from '../redux/stateManage/slice';
 import { useNavigation } from '@react-navigation/native';
-import { selectCurrentLocation } from '../redux/pin/selectors';
 import { Icon } from '@rneui/themed';
 import tw from 'twrnc';
-import { selectIsLoggedIn, selectUser } from '../redux/auth/selectors';
+import { selectCurrentLocation } from '../redux/pin/slice';
+import { selectUser, selectIsSignedIn } from '../redux/auth/slice';
 
 
 const NaviBar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const menuAnimation = new Animated.Value(0);
-    const dispatch = useDispatch();
-    const isListViewVisible = useSelector(selectHasListView);
+    const dispatch = useAppDispatch();
+    const isListViewVisible = useAppSelector(selectHasListView);
     const navigation = useNavigation();
-    const pin = useSelector(selectCurrentLocation);
-    const mapRefRegion = useSelector(selectMapRefRegion);
-    const user = useSelector(selectUser)
+    const pin = useAppSelector(selectCurrentLocation);
+    const mapRefRegion = useAppSelector(selectMapRefRegion);
+    const user = useAppSelector(selectUser)
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);

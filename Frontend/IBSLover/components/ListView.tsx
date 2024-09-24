@@ -1,31 +1,30 @@
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux';
 import tw from 'twrnc'
 import { selectBannedWord, selectVotingCount } from '../redux/filter/selectors';
-import { selectUserPlaces } from '../redux/userCreatedPlaces/selectors';
 import { mergePlaces } from '../utils/utils';
-import { selectIsLoadingWhileGoogle, selectgooglePlaces } from '../redux/googleMapsPlaces/selectors';
 import { setMapRefRegion, setSelectedMarker } from '../redux/stateManage/slice';
-import { selectUser } from '../redux/auth/selectors';
+import { selectUser } from '../redux/auth/slice';
+import { useAppSelector, useAppDispatch } from '../redux/hooks';
+import { selectToiletFromGoogle, selectToiletFromUser, selectToiletLoading } from '../redux/googleMapsPlaces/slice';
 
 const ListView = () => {
-    const placesByGoogle = useSelector(selectgooglePlaces)
-    const placesByUser = useSelector(selectUserPlaces)
+    const placesByGoogle = useAppSelector(selectToiletFromGoogle)
+    const placesByUser = useAppSelector(selectToiletFromUser)
     const allPlaces = mergePlaces(placesByGoogle, placesByUser)
-    const dispatch = useDispatch()
-    const isLoading = useSelector(selectIsLoadingWhileGoogle)
-    const user = useSelector(selectUser)
+    const dispatch = useAppDispatch()
+    const isLoading = useAppSelector(selectToiletLoading)
+    const user = useAppSelector(selectUser)
 
-    const bannedWord = useSelector(selectBannedWord);
-    const votingCountFilter = useSelector(selectVotingCount)
+    const bannedWord = useAppSelector(selectBannedWord);
+    const votingCountFilter = useAppSelector(selectVotingCount)
 
-    const renderPlace = ({ item, index }) => {
+    const renderPlace = ({ item, index }: { item: Toilet; index: number }) => {
 
-        console.log(`UserID: ${item.userId?.userId}`)
-        console.log(`UserID :${user?.userId}`)
-        if (!item.voteCount && bannedWord.includes(item.KWD)) return;
-        if (item.voteCount && item.voteCount <= votingCountFilter) return;
+        console.log(`UserID: ${item.users}`)
+        console.log(`UserID :${user}`)
+        if (!item.votesCount && bannedWord.includes(item.keyword)) return;
+        if (item.votesCount && item.votesCount <= votingCountFilter) return;
 
 
         else {
@@ -33,8 +32,8 @@ const ListView = () => {
                 <TouchableHighlight
                     onPress={() => {
                         let newRegion = {
-                            latitude: item.geometry.location.lat,
-                            longitude: item.geometry.location.lng,
+                            latitude: item.location.coordinates[1],
+                            longitude: item.location.coordinates[0],
                             latitudeDelta: 0.005,
                             longitudeDelta: 0.005,
                         };
@@ -44,9 +43,9 @@ const ListView = () => {
                     }}
                 >
 
-                    <View style={tw`p-4 border-b border-gray-200 ${item.voteCount ? item?.userId?.userId?.includes(user?.userId) && user?.userId !== undefined ? `bg-purple-100` : `bg-blue-100` : 'bg-green-100'}`}>
+                    <View style={tw`p-4 border-b border-gray-200 ${item.votesCount ? item?.users?.includes(user?.userId) && user?.userId !== undefined ? `bg-purple-100` : `bg-blue-100` : 'bg-green-100'}`}>
                         <Text style={tw`text-base font-semibold`}>{item.name}</Text>
-                        <Text style={tw`text-sm text-gray-600`}>{item.vicinity}</Text>
+                        <Text style={tw`text-sm text-gray-600`}>{item.description}</Text>
                         {/* // TODO */}
                         {/* {item.voteCount && <Text style={tw`text-sm text-gray-600`}>Vote Count: {item.voteCount}</Text>} */}
                         <Text style={tw`text-xs text-gray-500`}>Distance: {item.distance} km</Text>
