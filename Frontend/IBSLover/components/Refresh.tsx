@@ -1,22 +1,21 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { fetchCurrentLocation } from '../redux/pin/operations'
-import { fetchGoogleMaps } from '../redux/googleMapsPlaces/operations'
-import { selectCurrentLocation } from '../redux/pin/selectors'
-import { fetchNearByPlacesByUser } from '../redux/userCreatedPlaces/operations'
+import { fetchToiletFromGoogle, fetchToiletFromUser } from '../redux/googleMapsPlaces/operations'
 import { setBannedWord, setVotingCount } from '../redux/filter/slice'
 import { Icon } from '@rneui/base'
-import { selectIsLoadingWhileGoogle } from '../redux/googleMapsPlaces/selectors'
+import { selectToiletLoading } from '../redux/googleMapsPlaces/slice'
+import { selectCurrentLocation } from '../redux/pin/slice'
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
 
 const Refresh = () => {
-    const dispatch = useDispatch()
-    const pin = useSelector(selectCurrentLocation)
-    const isLoading = useSelector(selectIsLoadingWhileGoogle)
+    const dispatch = useAppDispatch()
+    const pin = useAppSelector(selectCurrentLocation)
+    const isLoading = useAppSelector(selectToiletLoading)
     const handleRefresh = () => {
         dispatch(fetchCurrentLocation())
-        dispatch(fetchGoogleMaps(pin))
-        dispatch(fetchNearByPlacesByUser(pin))
+        dispatch(fetchToiletFromGoogle(pin))
+        dispatch(fetchToiletFromUser())
         dispatch(setBannedWord([]))
         dispatch(setVotingCount(0))
     }

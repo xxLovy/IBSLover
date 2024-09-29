@@ -1,4 +1,4 @@
-export const APIURL = "https://xxxxuan.xyz/api"
+export const APIURL = "https://xuu.xxxxuan.xyz/api"
 
 
 
