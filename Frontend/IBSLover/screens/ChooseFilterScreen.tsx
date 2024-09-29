@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { selectKeyword, selectVotingCount } from '../redux/filter/selectors';
+import { selectKeyword, selectVotingCount } from '../redux/filter/slice';
 import { setBannedWord, setVotingCount } from '../redux/filter/slice';
 import { useNavigation } from '@react-navigation/native';
 
@@ -52,7 +52,7 @@ const ChooseFilter = () => {
             <TextInput
                 style={styles.input}
                 placeholder="Enter voting count..."
-                value={votingCountLocal} // 将 votingCount 转换为字符串显示在输入框中
+                value={votingCountLocal}
                 onChangeText={setVotingCountLocal}
                 keyboardType="numeric"
             />

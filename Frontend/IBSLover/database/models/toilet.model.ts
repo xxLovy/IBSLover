@@ -86,6 +86,8 @@ export interface IToilet {
     keyword?: string;
     users?: string[];
     removeMsg?: string;
+
+    distance?: number;
 }
 ToiletsSchema.index({ 'location': '2dsphere' });
 const Toilet = models?.Toilet || model<IToilet>('Toilet', ToiletsSchema);

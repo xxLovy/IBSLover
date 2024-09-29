@@ -14,14 +14,15 @@ import { fetchToiletFromGoogle, fetchToiletFromUser } from '../redux/googleMapsP
 import { selectHasListView, selectMapRefRegion } from '../redux/stateManage/slice';
 import { fetchKeywords } from '../redux/filter/operations';
 import { navigateToPlace } from '../utils/helper';
-import { selectBannedWord } from '../redux/filter/selectors';
+import { selectBannedWord } from '../redux/filter/slice';
 import { setMapRefRegion } from '../redux/stateManage/slice';
-import { mergePlaces } from '../utils/utils';
+import { mergePlacesAddDistance } from '../utils/utils';
 import { selectUser } from '../redux/auth/slice';
 import { setIsSignedIn, setUserInfo } from '../redux/auth/slice';
 import Loading from '../components/Loading';
 import { selectToiletFromGoogle, selectToiletFromUser, selectToiletLoading } from '../redux/googleMapsPlaces/slice';
 import { selectCurrentLocation } from '../redux/pin/slice';
+import { TouchableOpacity } from 'react-native';
 
 export default function HomeScreen() {
     const dispatch = useAppDispatch();
@@ -32,7 +33,7 @@ export default function HomeScreen() {
     const placesByUser = useAppSelector(selectToiletFromUser)
     const bannedWord = useAppSelector(selectBannedWord)
     const mapRefRegion = useAppSelector(selectMapRefRegion)
-    const allPlaces: Toilet[] = mergePlaces(placesByGoogle, placesByUser)
+    const allPlaces: Toilet[] = mergePlacesAddDistance(placesByGoogle, placesByUser, pin.latitude, pin.longitude)
     const user = useAppSelector(selectUser)
     const isLoading = useAppSelector(selectToiletLoading)
     const selectedPlaces = allPlaces.filter((item) => {
@@ -65,7 +66,7 @@ export default function HomeScreen() {
     }, [dispatch, pin]);
 
     return (
-        <SafeAreaView style={tw`flex-1`}>
+        <View style={tw`flex-1`}>
             {pin.isLoading ? <View style={tw`flex-1 justify-center items-center`}><Loading text={"Fetching your current location..."} /></View> :
                 <View style={tw`flex-1`}>
                     <View style={hasListView ? tw`flex-6` : tw`flex-1`}>
@@ -74,21 +75,25 @@ export default function HomeScreen() {
                     <View style={hasListView ? tw`flex-4` : tw`flex-0`}>
                         <ListView />
                     </View>
-                    <View style={tw`flex justify-center items-center`}>
-                        <Button
-                            title="PANIC!"
-                            color="red"
+                    <View style={tw`flex justify-center items-center p-2`}>
+                        <TouchableOpacity
+                            style={tw`p-2 rounded`}
                             onPress={() => {
-                                navigateToPlace(selectedPlaces[0].location.coordinates[1], selectedPlaces[0].location.coordinates[0], selectedPlaces[0].name);
+                                navigateToPlace(
+                                    selectedPlaces[0].location.coordinates[1],
+                                    selectedPlaces[0].location.coordinates[0],
+                                    selectedPlaces[0].name
+                                );
                             }}
                             disabled={isLoading || !selectedPlaces}
-
-                        />
+                        >
+                            <Text style={tw`text-lg ${isLoading || !selectedPlaces ? "text-gray-400" : "text-red-500"}  font-bold`}>PANIC!</Text>
+                        </TouchableOpacity>
                     </View>
 
 
                 </View>}
-        </SafeAreaView>
+        </View>
 
     );
 }

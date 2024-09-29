@@ -8,9 +8,9 @@ import tw from 'twrnc'
 import { navigateToPlace } from '../utils/helper';
 import NaviBar from './NaviBar';
 // import ToiletByUser from '../assets/ToiletByUser.png'
-import { selectBannedWord, selectVotingCount } from '../redux/filter/selectors';
+import { selectBannedWord, selectVotingCount } from '../redux/filter/slice';
 import Refresh from './Refresh';
-import { mergePlaces } from '../utils/utils';
+import { getDistanceFromLatLonInKm, mergePlacesAddDistance } from '../utils/utils';
 import { selectMapRefRegion, selectSelectedMarker } from '../redux/stateManage/slice';
 import { setSelectedMarker } from '../redux/stateManage/slice';
 import { selectUser } from '../redux/auth/slice';
@@ -22,7 +22,7 @@ const MmapView = () => {
     const pin = useAppSelector(selectCurrentLocation);
     const placesByGoogle = useAppSelector(selectToiletFromGoogle);
     const placesByUser = useAppSelector(selectToiletFromUser);
-    const allPlaces: Toilet[] = mergePlaces(placesByGoogle, placesByUser)
+    const allPlaces = mergePlacesAddDistance(placesByGoogle, placesByUser, pin.latitude, pin.longitude)
     const bannedWord = useAppSelector(selectBannedWord)
     const votingCountFilter = useAppSelector(selectVotingCount)
     const mapRef = useRef<MapView>(null);
@@ -120,9 +120,9 @@ const MmapView = () => {
             <View style={tw`absolute top-0 right-0 p-4`}>
                 <NaviBar />
             </View>
-            <View style={tw`absolute top-0 left-0 p-4`}>
+            {/* <View style={tw`absolute top-0 left-0 p-4`}>
                 <Refresh />
-            </View>
+            </View> */}
         </View>
     )
 }

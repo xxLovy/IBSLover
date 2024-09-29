@@ -39,3 +39,11 @@ export const filterSlice = createSlice({
 
 export const filterReducer = filterSlice.reducer;
 export const { setVotingCount, setBannedWord } = filterSlice.actions
+
+export const selectKeyword = (state) => state.filter.filters.keyword;
+
+export const selectVotingCount = state => state.filter.filters.votingCount;
+
+export const selectBannedWord = state => state.filter.filters.bannedWord;
+
+
