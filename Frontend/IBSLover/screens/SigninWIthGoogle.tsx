@@ -38,8 +38,15 @@ const SigninWIthGoogle = () => {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            dispatch(setUserInfo(userInfo));
-            console.log('user login5')
+            const newUser: User = {
+                username: userInfo.user.familyName + ' ' + userInfo.user.givenName,
+                family_name: userInfo.user.familyName,
+                given_name: userInfo.user.givenName,
+                picture: userInfo.user.photo,
+                email: userInfo.user.email,
+                userId: userInfo.user.email,
+            }
+            dispatch(setUserInfo({ user: newUser }));
             dispatch(setIsSignedIn(true))
             setError();
             navigation.navigate('Home')

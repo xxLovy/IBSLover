@@ -29,10 +29,12 @@ export const addToilet = createAsyncThunk(
             } else if (response.status == 200) {
                 const data = await response.json()
                 console.log('User updated successfully:', data)
+                Alert.alert('Success', 'Toilet location added successfully!');
                 return data
             }
         } catch (err: any) {
             console.log(err)
+            Alert.alert('Error', 'Failed to add toilet location.');
             return thunkAPI.rejectWithValue(err.message);
         }
     }

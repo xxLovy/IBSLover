@@ -6,7 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { selectUser } from '../redux/auth/slice';
 import { api } from '../global';
 import { selectCurrentLocation } from '../redux/pin/slice';
-import { useAppSelector } from '../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { addToilet, fetchToiletFromUser } from '../redux/googleMapsPlaces/operations';
 
 const AddToiletScreen = () => {
     const [name, setName] = useState('');
@@ -14,6 +15,7 @@ const AddToiletScreen = () => {
     const pin = useAppSelector(selectCurrentLocation)
     const navigation = useNavigation()
     const user = useAppSelector(selectUser)
+    const dispatch = useAppDispatch()
 
     const submitToiletLocation = async () => {
         if (!name.trim()) {
@@ -30,30 +32,44 @@ const AddToiletScreen = () => {
                     text: 'Yes',
                     onPress: async () => {
                         try {
-                            if (user && user.userId) {
-                                const response = await axios.post(`${api}/add-toilet`, {
-                                    latitude: pin.latitude,
-                                    longitude: pin.longitude,
-                                    name: name,
-                                    description: description,
-                                    userId: user.userId,
-                                });
-                                // Handle the response.
-                                // console.log(response);
-                                if (response.status === 201) {
-                                    Alert.alert('Success', 'Toilet location added successfully!');
-                                } else if (response.status === 200) {
-                                    Alert.alert('Success', 'Your vote for the toilet location has been successfully cast!');
+                            if (user && user.email) {
+                                const newToilet: Toilet = {
+                                    name,
+                                    description,
+                                    location: {
+                                        type: "Point",
+                                        coordinates: [pin.longitude, pin.latitude]
+                                    },
+                                    isFromUser: true,
+                                    isRemoved: false,
+                                    votesCount: 1,
+                                    lastUpdateTime: String(new Date()),
                                 }
+                                dispatch(addToilet({ toilet: newToilet, userId: user?.email || '' }))
+                                // const response = await axios.post(`${api}/add-toilet`, {
+                                //     latitude: pin.latitude,
+                                //     longitude: pin.longitude,
+                                //     name: name,
+                                //     description: description,
+                                //     userId: user.userId,
+                                // });
+                                // // Handle the response.
+                                // // console.log(response);
+
+                                // if (response.status === 201) {
+                                //     Alert.alert('Success', 'Toilet location added successfully!');
+                                // } else if (response.status === 200) {
+                                //     Alert.alert('Success', 'Your vote for the toilet location has been successfully cast!');
+                                // }
 
                                 navigation.goBack(); // Navigate back to the homepage
                             } else {
-                                Alert.alert('Error', 'Failed to add toilet location.');
+                                // Alert.alert('Error', 'Failed to add toilet location.');
                             }
 
                         } catch (error) {
-                            console.error(error);
-                            Alert.alert('Error', 'Failed to add toilet location.');
+                            // console.error(error);
+                            // Alert.alert('Error', 'Failed to add toilet location.');
                         }
                     },
                 },

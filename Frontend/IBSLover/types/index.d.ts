@@ -181,12 +181,12 @@ declare type Toilet = {
 declare type location = { latitude: number, longitude: number }
 
 declare type User = {
-    username: string;
+    username?: string;
     toilets?: string[];
     favorites?: string[];
-    kindeId: string;
     family_name?: string;
     given_name?: string;
     picture?: string;
     email?: string;
+    userId?: string;
 }

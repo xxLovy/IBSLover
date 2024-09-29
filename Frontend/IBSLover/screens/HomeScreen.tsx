@@ -20,7 +20,7 @@ import { mergePlacesAddDistance } from '../utils/utils';
 import { selectUser } from '../redux/auth/slice';
 import { setIsSignedIn, setUserInfo } from '../redux/auth/slice';
 import Loading from '../components/Loading';
-import { selectToiletFromGoogle, selectToiletFromUser, selectToiletLoading } from '../redux/googleMapsPlaces/slice';
+import { selectAddSuccess, selectEditSuccess, selectRemoveSuccess, selectToiletFromGoogle, selectToiletFromUser, selectToiletLoading, selectVoteSuccess } from '../redux/googleMapsPlaces/slice';
 import { selectCurrentLocation } from '../redux/pin/slice';
 import { TouchableOpacity } from 'react-native';
 
@@ -46,11 +46,15 @@ export default function HomeScreen() {
         // }
         return true
     })
-    console.log(`Selected: ${JSON.stringify(selectedPlaces)}`)
+    const addToiletSuccess = useAppSelector(selectAddSuccess)
+    const editToiletSuccess = useAppSelector(selectEditSuccess)
+    const removeToiletSuccess = useAppSelector(selectRemoveSuccess)
+    const voteToiletSuccess = useAppSelector(selectVoteSuccess)
+    // console.log(`Selected: ${JSON.stringify(selectedPlaces)}`)
 
     useEffect(() => {
         dispatch(fetchCurrentLocation());
-    }, [dispatch]);
+    }, []);
 
     useEffect(() => {
         dispatch(fetchToiletFromGoogle(pin));
@@ -63,7 +67,7 @@ export default function HomeScreen() {
         }))
         dispatch(setUserInfo({}))
         dispatch(setIsSignedIn(false))
-    }, [dispatch, pin]);
+    }, [pin, addToiletSuccess, editToiletSuccess, voteToiletSuccess, removeToiletSuccess]);
 
     return (
         <View style={tw`flex-1`}>
