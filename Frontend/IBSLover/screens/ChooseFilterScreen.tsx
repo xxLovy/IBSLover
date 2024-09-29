@@ -1,24 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectKeyword, selectVotingCount } from '../redux/filter/selectors';
+import { useAppSelector, useAppDispatch } from '../redux/hooks';
+import { selectKeyword, selectVotingCount, selectBannedWord } from '../redux/filter/slice';
 import { setBannedWord, setVotingCount } from '../redux/filter/slice';
 import { useNavigation } from '@react-navigation/native';
 
 const ChooseFilter = () => {
-    const [selectedKeywords, setSelectedKeywords] = useState([]);
-    const [votingCountLocal, setVotingCountLocal] = useState('');
-    const dispatch = useDispatch()
-    const keywords = useSelector(selectKeyword)
-    const currentVotingCount = useSelector(selectVotingCount);
-    const navigation = useNavigation()
+    const dispatch = useAppDispatch();
+    const navigation = useNavigation();
+
+    const keywords = useAppSelector(selectKeyword);
+    const currentVotingCount = useAppSelector(selectVotingCount);
+    const bannedWords = useAppSelector(selectBannedWord);
+
+    const [selectedKeywords, setSelectedKeywords] = useState<string[]>([]);
+    const [votingCountLocal, setVotingCountLocal] = useState<string>('');
+
+    useEffect(() => {
+        setSelectedKeywords(bannedWords);
+        setVotingCountLocal(currentVotingCount.toString());
+    }, [bannedWords, currentVotingCount]);
+
     const handleResetFilters = () => {
         dispatch(setBannedWord([]));
         dispatch(setVotingCount(0));
         navigation.goBack();
-    }
+    };
 
-    const handleKeywordToggle = (keyword) => {
+    const handleKeywordToggle = (keyword: string) => {
         const updatedKeywords = selectedKeywords.includes(keyword)
             ? selectedKeywords.filter((key) => key !== keyword)
             : [...selectedKeywords, keyword];
@@ -26,11 +35,14 @@ const ChooseFilter = () => {
     };
 
     const handleApplyFilters = () => {
-        const parsedVotingCount = parseInt(votingCountLocal); // 将文本转换为整数
-        if (parsedVotingCount) { dispatch(setVotingCount(parsedVotingCount)); }
+        const parsedVotingCount = parseInt(votingCountLocal);
+        if (!isNaN(parsedVotingCount)) {
+            dispatch(setVotingCount(parsedVotingCount));
+        }
         dispatch(setBannedWord(selectedKeywords));
         navigation.goBack();
     };
+
     return (
         <View style={styles.container}>
             <Text style={styles.heading}>General Filter</Text>
@@ -52,7 +64,7 @@ const ChooseFilter = () => {
             <TextInput
                 style={styles.input}
                 placeholder="Enter voting count..."
-                value={votingCountLocal} // 将 votingCount 转换为字符串显示在输入框中
+                value={votingCountLocal}
                 onChangeText={setVotingCountLocal}
                 keyboardType="numeric"
             />
@@ -105,7 +117,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingVertical: 15,
         alignItems: 'center',
-        margin: 10
+        margin: 10,
     },
     applyButtonText: {
         color: '#fff',

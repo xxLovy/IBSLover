@@ -5,18 +5,18 @@ import {
     GoogleSigninButton,
 } from "@react-native-google-signin/google-signin";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { selectIsSignedin, selectUser } from "../redux/auth/selectors";
-import { setIsSignedin, setUserInfo } from "../redux/auth/slice";
+import { selectIsSignedIn, selectUser } from "../redux/auth/slice";
+import { setIsSignedIn, setUserInfo } from "../redux/auth/slice";
 import { useNavigation } from "@react-navigation/native";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 
 
 const SigninWIthGoogle = () => {
     const [error, setError] = useState();
-    const dispatch = useDispatch()
-    const user = useSelector(selectUser)
-    const isSignedin = useSelector(selectIsSignedin)
+    const dispatch = useAppDispatch()
+    const user = useAppSelector(selectUser)
+    const isSignedin = useAppSelector(selectIsSignedIn)
     const navigation = useNavigation()
 
     const configureGoogleSignIn = () => {
@@ -33,14 +33,21 @@ const SigninWIthGoogle = () => {
     });
 
     const signIn = async () => {
-        console.log("Pressed sign in");
+        console.log("Pressed sign in5");
 
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            dispatch(setUserInfo(userInfo));
-            console.log('user login')
-            dispatch(setIsSignedin(true))
+            const newUser: User = {
+                username: userInfo.user.familyName + ' ' + userInfo.user.givenName,
+                family_name: userInfo.user.familyName,
+                given_name: userInfo.user.givenName,
+                picture: userInfo.user.photo,
+                email: userInfo.user.email,
+                userId: userInfo.user.email,
+            }
+            dispatch(setUserInfo({ user: newUser }));
+            dispatch(setIsSignedIn(true))
             setError();
             navigation.navigate('Home')
         } catch (e) {
@@ -50,8 +57,8 @@ const SigninWIthGoogle = () => {
 
     const logout = () => {
         dispatch(setUserInfo({ user: undefined }))
-        console.log("user logout")
-        dispatch(setIsSignedin(false))
+        console.log("user logout5")
+        dispatch(setIsSignedIn(false))
         GoogleSignin.revokeAccess();
         GoogleSignin.signOut();
         navigation.navigate('Home')

@@ -1,40 +1,41 @@
 import { Text, View, TouchableOpacity } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import MapView, { Callout, Marker } from 'react-native-maps';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import tw from 'twrnc'
-import { selectCurrentLocation } from '../redux/pin/selectors';
-import { selectgooglePlaces } from '../redux/googleMapsPlaces/selectors';
-import { selectUserPlaces } from '../redux/userCreatedPlaces/selectors'
-import customMarkerImage from '../assets/ToiletMarker0.png';
-import toiletBySelf from '../assets/ToiletBySelf.png'
+// import customMarkerImage from '../assets/ToiletMarker0.png';
+// import toiletBySelf from '../assets/ToiletBySelf.png'
 import { navigateToPlace } from '../utils/helper';
 import NaviBar from './NaviBar';
-import ToiletByUser from '../assets/ToiletByUser.png'
-import { selectBannedWord, selectVotingCount } from '../redux/filter/selectors';
+// import ToiletByUser from '../assets/ToiletByUser.png'
+import { selectBannedWord, selectVotingCount } from '../redux/filter/slice';
 import Refresh from './Refresh';
-import { mergePlaces } from '../utils/utils';
-import { selectMapRefRegion, selectSelectedMarker } from '../redux/stateManage/selectors';
+import { getDistanceFromLatLonInKm, mergePlacesAddDistance } from '../utils/utils';
+import { selectMapRefRegion, selectSelectedMarker } from '../redux/stateManage/slice';
 import { setSelectedMarker } from '../redux/stateManage/slice';
-import { selectUser } from '../redux/auth/selectors';
+import { selectUser } from '../redux/auth/slice';
+import { selectToiletFromGoogle, selectToiletFromUser } from '../redux/googleMapsPlaces/slice';
+import { selectCurrentLocation } from '../redux/pin/slice';
 
 const MmapView = () => {
     const markerRef = {}
-    const pin = useSelector(selectCurrentLocation);
-    const placesByGoogle = useSelector(selectgooglePlaces);
-    const placesByUser = useSelector(selectUserPlaces);
-    const allPlaces = mergePlaces(placesByGoogle, placesByUser)
-    const bannedWord = useSelector(selectBannedWord)
-    const votingCountFilter = useSelector(selectVotingCount)
-    const mapRef = useRef();
-    const mapRefRegion = useSelector(selectMapRefRegion)
-    const selectedMarker = useSelector(selectSelectedMarker)
-    const dispatch = useDispatch()
-    const user = useSelector(selectUser)
+    const pin = useAppSelector(selectCurrentLocation);
+    const placesByGoogle = useAppSelector(selectToiletFromGoogle);
+    const placesByUser = useAppSelector(selectToiletFromUser);
+    const allPlaces = mergePlacesAddDistance(placesByGoogle, placesByUser, pin.latitude, pin.longitude)
+    const bannedWord = useAppSelector(selectBannedWord)
+    const votingCountFilter = useAppSelector(selectVotingCount)
+    const mapRef = useRef<MapView>(null);
+    const mapRefRegion = useAppSelector(selectMapRefRegion)
+    const selectedMarker = useAppSelector(selectSelectedMarker)
+    const dispatch = useAppDispatch()
+    const user = useAppSelector(selectUser)
 
     useEffect(() => {
-        if (mapRefRegion && mapRef) mapRef?.current?.animateToRegion(mapRefRegion, 1000)
-    }, [mapRefRegion])
+        if (mapRefRegion && mapRef.current) {
+            mapRef.current.animateToRegion(mapRefRegion, 1000);
+        }
+    }, [mapRefRegion]);
 
     if (pin.latitude === 0 && pin.longitude === 0) {
         return null; // Or render a loading indicator
@@ -75,18 +76,24 @@ const MmapView = () => {
 
 
                 {allPlaces && allPlaces.map((place, index) => {
-                    if (!place.voteCount && bannedWord.includes(place.KWD)) return;
-                    if (place.voteCount && place.voteCount <= votingCountFilter) return;
+                    if (!place.votesCount && bannedWord.includes(place.keyword)) return;
+                    if (place.votesCount && place.votesCount <= votingCountFilter) return;
                     else return (
                         <Marker
                             key={index}
                             coordinate={{
-                                latitude: place.geometry.location.lat,
-                                longitude: place.geometry.location.lng,
+                                latitude: place.location.coordinates[1],
+                                longitude: place.location.coordinates[0],
                             }}
                             title={place.name}
-                            description={place.vicinity}
-                            image={place.voteCount ? place.userId?.userId?.includes(user?.userId) && user?.userId !== undefined ? toiletBySelf : ToiletByUser : customMarkerImage}
+                            description={place.description}
+                            image={
+                                place.votesCount
+                                    ? place.users.includes(user?.userId) && user?.userId !== undefined
+                                        ? require('../assets/ToiletBySelf.png')
+                                        : require('../assets/ToiletByUser.png')
+                                    : require('../assets/ToiletMarker0.png')
+                            }
                             ref={(ref) => {
                                 markerRef[index + 1] = ref
                             }}
@@ -94,9 +101,9 @@ const MmapView = () => {
                             <Callout>
                                 <View>
                                     <Text style={tw`font-semibold text-center`}>{place.name}</Text>
-                                    <Text>{place.vicinity}</Text>
+                                    <Text>{place.description}</Text>
                                     <TouchableOpacity onPress={() => {
-                                        navigateToPlace(place.geometry.location.lat, place.geometry.location.lng, place.name);
+                                        navigateToPlace(place.location.coordinates[1], place.location.coordinates[0], place.name);
                                     }}>
                                         <Text style={tw`text-blue-500 mt-2 text-center`}>Click to navigate</Text>
                                     </TouchableOpacity>
@@ -113,9 +120,9 @@ const MmapView = () => {
             <View style={tw`absolute top-0 right-0 p-4`}>
                 <NaviBar />
             </View>
-            <View style={tw`absolute top-0 left-0 p-4`}>
+            {/* <View style={tw`absolute top-0 left-0 p-4`}>
                 <Refresh />
-            </View>
+            </View> */}
         </View>
     )
 }
