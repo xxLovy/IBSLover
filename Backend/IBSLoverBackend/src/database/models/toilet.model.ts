@@ -88,6 +88,6 @@ export interface IToilet {
     removeMsg?: string;
 }
 ToiletsSchema.index({ 'location': '2dsphere' });
-const Toilet = models?.Toilet || model<IToilet>('Toilet', ToiletsSchema);
+const Toilet = models?.toilet || model<IToilet>('toilet', ToiletsSchema);
 export const ToiletByGoogle = models?.ToiletByGoogle || model<IToilet>('ToiletByGoogle', ToiletsSchema);
 export default Toilet;
