@@ -77,7 +77,6 @@ export const getGooglePlaces = async (req: Request, res: Response) => {
         let allToilets = await ToiletByGoogle.find({})
         // get all user created toilets that are not removed
         // const toilets = allToilets.filter(item => !item.isRemoved);
-        console.log(allToilets)
         res.status(200).json(allToilets);
     } catch (error) {
         console.error('Error retrieving toilets:', error);
