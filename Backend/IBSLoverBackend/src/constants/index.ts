@@ -6,11 +6,7 @@ export const IP_REQUEST_EXPIRE = 10;
 export const DAILY_LIMIT = 1000;
 export const MAX_DISTANCE = 20;
 export const keywords = [
-    // 'Starbucks',
-    // 'McDonald\'s',
-    'Walmart',
-    // 'City Supper',
-    // 'IKEA',
+    "Starbucks", "Trader Joe's", "McDonald's", "Safeway", "Walmart", "Hmart", "99 Ranch", "Costco"
 ];
 const radius = 1000;
 const KEY = process.env.GOOGLE_MAPS_API_KEY;
